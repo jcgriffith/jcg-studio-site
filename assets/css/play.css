@@ -1,0 +1,131 @@
+/* JCG Studio: the play layer (PLAY-BREAKDOWN.md Phase 1, JC, 2026-10-05). The menu's Play section, the Work floor's
+   game sheet, the field and Build the mark. The keycap press and the bracket fuse live in base.css, the footer game's bar
+   in footer-game.css and the lock-on tags in canvas.css. Loaded on every site page after base.css. */
+
+/* ── The menu's Play section (play.js): this device's visits, blocks and best, Play, and the reward at nine ── */
+.play-menu {
+  display: grid; gap: 12px;
+  margin-top: 18px; padding-top: 18px;
+  border-top: 1px solid var(--line);
+  opacity: 0;
+  transition: opacity 120ms linear;
+}
+.site-menu-layer.is-open .play-menu { opacity: 1; transition: opacity 220ms linear calc(280ms + var(--i, 0) * var(--stagger)); }
+.play-stats { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; color: var(--chrome-3); }
+.play-menu-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.play-menu-btn {
+  position: relative;
+  display: inline-flex; align-items: center;
+  min-height: var(--hit); padding: 0 16px;
+  font: 400 11px/1 var(--font-hud); letter-spacing: var(--track-hud); text-transform: uppercase;
+  color: var(--chrome); background: transparent;
+  border: 1px solid var(--line-strong); border-radius: var(--r-btn);
+  cursor: pointer;
+  transition: background var(--dur-1) linear, border-color var(--dur-1) linear;
+}
+.play-menu-btn:hover, .play-menu-btn:focus-visible { background: var(--void-3); border-color: var(--chrome-3); }
+.play-menu-btn[aria-pressed="true"] { background: var(--chrome); color: var(--void); border-color: var(--chrome); }
+
+/* ── The Work floor's Play sheet (play.js): the footer game, risen from the bottom edge over the floor ── */
+.play-sheet {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 70;
+  max-height: 92dvh; overflow: auto; overscroll-behavior: contain;
+  background: var(--void);
+  border-top: 1px solid var(--line-strong);
+  translate: 0 100%;
+  transition: translate 380ms var(--ease-out);
+}
+.play-sheet.is-open { translate: 0 0; }
+.play-sheet-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  min-height: var(--hit); padding-left: var(--edge);
+  color: var(--chrome-3);
+  border-bottom: 1px solid var(--line);
+}
+.play-sheet-close {
+  position: relative; flex: none;
+  width: var(--hit); height: var(--hit);
+  background: transparent; border: 0; border-left: 1px solid var(--line);
+  color: var(--chrome-2); cursor: pointer;
+}
+.play-sheet-close::before, .play-sheet-close::after {
+  content: ""; position: absolute; left: 50%; top: 50%;
+  width: 14px; height: 1px; background: currentColor;
+  translate: -50% -50%; rotate: 45deg;
+}
+.play-sheet-close::after { rotate: -45deg; }
+.play-sheet-close:hover, .play-sheet-close:focus-visible { color: var(--chrome); background: var(--void-3); }
+.play-sheet .foot-game { border-top: 0; }
+@media (prefers-reduced-motion: reduce) { .play-sheet { transition: none; } }
+
+/* ── The field (dot-field.js): the dot grid lights where you press and slowly forgets ──
+   A patch is the floor's lattice (dots at the centres of 24 px cells, every fifth one brighter, as canvas.css
+   .floor-grid) lit up and faded out at its edge. It sits behind its host's content. */
+.has-field { position: relative; isolation: isolate; }
+footer.has-field { overflow: hidden; }
+.dot-field {
+  position: absolute; z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle, rgba(230, 233, 237, .5) 1.1px, transparent 1.6px),
+    radial-gradient(circle, rgba(230, 233, 237, .9) 1.5px, transparent 2.1px);
+  background-size: 24px 24px, 120px 120px;
+  background-position: var(--bx) var(--by), var(--bx5) var(--by5);
+  -webkit-mask: radial-gradient(closest-side, #000 30%, transparent 100%);
+          mask: radial-gradient(closest-side, #000 30%, transparent 100%);
+  opacity: 0; scale: .35;
+  transition: opacity 200ms linear, scale 900ms var(--ease-out);
+}
+.dot-field.is-held { opacity: 1; scale: 1; }
+.dot-field.is-gone { opacity: 0; transition: opacity 2600ms linear, scale 2600ms var(--ease-out); }
+@media (prefers-reduced-motion: reduce) {
+  .dot-field, .dot-field.is-held { scale: 1; transition: opacity 1ms linear; }
+  .dot-field.is-gone { transition: opacity 1ms linear; }
+}
+
+/* ── Build the mark (build-mark.js): the logo's ten pieces, put back together on the dot grid ── */
+.build { border: 1px solid var(--line); background: var(--void); }
+.build-bar {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px;
+  padding: 10px 14px;
+  color: var(--chrome-3);
+  border-bottom: 1px solid var(--line);
+}
+.build-bar b { font-weight: 400; color: var(--chrome); font-variant-numeric: tabular-nums; }
+.build-again { margin-left: auto; }
+.build-board {
+  position: relative; overflow: hidden;
+  touch-action: pan-y;
+  background-image:                                      /* the floor's dot grid, as canvas.css .floor-grid */
+    radial-gradient(circle, rgba(230, 233, 237, .11) 1px, transparent 1.3px),
+    radial-gradient(circle, rgba(230, 233, 237, .24) 1.2px, transparent 1.7px);
+  background-size: 24px 24px, 120px 120px;
+}
+.build-ghost, .build-final, .build-word { position: absolute; left: 0; top: 0; pointer-events: none; }
+.build-ghost { fill: var(--chrome); opacity: .12; transition: opacity var(--dur-2) linear; }
+.build-final { fill: var(--chrome); }
+.build-word { color: var(--chrome); line-height: 0; }
+.build-word svg { display: block; }
+.build-piece {
+  position: absolute; left: 0; top: 0;
+  color: var(--chrome-2);
+  touch-action: none; cursor: grab;
+  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+}
+.build-piece svg { display: block; width: 100%; height: 100%; fill: currentColor; }
+.build-piece::after { content: ""; position: absolute; inset: min(0px, calc((100% - 44px) / 2)); }   /* 44 px to grab */
+.build-piece.is-held { color: var(--chrome); cursor: grabbing; }
+.build-piece.is-placed { color: var(--chrome); cursor: default; }
+.build.is-built .build-ghost, .build.is-built .build-piece { opacity: 0; }
+.build.is-built .build-piece { transition: opacity 160ms linear; }
+
+/* ── Blueprint, site-wide (blueprint.js): a reward for all nine blocks. The page's measurements over the page: rulers,
+   dimension lines, insets. Labels carry a void halo so they read over anything. ── */
+.blueprint, .blueprint.scan { position: fixed; inset: 0; z-index: 60; pointer-events: none; overflow: hidden; }
+.blueprint[hidden] { display: none; }
+.blueprint > svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.blueprint line { stroke: var(--chrome-3); stroke-width: 1; shape-rendering: crispEdges; }
+.blueprint .ruler { stroke: var(--line-strong); }
+.blueprint text { fill: var(--chrome); font: 11px/1 var(--font-hud); letter-spacing: .08em; paint-order: stroke; stroke: var(--void); stroke-width: 3px; stroke-linejoin: round; }
+.blueprint.is-drawing > svg { animation: bp-wipe 760ms var(--ease-in-out) both; }   /* drawn in behind the scan band */
+@keyframes bp-wipe { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }

@@ -1,0 +1,801 @@
+{
+  "version": 3,
+  "note": "Studio Concepts are invented, self-initiated examples of Membership work. Not client work. Covers use optional media: multi-item media[] is manual-only (arrows/dots), while a single src/poster is one still or muted looping video; empty media keeps flat grey. An .svg src (cover media or frame) is concept art: canvas.js inlines it so it uses the site fonts; the files are written by scripts/build-concept-art.py. Legacy poster/src fields still work as single-frame fallbacks. date is the honest When for every concept (\"Studio concept \u00b7 2026\"; meta rows show only the year). There is no location: concepts have no client site, so no Where (JC, 2026-10-02). layoutMotif drives a distinct fullscreen folio layout per deliverable type. coverW/coverH vary the floor silhouette (24px grid multiples). layout.grid (24) is the floor unit; cover x/y/coverW/coverH and world size are multiples of it. Cover x/y/coverW/coverH/expand and world come from scripts/layout-masonry.py (equal-width masonry). layout.start is the concept centred at 100% when the floor first loads. layout.caption is the caption strip under each cover on the floor (world px; coverH is the art alone). hidden: true keeps a concept in the file but off every page (floor, Grid, List, Index, Membership list); layout-masonry.py and sync-index.py skip it too. moves: the three studio moves (Designed / Taught / Stayed on) shown on the item page. Portfolio items show deliverables only: no cadence, chunks, plan tier or pricing (JC, 2026-10-04).",
+  "world": {
+    "w": 2016,
+    "h": 1560
+  },
+  "kinds": {
+    "systems": "Systems",
+    "collateral": "Collateral",
+    "sites": "Sites",
+    "products": "Products",
+    "spaces": "Spaces"
+  },
+  "concepts": [
+    {
+      "id": "orbit",
+      "concept": "ORBIT",
+      "label": "P-00 / ORBIT",
+      "kind": "products",
+      "layoutMotif": "product",
+      "tag": "CONCEPT",
+      "member": "What comes after the phone",
+      "blurb": "A speculative system of purpose-built devices for what comes after the phone: glasses, a ring, controllers, a keyboard and a modular belt.",
+      "description": "A speculative system of purpose-built devices for what comes after the phone, carried on HALO, a modular belt whose carousel turns round you.",
+      "lede": "The smartphone made computing portable. ORBIT makes it adaptable.",
+      "date": "Concept \u00b7 2026",
+      "workType": "Industrial design \u00b7 3D \u00b7 Product line",
+      "x": 240,
+      "y": 240,
+      "coverW": 720,
+      "coverH": 960,
+      "expand": "right",
+      "poster": "assets/concepts/belt/cover.jpg",
+      "src": "assets/concepts/belt/cover.jpg",
+      "frames": [
+        {
+          "id": "belt",
+          "label": "P-00 / HALO",
+          "kind": "render",
+          "w": 1200,
+          "h": 800,
+          "poster": "assets/concepts/belt/frame-belt.jpg",
+          "src": "assets/concepts/belt/frame-belt.jpg",
+          "note": "HALO with every module docked."
+        },
+        {
+          "id": "drone",
+          "label": "P-01 / WISP",
+          "kind": "render",
+          "w": 1200,
+          "h": 800,
+          "poster": "assets/concepts/belt/frame-drone.jpg",
+          "src": "assets/concepts/belt/frame-drone.jpg",
+          "note": "WISP, awake."
+        },
+        {
+          "id": "remotes",
+          "label": "P-02 / DEX",
+          "kind": "render",
+          "w": 1200,
+          "h": 800,
+          "poster": "assets/concepts/belt/frame-remotes.jpg",
+          "src": "assets/concepts/belt/frame-remotes.jpg",
+          "note": "The two halves of DEX."
+        },
+        {
+          "id": "glasses",
+          "label": "P-04 / LUMEN",
+          "kind": "render",
+          "w": 1200,
+          "h": 800,
+          "poster": "assets/concepts/belt/frame-glasses.jpg",
+          "src": "assets/concepts/belt/frame-glasses.jpg",
+          "note": "LUMEN."
+        }
+      ],
+      "page": "work/orbit/",
+      "openPage": true,
+      "model3d": "assets/concepts/belt/belt.glb",
+      "coverFact": "A concept for 2035",
+      "coverKind": "Personal computing"
+    },
+    {
+      "id": "etherea",
+      "concept": "Etherea Loft",
+      "label": "S-01 / ETHEREA LOFT",
+      "kind": "spaces",
+      "layoutMotif": "product",
+      "tag": "BUILT",
+      "member": "A photo studio in downtown Los Angeles",
+      "blurb": "The first of three photo studios I designed in 3D and built in downtown Los Angeles. A Peerspace top 10 production space in Los Angeles, 2023.",
+      "description": "A photo studio I designed in 3D and built in downtown Los Angeles. Turn it, light it, and see the shoots it hosted.",
+      "date": "Built \u00b7 2021",
+      "workType": "Set and interior design \u00b7 3D",
+      "coverW": 720,
+      "coverH": 960,
+      "poster": "assets/concepts/etherea-cover.jpg?v=20261019-gold",
+      "src": "assets/concepts/etherea-cover.jpg?v=20261019-gold",
+      "frames": [],
+      "page": "work/719-studios/3d/",
+      "stageEmbed": "work/719-studios/3d/?embed",
+      "embed3d": "work/719-studios/3d/?cover",
+      "coverFact": "Built in 2021",
+      "coverKind": "Photo studio",
+      "x": 1056,
+      "y": 240,
+      "expand": "left"
+    },
+    {
+      "id": "sc-01",
+      "concept": "Tallyworks",
+      "label": "SC-01 / TALLYWORKS",
+      "kind": "systems",
+      "layoutMotif": "swatch-grid",
+      "tag": "STUDIO CONCEPT",
+      "member": "Series-A ops platform for field-service finance teams",
+      "blurb": "Three product squads, one app, and five different greys. They asked for one system before hiring two more engineers. Now every squad and their AI coding tools build from the same components, and new screens come out on-system.",
+      "asked": "Our UI drifted across three squads and Cursor keeps inventing new greys. We need one system before we hire.",
+      "shipped": [
+        "The reconciliation dashboard, rebuilt on the system",
+        "Core components with every state drawn",
+        "Table and filter patterns for dense data",
+        "One set of tokens in Figma and in code",
+        "A DESIGN.md their AI tools read first"
+      ],
+      "x": 1056,
+      "y": 240,
+      "coverW": 720,
+      "coverH": 480,
+      "expand": "right",
+      "poster": "",
+      "src": "",
+      "frames": [
+        {
+          "id": "page",
+          "label": "SC-01 / PAGE",
+          "kind": "dashboard",
+          "w": 640,
+          "h": 400,
+          "poster": "assets/concepts/sc-01/page.jpg",
+          "src": "assets/concepts/sc-01/page.jpg",
+          "note": "The reconciliation dashboard rebuilt on the system, so the next page is assembly, not design."
+        },
+        {
+          "id": "patterns",
+          "label": "SC-01 / PATTERNS",
+          "kind": "table",
+          "w": 640,
+          "h": 400,
+          "poster": "assets/concepts/sc-01/patterns.jpg",
+          "src": "assets/concepts/sc-01/patterns.jpg",
+          "note": "The data table the whole product lives in: sortable columns, row states, bulk actions, and a filter bar."
+        },
+        {
+          "id": "components",
+          "label": "SC-01 / COMPONENTS",
+          "kind": "components",
+          "w": 420,
+          "h": 280,
+          "poster": "assets/concepts/sc-01/components.jpg",
+          "src": "assets/concepts/sc-01/components.jpg",
+          "note": "Buttons, fields, selects, toggles, and badges with every state drawn: default, hover, focus, disabled, error."
+        },
+        {
+          "id": "type",
+          "label": "SC-01 / TYPE",
+          "kind": "type",
+          "w": 420,
+          "h": 280,
+          "poster": "assets/concepts/sc-01/type.jpg",
+          "src": "assets/concepts/sc-01/type.jpg",
+          "note": "A type scale tuned for dense financial tables, with a 4 px spacing scale."
+        },
+        {
+          "id": "tokens",
+          "label": "SC-01 / TOKENS",
+          "kind": "tokens",
+          "w": 420,
+          "h": 280,
+          "poster": "assets/concepts/sc-01/tokens.jpg",
+          "src": "assets/concepts/sc-01/tokens.jpg",
+          "note": "Five drifted greys became one scale, each named for what it does."
+        }
+      ],
+      "description": "One system for three product squads and the AI tools that write their UI.",
+      "date": "Studio concept \u00b7 2026",
+      "workType": "Design system",
+      "media": [
+        {
+          "type": "image",
+          "src": "assets/concepts/sc-01/page.jpg"
+        },
+        {
+          "type": "image",
+          "src": "assets/concepts/sc-01/patterns.jpg"
+        },
+        {
+          "type": "image",
+          "src": "assets/concepts/sc-01/components.jpg"
+        },
+        {
+          "type": "image",
+          "src": "assets/concepts/sc-01/type.jpg"
+        },
+        {
+          "type": "image",
+          "src": "assets/concepts/sc-01/tokens.jpg"
+        }
+      ],
+      "moves": [
+        {
+          "k": "Designed",
+          "v": "One look for three squads: a calm grey scale, a type scale built for dense tables, and the components every screen is made of."
+        },
+        {
+          "k": "Taught",
+          "v": "Their AI coding tools read the system before writing UI, so new screens come out on-system instead of inventing greys."
+        },
+        {
+          "k": "Stayed on",
+          "v": "New components and anything off the map get a designer\u2019s eye, and a monthly check catches drift before it spreads."
+        }
+      ],
+      "hidden": true
+    },
+    {
+      "id": "sc-02",
+      "concept": "Oriel",
+      "label": "SC-02 / ORIEL",
+      "kind": "sites",
+      "layoutMotif": "browser-stack",
+      "tag": "STUDIO CONCEPT",
+      "member": "AI research assistant for equity analysts, six weeks from launch",
+      "blurb": "A launch in six weeks and no front-end hire. They asked for a marketing site the team could keep shipping pages on by themselves. Shipped as an AI-built site system: home, pricing, changelog, a mobile pass, and a section kit, so new pages come together in a day instead of a sprint.",
+      "asked": "We launch in six weeks. We need a site our team can keep adding pages to without a front-end hire.",
+      "shipped": [
+        "Launch home page",
+        "Pricing page with plan logic",
+        "Changelog template",
+        "Mobile pass on every page",
+        "Section kit for new pages"
+      ],
+      "x": 1872,
+      "y": 240,
+      "coverW": 720,
+      "coverH": 456,
+      "expand": "left",
+      "poster": "",
+      "src": "",
+      "frames": [
+        {
+          "id": "home",
+          "label": "SC-02 / HOME",
+          "kind": "page",
+          "w": 640,
+          "h": 400,
+          "poster": "",
+          "src": "assets/concepts/sc-02/home.svg",
+          "note": "Launch home: one promise, one proof, one action. Built directly in code with AI in the loop."
+        },
+        {
+          "id": "mobile",
+          "label": "SC-02 / MOBILE",
+          "kind": "mobile",
+          "w": 200,
+          "h": 400,
+          "poster": "",
+          "src": "assets/concepts/sc-02/mobile.svg",
+          "note": "Every page gets a mobile pass in the same request, not a follow-up ticket."
+        },
+        {
+          "id": "pricing",
+          "label": "SC-02 / PRICING",
+          "kind": "pricing",
+          "w": 640,
+          "h": 400,
+          "poster": "",
+          "src": "assets/concepts/sc-02/pricing.svg",
+          "note": "Three tiers, a comparison table, and an FAQ block that reuses the section kit."
+        },
+        {
+          "id": "changelog",
+          "label": "SC-02 / CHANGELOG",
+          "kind": "changelog",
+          "w": 420,
+          "h": 280,
+          "poster": "",
+          "src": "assets/concepts/sc-02/changelog.svg",
+          "note": "A changelog template the product team fills in weekly. No designer required after launch."
+        },
+        {
+          "id": "kit",
+          "label": "SC-02 / SECTION KIT",
+          "kind": "kit",
+          "w": 640,
+          "h": 280,
+          "poster": "",
+          "src": "assets/concepts/sc-02/kit.svg",
+          "note": "Hero, logo row, feature grid, quote, CTA band. Each one is a documented block the team (and their AI tools) can compose."
+        }
+      ],
+      "description": "A launch site the team can keep shipping pages on \u2014 home, pricing, changelog, mobile, section kit.",
+      "date": "Studio concept \u00b7 2026",
+      "workType": "AI marketing site",
+      "media": [
+        {
+          "type": "image",
+          "src": "assets/concepts/sc-02/cover.svg"
+        }
+      ],
+      "moves": [
+        {
+          "k": "Designed",
+          "v": "A launch site with one promise, one proof and one action, with pricing and a changelog in the same voice."
+        },
+        {
+          "k": "Taught",
+          "v": "The section kit is documented so their AI tools can put a new page together from approved blocks in a day."
+        },
+        {
+          "k": "Stayed on",
+          "v": "The launch story, new campaigns and anything off-kit come back to the designer."
+        }
+      ],
+      "hidden": true
+    },
+    {
+      "id": "sc-03",
+      "concept": "Kestrel Grid",
+      "label": "SC-03 / KESTREL GRID",
+      "kind": "collateral",
+      "layoutMotif": "deck-spread",
+      "tag": "STUDIO CONCEPT",
+      "member": "Grid-scale storage startup raising a Series A",
+      "blurb": "Partner meetings in three weeks and a deck made of screenshots. The member asked for a raise kit that stays on-brand when the numbers change. Shipped: a narrative deck with charts rebuilt as editable components, a one-pager, data-room templates, and an announcement set for the day the round closes.",
+      "asked": "Partner meetings start in three weeks and our deck is forty slides of screenshots.",
+      "shipped": [
+        "Narrative investor deck",
+        "Editable chart components",
+        "One-pager",
+        "Data-room templates",
+        "Announcement social set"
+      ],
+      "x": 1872,
+      "y": 240,
+      "coverW": 720,
+      "coverH": 408,
+      "expand": "left",
+      "poster": "assets/media/grey-still-03.jpg",
+      "src": "",
+      "frames": [
+        {
+          "id": "cover",
+          "label": "SC-03 / DECK \u00b7 COVER",
+          "kind": "deck-cover",
+          "w": 560,
+          "h": 315,
+          "poster": "",
+          "src": "",
+          "note": "The cover and narrative spine: problem, grid, product, traction, raise."
+        },
+        {
+          "id": "traction",
+          "label": "SC-03 / DECK \u00b7 TRACTION",
+          "kind": "deck-chart",
+          "w": 560,
+          "h": 315,
+          "poster": "",
+          "src": "",
+          "note": "Charts rebuilt as components, so updating a number is an edit, not a redesign."
+        },
+        {
+          "id": "onepager",
+          "label": "SC-03 / ONE-PAGER",
+          "kind": "onepager",
+          "w": 300,
+          "h": 400,
+          "poster": "",
+          "src": "",
+          "note": "One page for the partner who won't open the deck. Same system, same numbers."
+        },
+        {
+          "id": "dataroom",
+          "label": "SC-03 / DATA ROOM",
+          "kind": "doc-index",
+          "w": 560,
+          "h": 300,
+          "poster": "",
+          "src": "",
+          "note": "Templates for the memo, the model summary, and the folder index diligence teams actually read."
+        },
+        {
+          "id": "social",
+          "label": "SC-03 / SOCIAL SET",
+          "kind": "social",
+          "w": 560,
+          "h": 300,
+          "poster": "",
+          "src": "",
+          "note": "Announcement set in 1:1, 4:5, and 16:9, ready for the day the round closes."
+        }
+      ],
+      "description": "A raise kit that stays on-brand when the numbers change \u2014 deck, one-pager, data room, announcement set.",
+      "date": "Studio concept \u00b7 2026",
+      "workType": "Raise kit",
+      "hidden": true
+    },
+    {
+      "id": "sc-04",
+      "concept": "Halyard",
+      "label": "SC-04 / HALYARD",
+      "kind": "systems",
+      "layoutMotif": "doc-rail",
+      "tag": "STUDIO CONCEPT",
+      "member": "Developer platform whose docs and UI are half-drafted by AI",
+      "blurb": "Half their UI and docs are now drafted by Claude and Cursor, and all of it looks almost right. The member asked for a brand the tools could follow. Shipped: an agent-readable DESIGN.md, tokens.json, do/don't rules with examples, and a prompt kit that lives at the repo root and gets read before any UI is generated.",
+      "asked": "Our AI tools draft half our UI and docs now. Everything looks almost on-brand, which is worse than off-brand.",
+      "shipped": [
+        "DESIGN.md at repo root",
+        "tokens.json",
+        "Do / don't rules with examples",
+        "Prompt kit for UI + copy"
+      ],
+      "x": 1872,
+      "y": 864,
+      "coverW": 720,
+      "coverH": 984,
+      "expand": "left",
+      "poster": "assets/media/grey-still-v.jpg",
+      "src": "",
+      "frames": [
+        {
+          "id": "design-md",
+          "label": "SC-04 / DESIGN.MD",
+          "kind": "doc",
+          "w": 420,
+          "h": 520,
+          "poster": "",
+          "src": "",
+          "note": "The brand as plain language and tokens, written to be read by people and by AI tools."
+        },
+        {
+          "id": "rules",
+          "label": "SC-04 / RULES",
+          "kind": "rules",
+          "w": 420,
+          "h": 250,
+          "poster": "",
+          "src": "",
+          "note": "Do / don't pairs with rendered examples, because a model follows an example faster than a paragraph."
+        },
+        {
+          "id": "examples",
+          "label": "SC-04 / PROMPT KIT",
+          "kind": "prompt",
+          "w": 420,
+          "h": 250,
+          "poster": "",
+          "src": "",
+          "note": "Prompts for common requests (new page, empty state, release note) that point at the spec first."
+        },
+        {
+          "id": "tokens",
+          "label": "SC-04 / TOKENS.JSON",
+          "kind": "json",
+          "w": 420,
+          "h": 250,
+          "poster": "",
+          "src": "",
+          "note": "The same tokens as the Figma library, in a file the build and the agents both import."
+        }
+      ],
+      "description": "Brand the agents can follow \u2014 DESIGN.md, tokens.json, do/don't rules, and a prompt kit at the repo root.",
+      "date": "Studio concept \u00b7 2026",
+      "workType": "Agent DESIGN.md",
+      "media": [
+        {
+          "type": "video",
+          "src": "assets/media/grey-pulse-v.mp4",
+          "poster": "assets/media/grey-still-v.jpg"
+        },
+        {
+          "type": "image",
+          "src": "assets/media/grey-still-v.jpg"
+        }
+      ],
+      "hidden": true
+    },
+    {
+      "id": "sc-05",
+      "concept": "Meridian",
+      "label": "SC-05 / MERIDIAN",
+      "kind": "collateral",
+      "layoutMotif": "poster-hero",
+      "tag": "STUDIO CONCEPT",
+      "member": "Climate-tech conference needing a room that reads from forty feet",
+      "blurb": "A keynote hall and a hallway of breakouts, and the last poster still looked like a slide. The member asked for print that holds a wall. Shipped: a hero poster system, companion flyers, a wayfinding strip, and production files that print shops open without a call.",
+      "asked": "The room has to read from forty feet. Our last poster looked like a stretched slide.",
+      "shipped": [
+        "Hero poster (24\u00d736 + 36\u00d748)",
+        "Companion flyer set",
+        "Wayfinding strip",
+        "Print-ready production pack"
+      ],
+      "x": 1056,
+      "y": 912,
+      "coverW": 720,
+      "coverH": 1200,
+      "expand": "right",
+      "poster": "assets/media/grey-still-v.jpg",
+      "src": "assets/media/grey-pulse-v.mp4",
+      "frames": [
+        {
+          "id": "hero",
+          "label": "SC-05 / HERO POSTER",
+          "kind": "poster",
+          "w": 300,
+          "h": 450,
+          "poster": "",
+          "src": "",
+          "note": "One tall hero. Type locks at distance; the mark and date sit quiet in the margin."
+        },
+        {
+          "id": "flyer",
+          "label": "SC-05 / FLYER",
+          "kind": "flyer",
+          "w": 280,
+          "h": 400,
+          "poster": "",
+          "src": "",
+          "note": "Hand-out companion that keeps the same spine as the wall piece."
+        },
+        {
+          "id": "wayfind",
+          "label": "SC-05 / WAYFINDING",
+          "kind": "strip",
+          "w": 640,
+          "h": 160,
+          "poster": "",
+          "src": "",
+          "note": "A horizontal strip for doors and corridors \u2014 same system, different aspect."
+        },
+        {
+          "id": "production",
+          "label": "SC-05 / PRODUCTION",
+          "kind": "file",
+          "w": 420,
+          "h": 280,
+          "poster": "",
+          "src": "",
+          "note": "Bleed, crop, and ink notes a print shop can open without Slack."
+        }
+      ],
+      "description": "Print that holds a wall \u2014 hero poster, flyers, wayfinding, and a production pack print shops open clean.",
+      "date": "Studio concept \u00b7 2026",
+      "workType": "Poster / print",
+      "hidden": true
+    },
+    {
+      "id": "sc-06",
+      "concept": "Cobalt Signal",
+      "label": "SC-06 / COBALT SIGNAL",
+      "kind": "collateral",
+      "layoutMotif": "deck-stack",
+      "tag": "STUDIO CONCEPT",
+      "member": "B2B vertical SaaS pitching a first enterprise wave",
+      "blurb": "A twelve-slide pitch that had grown to thirty-eight. The member asked for a deck that sells in a room, not a Google Drive. Shipped: a narrative stack with locked type, editable chart slides, a leave-behind one-pager, and speaker notes that stay out of the art.",
+      "asked": "Our pitch is thirty-eight slides. We need twelve that sell in the room.",
+      "shipped": [
+        "12-slide narrative deck",
+        "Editable chart slides",
+        "Leave-behind one-pager",
+        "Speaker-note companion"
+      ],
+      "x": 240,
+      "y": 936,
+      "coverW": 720,
+      "coverH": 408,
+      "expand": "right",
+      "poster": "assets/media/grey-still-01.jpg",
+      "src": "",
+      "frames": [
+        {
+          "id": "spine",
+          "label": "SC-06 / SPINE",
+          "kind": "deck-cover",
+          "w": 560,
+          "h": 315,
+          "poster": "",
+          "src": "",
+          "note": "Problem \u2192 wedge \u2192 product \u2192 proof \u2192 ask. Twelve slides, one spine."
+        },
+        {
+          "id": "charts",
+          "label": "SC-06 / CHARTS",
+          "kind": "deck-chart",
+          "w": 560,
+          "h": 315,
+          "poster": "",
+          "src": "",
+          "note": "Traction and pricing as components so the next quarter is an edit."
+        },
+        {
+          "id": "leavebehind",
+          "label": "SC-06 / LEAVE-BEHIND",
+          "kind": "onepager",
+          "w": 300,
+          "h": 400,
+          "poster": "",
+          "src": "",
+          "note": "One page for the person who won't open the deck after the meeting."
+        },
+        {
+          "id": "notes",
+          "label": "SC-06 / SPEAKER NOTES",
+          "kind": "doc",
+          "w": 420,
+          "h": 280,
+          "poster": "",
+          "src": "",
+          "note": "Talk track lives beside the art \u2014 never inside it."
+        }
+      ],
+      "description": "Twelve slides that sell in the room \u2014 narrative stack, charts as components, leave-behind, speaker notes.",
+      "date": "Studio concept \u00b7 2026",
+      "workType": "Pitch deck",
+      "hidden": true
+    },
+    {
+      "id": "sc-07",
+      "concept": "Northglass",
+      "label": "SC-07 / NORTHGLASS",
+      "kind": "collateral",
+      "layoutMotif": "social-mosaic",
+      "tag": "STUDIO CONCEPT",
+      "member": "Consumer fintech launching a savings product on social first",
+      "blurb": "Launch week on three platforms and a brand that only existed as a logo. The member asked for a social kit that stays coherent when the intern posts. Shipped: a mosaic system for 1:1, 4:5, and 16:9, story templates, and a caption voice sheet.",
+      "asked": "We launch on social in two weeks and our brand is a logo file.",
+      "shipped": [
+        "1:1 / 4:5 / 16:9 mosaic system",
+        "Story templates",
+        "Caption voice sheet",
+        "Launch week calendar pack"
+      ],
+      "x": 240,
+      "y": 1560,
+      "coverW": 720,
+      "coverH": 720,
+      "expand": "right",
+      "poster": "assets/media/grey-still-02.jpg",
+      "src": "",
+      "frames": [
+        {
+          "id": "square",
+          "label": "SC-07 / 1:1",
+          "kind": "social",
+          "w": 400,
+          "h": 400,
+          "poster": "",
+          "src": "",
+          "note": "Feed square: product promise + one proof mark."
+        },
+        {
+          "id": "portrait",
+          "label": "SC-07 / 4:5",
+          "kind": "social",
+          "w": 360,
+          "h": 450,
+          "poster": "",
+          "src": "",
+          "note": "Portrait crop for the platforms that still reward height."
+        },
+        {
+          "id": "wide",
+          "label": "SC-07 / 16:9",
+          "kind": "social",
+          "w": 560,
+          "h": 315,
+          "poster": "",
+          "src": "",
+          "note": "Wide for headers, X, and the rare LinkedIn that isn't a square."
+        },
+        {
+          "id": "stories",
+          "label": "SC-07 / STORIES",
+          "kind": "story",
+          "w": 240,
+          "h": 426,
+          "poster": "",
+          "src": "",
+          "note": "Story frames with safe zones the intern can't break."
+        },
+        {
+          "id": "voice",
+          "label": "SC-07 / VOICE",
+          "kind": "doc",
+          "w": 420,
+          "h": 280,
+          "poster": "",
+          "src": "",
+          "note": "Caption voice: do / don't, length, and the three hooks that actually convert."
+        }
+      ],
+      "description": "A social kit that stays coherent when the intern posts \u2014 mosaic system, stories, caption voice.",
+      "date": "Studio concept \u00b7 2026",
+      "workType": "Social kit",
+      "hidden": true
+    },
+    {
+      "id": "sc-08",
+      "concept": "Lumen Atlas",
+      "label": "SC-08 / LUMEN ATLAS",
+      "kind": "systems",
+      "layoutMotif": "kit-shelf",
+      "tag": "STUDIO CONCEPT",
+      "member": "Internal tools team shipping a shared React kit across five products",
+      "blurb": "Five products, four button styles, and a Storybook nobody opens. The member asked for a UI kit that designers and agents both assemble from. Shipped: a shelf of components with states, density modes, and a usage map that points back at tokens.",
+      "asked": "We have four button styles and a Storybook nobody trusts. Give us one kit.",
+      "shipped": [
+        "Component shelf with states",
+        "Density modes (compact / default)",
+        "Usage map \u2192 tokens",
+        "Figma + code parity notes"
+      ],
+      "x": 1872,
+      "y": 2064,
+      "coverW": 720,
+      "coverH": 312,
+      "expand": "left",
+      "poster": "",
+      "src": "",
+      "frames": [
+        {
+          "id": "shelf",
+          "label": "SC-08 / SHELF",
+          "kind": "components",
+          "w": 640,
+          "h": 280,
+          "poster": "",
+          "src": "",
+          "note": "Buttons, fields, selects, chips \u2014 every state on one shelf."
+        },
+        {
+          "id": "density",
+          "label": "SC-08 / DENSITY",
+          "kind": "components",
+          "w": 640,
+          "h": 280,
+          "poster": "",
+          "src": "",
+          "note": "Compact vs default, proven on the densest internal tool first."
+        },
+        {
+          "id": "map",
+          "label": "SC-08 / USAGE MAP",
+          "kind": "doc",
+          "w": 560,
+          "h": 320,
+          "poster": "",
+          "src": "",
+          "note": "Which component, when \u2014 and which token it borrows."
+        },
+        {
+          "id": "parity",
+          "label": "SC-08 / PARITY",
+          "kind": "kit",
+          "w": 560,
+          "h": 300,
+          "poster": "",
+          "src": "",
+          "note": "Figma \u2194 code notes so the kit doesn't fork in a month."
+        }
+      ],
+      "description": "A UI kit designers and agents assemble from \u2014 component shelf, density modes, usage map, parity notes.",
+      "date": "Studio concept \u00b7 2026",
+      "workType": "UI kit",
+      "hidden": true
+    }
+  ],
+  "layout": {
+    "cover": {
+      "w": 960,
+      "h": 600
+    },
+    "cell": {
+      "w": 384,
+      "h": 288
+    },
+    "gutter": 24,
+    "cols": 3,
+    "head": 0,
+    "titleCard": {
+      "w": 960,
+      "h": 600
+    },
+    "grid": 24,
+    "start": "orbit",
+    "caption": 120
+  }
+}

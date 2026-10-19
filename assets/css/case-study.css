@@ -1,0 +1,172 @@
+/* Case-study page (work/<id>/), built by scripts/build-case-study.py from assets/data/work/<id>.json.
+   Grey figures use the --ph-* placeholder tones; a real image replaces one at the same aspect ratio.
+   [Text in brackets] is an open slot: dashed underline, removed once filled. */
+
+.cs { --cs-gap: clamp(56px, 8vw, 112px); --cs-cols: minmax(0, 4fr) minmax(0, 8fr); }
+.cs a { -webkit-tap-highlight-color: transparent; }
+
+.slot {
+  color: var(--chrome-3);
+  text-decoration: underline dashed;
+  text-decoration-color: var(--line-strong);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  overflow-wrap: anywhere;
+}
+.cs-note { max-width: 46ch; font-size: 12px; line-height: 1.5; color: var(--chrome-3); }
+.cs-note::before { content: "Mock note · "; color: var(--chrome-2); }
+.cs-body { margin-top: var(--s-7); }
+
+/* Draft strip: shown only while the data file says draft */
+.cs-draft {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;
+  padding: 12px var(--gutter);
+  border-bottom: 1px solid var(--line);
+  color: var(--chrome-3);
+  line-height: 1.4;
+}
+
+/* Header */
+.cs-head { padding-top: clamp(40px, 7vw, 88px); padding-bottom: var(--s-8); }
+.cs-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.cs-title {
+  margin-top: var(--s-5);
+  font-size: var(--t-display);
+  font-stretch: var(--wdth-display);
+  font-weight: 540;
+  line-height: .98;
+  letter-spacing: var(--track-display);
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+.cs-desc { margin-top: var(--s-5); }
+.cs-facts {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-5) var(--s-4);
+  margin-top: var(--s-7); padding-top: var(--s-5);
+  border-top: 1px solid var(--line);
+}
+.cs-facts div { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.cs-facts dt { color: var(--chrome-3); }
+.cs-facts dd { font-size: 15px; line-height: 1.35; color: var(--chrome-2); overflow-wrap: anywhere; }
+@media (min-width: 760px) { .cs-facts { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); } }
+
+/* Blocks */
+.cs-block { padding-block: var(--cs-gap); border-top: 1px solid var(--line); }
+.cs-block--hero { padding-top: 0; border-top: 0; }
+.cs-split { display: grid; gap: var(--s-6); }
+.cs-side { display: grid; gap: var(--s-4); align-content: start; min-width: 0; }
+.cs-kicker { color: var(--chrome-3); }
+@media (min-width: 900px) { .cs-split { grid-template-columns: var(--cs-cols); gap: var(--s-8); } }
+
+.cs-quote {
+  font-size: clamp(1.25rem, 1.05rem + 1vw, 1.875rem);
+  font-stretch: 108%; font-weight: 500; line-height: 1.25; letter-spacing: -.01em;
+  text-wrap: balance;
+}
+.cs-by { margin-top: var(--s-4); color: var(--chrome-3); }
+.cs-context { margin-top: var(--s-6); max-width: 52ch; color: var(--chrome-2); line-height: 1.55; }
+
+/* Shipped */
+.cs-rows { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); counter-reset: row; }
+.cs-row {
+  display: grid; grid-template-columns: 3ch minmax(0, 1fr); column-gap: var(--s-4); row-gap: 6px;
+  padding: 18px 0; border-bottom: 1px solid var(--line); counter-increment: row;
+}
+.cs-row::before { content: counter(row, decimal-leading-zero); font: var(--t-hud)/1.7 var(--font-hud); letter-spacing: var(--track-hud); color: var(--chrome-3); }
+.cs-row-what { font-size: 17px; font-weight: 540; color: var(--chrome); }
+.cs-row-detail { grid-column: 2; font-size: 15px; line-height: 1.45; color: var(--chrome-2); }
+@media (min-width: 760px) {
+  .cs-row { grid-template-columns: 3ch minmax(0, 1fr) minmax(0, 1.6fr); align-items: baseline; }
+  .cs-row-detail { grid-column: auto; }
+}
+
+/* Moves */
+.cs-moves { display: grid; gap: var(--s-6); margin-top: var(--s-7); }
+.cs-move { display: grid; gap: 12px; align-content: start; padding-top: var(--s-4); border-top: 1px solid var(--line-strong); }
+.cs-move p { font-size: 15px; line-height: 1.55; color: var(--chrome-2); }
+@media (min-width: 900px) { .cs-moves { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-5); } }
+
+/* Figures: flat grey at the true aspect ratio */
+.fig { display: grid; gap: 12px; align-content: start; min-width: 0; }
+.fig-frame { position: relative; overflow: hidden; background: var(--ph-1); border: 1px solid var(--line); border-radius: var(--r-chip); }
+.fig--phone .fig-frame { border-radius: 22px; border-color: var(--line-strong); }
+.fig-chrome { display: flex; align-items: center; gap: 5px; height: 22px; padding: 0 10px; background: var(--void-3); border-bottom: 1px solid var(--line); }
+.fig-chrome i { width: 6px; height: 6px; border-radius: 50%; background: var(--ph-3); }
+.fig-view { position: relative; aspect-ratio: var(--ar); }
+.fig-view img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.fig-ph { position: absolute; inset: 0; display: grid; place-content: center; gap: 10px; padding: 14px; text-align: center; color: var(--chrome-3); }
+.fig-no { color: var(--chrome-2); }
+.fig-what {
+  max-width: 34ch; margin-inline: auto; font-size: 12px; line-height: 1.4;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; overflow: hidden;
+}
+.fig-tag { position: absolute; z-index: 1; left: 8px; top: 8px; background: var(--void); }
+.fig-cap { display: flex; gap: 10px; max-width: 52ch; font-size: 13px; line-height: 1.45; color: var(--chrome-2); }
+.fig-cap .hud { flex: none; padding-top: 2px; color: var(--chrome-3); }
+.lay-cap { margin-top: var(--s-4); max-width: 52ch; font-size: 13px; line-height: 1.45; color: var(--chrome-2); }
+
+/* Figure layouts */
+.lay { display: grid; gap: var(--s-6) var(--s-5); }
+.lay-wrap + .lay-wrap { margin-top: var(--s-8); }
+.lay--pair { align-items: end; }
+.lay--pair .fig--phone { max-width: 240px; }
+@media (min-width: 760px) {
+  .lay--pair { grid-template-columns: minmax(0, 2.4fr) minmax(0, 1fr); }
+  .lay--duo { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Triptych: swipeable row on a phone, three columns from 760 px */
+.lay--triptych {
+  grid-auto-flow: column; grid-auto-columns: 72%;
+  overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none;
+  margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter); scroll-padding-inline: var(--gutter);
+}
+.lay--triptych::-webkit-scrollbar { display: none; }
+.lay--triptych > .fig { scroll-snap-align: start; }
+@media (min-width: 760px) {
+  .lay--triptych { grid-auto-flow: row; grid-auto-columns: auto; grid-template-columns: repeat(3, minmax(0, 1fr)); overflow: visible; margin-inline: 0; padding-inline: 0; }
+}
+
+/* Mosaic: one wide view and two supporting views; all three share one ratio so the grid tiles exactly */
+.lay--mosaic { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-4); }
+.lay--mosaic > .fig:first-child { grid-column: 1 / -1; }
+@media (min-width: 760px) {
+  .lay--mosaic { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-5); }
+  .lay--mosaic > .fig:first-child { grid-column: 1 / span 2; grid-row: 1 / span 2; grid-template-rows: minmax(0, 1fr); }
+  .lay--mosaic > .fig:first-child .fig-frame { height: 100%; }
+  .lay--mosaic > .fig:first-child .fig-view { aspect-ratio: auto; height: 100%; }
+}
+
+/* Before / after stays side by side at every width */
+.lay--ba { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-4); }
+@media (min-width: 760px) { .lay--ba { gap: var(--s-5); } }
+.cs-headline {
+  font-size: var(--t-h3); font-stretch: 112%; font-weight: 540; line-height: 1.25; letter-spacing: -.01em;
+  max-width: 40ch; margin-bottom: var(--s-6); text-wrap: balance;
+}
+
+/* Rail: the caption stays in view beside the figures on a wide screen */
+.lay--rail { align-items: start; }
+.rail-figs { display: grid; gap: var(--s-6); min-width: 0; }
+@media (min-width: 900px) {
+  .lay--rail { grid-template-columns: var(--cs-cols); gap: var(--s-8); }
+  .rail-side { position: sticky; top: calc(var(--nav-h) + 24px); }
+}
+.rail-side p { max-width: 36ch; color: var(--chrome-2); line-height: 1.55; }
+
+/* Outcome */
+.cs-stats { display: grid; gap: var(--s-6); margin-top: var(--s-7); }
+.cs-stat { display: grid; gap: 10px; align-content: start; padding-top: var(--s-4); border-top: 1px solid var(--line-strong); }
+.cs-stat-n { font-size: var(--t-h2); font-stretch: var(--wdth-display); font-weight: 540; line-height: 1; letter-spacing: var(--track-display); }
+.cs-stat-label { color: var(--chrome-2); line-height: 1.4; }
+.cs-stat-src { color: var(--chrome-3); }
+@media (min-width: 760px) { .cs-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+/* Credits and the way out */
+.cs-credits { display: grid; margin-top: var(--s-6); border-top: 1px solid var(--line); }
+.cs-credits div { display: grid; grid-template-columns: 10ch minmax(0, 1fr); gap: var(--s-4); padding: 14px 0; border-bottom: 1px solid var(--line); }
+.cs-credits dt { padding-top: 2px; color: var(--chrome-3); }
+.cs-credits dd { font-size: 15px; line-height: 1.4; color: var(--chrome-2); overflow-wrap: anywhere; }
+.cs-permit { margin-top: var(--s-5); font-size: 13px; color: var(--chrome-3); }
+@media (min-width: 760px) { .cs-credits div { grid-template-columns: 16ch minmax(0, 1fr); } }
+.cs-next { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }

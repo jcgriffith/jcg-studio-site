@@ -1,0 +1,31 @@
+/* Footer game (assets/js/footer-game.js): Breakout on the JCG STUDIO logo, edge to edge at the foot of the page.
+   The canvas's height is set by script from its width. Touch scrolling passes through until a game starts. */
+.foot-game {
+  width: 100%;
+  border-top: 1px solid var(--line);
+}
+.foot-game canvas {
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  touch-action: pan-y;
+}
+.foot-game canvas:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: -2px;
+}
+/* The bar over the game (play layer): score, this device's best, bricks and balls left, and Play, which you hold
+   (press.js fuse: the bracket closes while the lamp fills). Mono labels, values in chrome. */
+.game-bar {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 8px 20px;
+  padding: 10px var(--edge);
+  color: var(--chrome-3);
+}
+.game-bar b { font-weight: 400; color: var(--chrome); font-variant-numeric: tabular-nums; }
+.game-bar .game-play { margin-left: auto; position: relative; }
+.game-bar .game-play[aria-disabled="true"] { opacity: .45; }
+/* The payoff's share link sits next to Play (JC, 2026-10-13) */
+.game-bar .game-share { margin-left: auto; }
+.game-bar .game-share[hidden] { display: none; }
+.game-bar .game-share:not([hidden]) + .game-play { margin-left: 8px; }

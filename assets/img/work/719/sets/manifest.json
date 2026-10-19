@@ -1,0 +1,192 @@
+{
+ "stage": [
+  {
+   "src": "stage/m01.webp",
+   "w": 1600,
+   "h": 1068,
+   "source": "719 Studios marketing photos: Empty Studio"
+  },
+  {
+   "src": "stage/m02.webp",
+   "w": 720,
+   "h": 958,
+   "source": "719 Studios marketing photos: Artistic Photography"
+  },
+  {
+   "src": "stage/m03.webp",
+   "w": 1170,
+   "h": 961,
+   "source": "719 Studios marketing photos: Headshots & Portraits"
+  },
+  {
+   "src": "stage/m04.webp",
+   "w": 1600,
+   "h": 1067,
+   "source": "719 Studios marketing photos: Engagement Photography"
+  },
+  {
+   "src": "stage/m05.webp",
+   "w": 1125,
+   "h": 750,
+   "source": "719 Studios marketing photos: Dance Photography"
+  },
+  {
+   "src": "stage/m06.webp",
+   "w": 1170,
+   "h": 1460,
+   "source": "719 Studios marketing photos: Fashion Brands"
+  }
+ ],
+ "pool": [
+  {
+   "src": "pool/m01.webp",
+   "w": 1068,
+   "h": 1600,
+   "source": "719 Studios marketing photos: Empty Studio"
+  },
+  {
+   "src": "pool/m02.webp",
+   "w": 720,
+   "h": 480,
+   "source": "719 Studios marketing photos: Artistic Photography"
+  },
+  {
+   "src": "pool/m03.webp",
+   "w": 1067,
+   "h": 1600,
+   "source": "719 Studios marketing photos: Engagement Photography"
+  },
+  {
+   "src": "pool/m04.webp",
+   "w": 720,
+   "h": 1282,
+   "source": "719 Studios marketing photos: Artistic Photography"
+  },
+  {
+   "src": "pool/m05.webp",
+   "w": 1280,
+   "h": 1600,
+   "source": "719 Studios marketing photos: Fashion Brands"
+  },
+  {
+   "src": "pool/m06.webp",
+   "w": 1170,
+   "h": 1309,
+   "source": "719 Studios marketing photos: Headshots & Portraits"
+  }
+ ],
+ "green-wall": [
+  {
+   "src": "green-wall/m01.webp",
+   "w": 1200,
+   "h": 801,
+   "source": "719 Studios marketing photos: Empty Studio"
+  },
+  {
+   "src": "green-wall/m02.webp",
+   "w": 1170,
+   "h": 1171,
+   "source": "719 Studios marketing photos: Fashion Brands"
+  },
+  {
+   "src": "green-wall/m03.webp",
+   "w": 1280,
+   "h": 1600,
+   "source": "719 Studios marketing photos: Editorial Magazine Photography"
+  },
+  {
+   "src": "green-wall/m04.webp",
+   "w": 1368,
+   "h": 1600,
+   "source": "719 Studios marketing photos: Fashion Brands"
+  },
+  {
+   "src": "green-wall/m05.webp",
+   "w": 1170,
+   "h": 1162,
+   "source": "719 Studios marketing photos: Fashion Brands"
+  },
+  {
+   "src": "green-wall/m06.webp",
+   "w": 1169,
+   "h": 1454,
+   "source": "719 Studios marketing photos: Jewelry Photography"
+  }
+ ],
+ "lounge": [
+  {
+   "src": "lounge/m01.webp",
+   "w": 1600,
+   "h": 1068,
+   "source": "719 Studios marketing photos: Empty Studio"
+  },
+  {
+   "src": "lounge/m02.webp",
+   "w": 1170,
+   "h": 1327,
+   "source": "719 Studios marketing photos: Podcasts and Interviews"
+  },
+  {
+   "src": "lounge/m03.webp",
+   "w": 1170,
+   "h": 1317,
+   "source": "719 Studios marketing photos: Podcasts and Interviews"
+  },
+  {
+   "src": "lounge/m04.webp",
+   "w": 1170,
+   "h": 1331,
+   "source": "719 Studios marketing photos: Podcasts and Interviews"
+  },
+  {
+   "src": "lounge/m05.webp",
+   "w": 1170,
+   "h": 1455,
+   "source": "719 Studios marketing photos: Headshots & Portraits"
+  },
+  {
+   "src": "lounge/m06.webp",
+   "w": 1170,
+   "h": 1000,
+   "source": "719 Studios marketing photos: Fashion Brands"
+  }
+ ],
+ "photo-corner": [
+  {
+   "src": "photo-corner/m01.webp",
+   "w": 1200,
+   "h": 801,
+   "source": "719 Studios marketing photos: Empty Studio"
+  },
+  {
+   "src": "photo-corner/m02.webp",
+   "w": 1068,
+   "h": 1600,
+   "source": "719 Studios marketing photos: Fitness & Yoga Photography"
+  },
+  {
+   "src": "photo-corner/m03.webp",
+   "w": 1170,
+   "h": 1464,
+   "source": "719 Studios marketing photos: Dance Photography"
+  },
+  {
+   "src": "photo-corner/m04.webp",
+   "w": 1200,
+   "h": 1500,
+   "source": "719 Studios marketing photos: Dance Photography"
+  },
+  {
+   "src": "photo-corner/m05.webp",
+   "w": 1200,
+   "h": 1500,
+   "source": "719 Studios marketing photos: Dance Photography"
+  },
+  {
+   "src": "photo-corner/m06.webp",
+   "w": 1204,
+   "h": 1600,
+   "source": "719 Studios marketing photos: Stock Photography"
+  }
+ ]
+}

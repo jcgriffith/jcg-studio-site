@@ -1,0 +1,12 @@
+# JCG Studio
+
+> JCG Studio designs products, brands and services for ambitious teams launching something new: senior craft, AI-assisted speed, no agency overhead.
+
+JCG Studio LLC, founded on January 1, 2026, in Colorado, is one designer: JC Griffith. Membership is monthly: Standard $5,000/mo (1 active request, unlimited queue) or Pro $7,500/mo (2 active requests, plus a Slack channel if they want one). Something usable lands about every two business days.
+
+## Pages
+
+- [Work](https://jcg.studio/): studio concepts on a pannable canvas
+- [Membership](https://jcg.studio/membership/): plans, prices, how the queue works, FAQ
+- [About](https://jcg.studio/about/): who runs the studio
+- [Facts](https://jcg.studio/facts/): approved facts about the studio

@@ -1,0 +1,103 @@
+/* The JCG mark, final logo (JC, 2026-10-05: the block mark): one SVG path, drawn by assets/js/jcg-bud.js.
+   Static copies are inlined in each page's nav and footer; nav-mark.js animates the nav copy
+   (budding: first visit, hover or tap, loader). The viewBox is the mark itself in mark units
+   (one block = 60): 0 0 450 180, 7.5 x 3 blocks, no padding. --cell is the block size in px.
+   Replaced the v4 cell mark (2026-10-02) and the dense pixel mark before it. */
+
+.brand-mark.brand-pixel {
+  display: inline-grid;
+  place-items: center;
+  line-height: 0;
+  grid-template-columns: none;
+  flex-shrink: 0;
+  color: inherit;
+}
+
+.brand-mark.brand-pixel svg {
+  display: block;
+  height: var(--brand-pixel-h, 36px); /* 12 px blocks unless a context sets --brand-pixel-h */
+  width: auto;
+  fill: currentColor;
+  overflow: visible;
+}
+
+.brand-mark.brand-pixel svg path {
+  fill: currentColor;
+}
+
+/* Top nav: the mark at 12 px blocks (90 x 36 px), so its 2.4 px corners and fillets read, with STUDIO as drawn
+   letters (JC's "Departure, redrawn", 2026-10-05; 67.5 x 12 px): capitals one block tall (12 px, 1.5 px strokes: three
+   whole device pixels on a 2x screen) filling the mark's middle row, one block (12 px) after it (JC chose this lockup,
+   B, on 2026-10-05). Both SVGs end exactly at their ink. */
+.hud-brand .brand {
+  --cell: 9.6px; /* JC, 2026-10-08: 20% smaller than the 12 px block (strokes 1.2 px) */
+  --brand-pixel-h: calc(var(--cell) * 3);
+  gap: var(--cell);
+  align-items: center;
+  padding: 0 18px; /* ink 19 px from both panel edges (with the border) */
+}
+.hud-brand .brand .brand-pixel svg {
+  margin: calc((44px - var(--brand-pixel-h)) / 2) 0; /* the mark lays out as 44 px tall, so this panel matches the 46 px panel opposite */
+}
+.brand-word svg { display: block; overflow: visible; }
+.hud-brand .brand .brand-word svg {
+  width: calc(var(--cell) * 5.625); /* STUDIO's ink is 5.625 capitals wide; the capitals are one block tall */
+  height: var(--cell);
+}
+.hud-brand .brand .brand-word {
+  color: var(--chrome-2); /* the letters are strokes in currentColor */
+  opacity: 1;
+}
+/* Phones under 375 px: the Subscribe and menu panels take 165 px, so the lockup steps down to the 8 px minimum
+   (60 x 24 mark, 45 x 8 label, 1 px strokes) instead of running under them. 12 px blocks clear them from 366 px up;
+   the old two-thirds lockup cleared them from 347 px, and neither fit a 320 px phone. */
+@media (max-width: 374px) {
+  .hud-brand .brand { --cell: 8px; }
+}
+
+/* The typing cursor (nav-mark.js, first visit): one cell, the one orange on screen; size and place set by script. */
+.brand-cursor {
+  position: absolute;
+  left: 0;
+  background: var(--signal);
+}
+
+/* Footer: the same lockup as the nav (the brand rule: a lockup is 8 px blocks or more; the site uses 12): 90 x 36 px
+   mark, STUDIO's drawn letters in chrome 2, one block (12 px) between. The label is STUDIO, never JCG STUDIO: the mark
+   already says JCG. */
+.foot .brand {
+  --cell: 12px;
+  --brand-pixel-h: calc(var(--cell) * 3);
+  gap: var(--cell);
+}
+.foot .brand .brand-word {
+  color: var(--chrome-2);
+  opacity: 1;
+}
+
+/* First visit (assets/js/nav-mark.js). The head script adds html.mark-intro on a visit's first
+   page load; the nav mark and STUDIO stay hidden until the mark buds in, then the cursor types STUDIO.
+   Failsafe: they appear after 1.5 s even if the script never runs. */
+html.mark-intro .hud-brand .brand-pixel path,
+html.mark-intro .site-header .brand-pixel path,
+html.mark-intro .nav .brand-pixel path,
+html.mark-intro .hud-brand .brand-word {
+  opacity: 0;
+  animation: brand-pixel-reveal 0s linear 1.5s forwards;
+}
+@keyframes brand-pixel-reveal { to { opacity: 1; } }
+/* The nav mark is also the play layer's progress bar (nav-mark.js): the page ships the whole logo for no-JS, and with
+   JS the mark waits until the script has drawn this device's progress, so the whole logo never flashes first. Same
+   1.5 s failsafe. Shadow-root demos on the brand page don't match html.js, so they keep their logo. */
+html.js:not(.mark-ready) .hud-brand .brand-pixel path {
+  opacity: 0;
+  animation: brand-pixel-reveal 0s linear 1.5s forwards;
+}
+/* While a visitor is collecting the nine blocks, the whole logo sits behind the found pieces as a faint ghost (nav-mark.js). */
+.brand-pixel .mark-ghost { opacity: .22; }
+@media (prefers-reduced-motion: reduce) {
+  html.mark-intro .hud-brand .brand-pixel path,
+  html.mark-intro .site-header .brand-pixel path,
+  html.mark-intro .nav .brand-pixel path,
+  html.mark-intro .hud-brand .brand-word { opacity: 1; animation: none; }
+}
