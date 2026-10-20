@@ -253,7 +253,6 @@ import { warmBackdrop, paintBackdrop } from './surfaces.js?v=20261015-world';
 import { fixtureDetails } from './fixture-details.js?v=20261017-pendants';
 import { finishVase } from './vase.js';
 import { finishCapiz } from './capiz.js?v=3';
-import { createPost } from './post.js?v=5';
 import { applyBake } from './bake.js?v=1';
 import { finishFoliage } from './foliage.js';
 import { createExperience } from './experience.js?v=20261019-views';
@@ -322,7 +321,9 @@ function invalidate(duration = 1500) { renderUntil = Math.max(renderUntil, perfo
 controls.addEventListener('change', () => invalidate(180));
 controls.addEventListener('start', () => invalidate());
 const bakeTest = new URLSearchParams(location.search).has('bake');   // ?bake: the desert set's test lightmap
-loader.load(bakeTest ? ASSETS + '3d/etherea-bake-test.glb?v=1' : ASSETS + '3d/etherea-lowres.glb?v=20261017-olive', (gltf) => {
+// phones get the lighter model (meshes decimated to 6k vertices, export_web.py WEB_MAX_VERTS=6000): half the download
+const MODEL = phone ? '3d/etherea-mobile.glb?v=20261019' : '3d/etherea-lowres.glb?v=20261019-shared';
+loader.load(bakeTest ? ASSETS + '3d/etherea-bake-test.glb?v=1' : ASSETS + MODEL, (gltf) => {
   const root = gltf.scene; scene.add(root); rootObj = root;
   root.updateMatrixWorld(true);
   finishMaterials(root, renderer, ASSETS, invalidate);
@@ -355,6 +356,8 @@ loader.load(bakeTest ? ASSETS + '3d/etherea-bake-test.glb?v=1' : ASSETS + '3d/et
   const lid = root.getObjectByName('Office_lid');
   if (lid) { const lb = new THREE.Box3().setFromObject(lid); office.at.set(lb.max.x - 0.6, lb.max.y, lb.max.z - 1.0); office.ready = true; }   // marker on the lid's front, inner quarter (clear of the green wall's label); it stays put while the lid lifts
   buildMarkers(); setMode('golden', true); experience.ready(); invalidate();   // opens in golden hour (JC 2026-10-17)
+  // in cover mode inside another page (the 719 hero), say when the model is on screen, so the still in front can fade
+  if (cover && window.parent !== window) setTimeout(() => window.parent.postMessage({ type: 'viewer:ready' }, location.origin), 400);
   draco.dispose();
   if(debug) {
     console.info('Loft model ready', Math.round(performance.now()-startedAt), 'ms');
@@ -513,7 +516,8 @@ canvas.addEventListener('pointerdown', () => { const h = document.getElementById
 let fitted = false;
 // finishing effects (post.js): opt-in with ?post for now. The pipeline tone-maps the sky and window backdrops that are
 // meant to skip tone mapping, which washes them out (JC 2026-10-17: "looks fucked"); off until that is solved.
-const post = cover || !new URLSearchParams(location.search).has('post') ? null : createPost(renderer, scene, camera, { phone });
+// loaded only when asked for, so the default page skips N8AO, SMAA and the bloom passes (~130 KB from the CDN)
+const post = cover || !new URLSearchParams(location.search).has('post') ? null : (await import('./post.js?v=5')).createPost(renderer, scene, camera, { phone });
 window.__v.post = post;
 function resize() {
   const w = innerWidth, h = innerHeight;

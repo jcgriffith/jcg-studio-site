@@ -40,7 +40,10 @@ document.documentElement.classList.add('js'); if (/[?&]embed\b/.test(location.se
   /* 1. hero: the model fills the top of the screen; the words and the two buttons sit under it (phone) or over its lower left (wide) */
   .hero { position: relative; min-height: 100svh; display: grid; grid-template-rows: minmax(52svh, 1fr) auto; background: radial-gradient(120% 90% at 50% 30%, #d8c9b6 0%, #b99d84 55%, #6f5a4a 100%); }
   .hero-3d { position: relative; }
-  .hero-3d iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; pointer-events: none; }
+  .hero-3d iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; pointer-events: none; opacity: 0; transition: opacity .8s linear; }
+  /* a still of the model shows at once; the live 3D loads after the page and fades in over it once it is on screen */
+  .hero-still img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; transition: opacity .8s linear; }
+  .hero-3d.live iframe { opacity: 1; } .hero-3d.live .hero-still img { opacity: 0; }
   .hero-copy { position: relative; padding: 20px var(--edge-x) calc(env(safe-area-inset-bottom) + 24px); background: linear-gradient(to bottom, rgba(11,12,14,0), rgba(11,12,14,.86) 34%); display: grid; gap: 14px; }
   .hero-copy .hud { color: #d9cfc4; }
   .hero h1 { margin: 0; font: 560 clamp(48px, 13vw, 120px)/.92 var(--font-display); font-stretch: var(--wdth-display); letter-spacing: var(--track-display); color: #fff; }
@@ -270,7 +273,7 @@ document.documentElement.classList.add('js'); if (/[?&]embed\b/.test(location.se
 <a class="back hud" href="../../" aria-label="Back to the work">←</a>
 <main>
   <section class="hero" id="top" aria-labelledby="h-719">
-    <div class="hero-3d" inert><iframe src="3d/?cover" title="" tabindex="-1" aria-hidden="true"></iframe></div>   
+    <div class="hero-3d" inert><picture class="hero-still"><source media="(max-width: 899px)" srcset="../../assets/img/work/719/hero-3d-phone.webp"><img src="../../assets/img/work/719/hero-3d-desktop.webp" alt="" fetchpriority="high" decoding="async"></picture><iframe data-src="3d/?cover" title="" tabindex="-1" aria-hidden="true"></iframe></div>   
     <div class="hero-copy">
       <p class="hud">S-01 · Los Angeles · 2021–2026</p>
       <h1 id="h-719">719 Studios</h1>
@@ -352,6 +355,16 @@ document.getElementById('lb-next').onclick = () => lbShow(lb.i + 1);
 lbEl.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') lbShow(lb.i + 1); if (e.key === 'ArrowLeft') lbShow(lb.i - 1); });
 const tile = (l, i, src, alt, w, h, cls = '') => `<button type="button" class="${cls}" data-l="${l}" data-i="${i}" style="--ar:${w} / ${h}" aria-label="Open: ${esc(alt)}"><img src="${src}" width="${w}" height="${h}" alt="${esc(alt)}" loading="lazy" decoding="async"></button>`;
 const vid = (src, poster, label, cls = 'm-vid') => `<div class="vid ${cls}"><video src="${src}" poster="${poster}" muted loop playsinline controls preload="none" aria-label="${esc(label)}"></video></div>`;
+
+// ---- the hero's live 3D: after the page has loaded (and on phones after it has settled), so words and stills come first
+{
+  const box = document.querySelector('.hero-3d'), frame = box.querySelector('iframe');
+  addEventListener('message', (e) => { if (e.origin === location.origin && e.data?.type === 'viewer:ready') box.classList.add('live'); });
+  const start = () => { if (!frame.src) frame.src = frame.dataset.src; };
+  const later = () => (window.requestIdleCallback ? requestIdleCallback(start, { timeout: 2500 }) : setTimeout(start, 1200));
+  const phone = matchMedia('(max-width: 760px)').matches;
+  if (document.readyState === 'complete') phone ? later() : start(); else addEventListener('load', () => (phone ? later() : start()), { once: true });
+}
 
 // ---- 2. the story ---------------------------------------------------------------------------------------------------
 const [sets, brand] = await Promise.all([fetch(`${IMG}sets/manifest.json`).then((r) => r.json()), fetch(`${BRAND}manifest.json`, { cache: 'no-cache' }).then((r) => r.json())]);

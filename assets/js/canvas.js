@@ -1174,6 +1174,13 @@ export function createFloor(root, data, opts = {}) {
     const I = insets();
     const frac = vw >= 900 ? 0.27 : vw >= 600 ? 0.42 : 0.78;
     const s = clamp((vw * frac) / coverOf(c).w, MIN_S, 1);
+    // When every cover fits across the screen (one item on the public site, 2026-10-19: "center the 719 cover"), the
+    // whole set sits centred instead of top left.
+    const all = allRect(), aw = vw - I.l - I.r, ah = vh - I.t - I.b;
+    if (all.w * s <= aw) {
+      const y = all.h * s <= ah ? I.t + (ah - all.h * s) / 2 - all.y * s : I.t + 24 - c.y * s;
+      return snapCam({ s, x: I.l + (aw - all.w * s) / 2 - all.x * s, y }, { quantizeS: true });
+    }
     const x = vw >= 600 ? I.l + 32 - (c.x - GRID * 2) * s : (vw - coverOf(c).w * s) / 2 - c.x * s;
     return snapCam({ s, x, y: I.t + 24 - c.y * s }, { quantizeS: true });
   };
