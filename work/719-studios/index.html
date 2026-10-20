@@ -131,6 +131,7 @@ document.documentElement.classList.add('js'); if (/[?&]embed\b/.test(location.se
   .ch--quiet { text-align: center; padding: 120px 0 80px; }
   .ch--quiet p { margin-left: auto; margin-right: auto; }
   .ch--quiet .num { margin-left: auto; margin-right: auto; }
+  .end-photo { max-width: 400px; margin: 36px auto 30px; } .end-photo img { aspect-ratio: 3 / 4; }
 
   /* arrival: words rise, pictures open like a curtain (base.css's [data-reveal], set going by this page) */
   .ch [data-reveal], .story-open[data-reveal] { translate: 0 28px; }
@@ -330,7 +331,7 @@ document.documentElement.classList.add('js'); if (/[?&]embed\b/.test(location.se
 </dialog>
 
 <script type="module">
-import { stops, MOOD } from './3d/experience.js?v=20261019-views';
+import { stops, MOOD } from './3d/experience.js?v=20261019-home';
 const IMG = '../../assets/img/work/719/', SETS = new URL(`${IMG}sets/`, location.href), BRAND = `${IMG}brand/`;
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const url = (src) => new URL(src, SETS).href;   // story media paths are relative to sets/
@@ -437,8 +438,8 @@ document.getElementById('chapters').innerHTML = stops.map((s, i) => {
     case 'statement':
       body = `<div class="wrap">${head}${dek}${P(paras)}${s.award ? AWARD : ''}</div>`;
       break;
-    default:   // quiet
-      body = `<div class="wrap">${head}${dek}${P(paras)}</div>`;
+    default:   // quiet: the ending, with its one photograph
+      body = `<div class="wrap">${head}${dek}${stills.map((p, k) => fig(l, k, p, 'end-photo')).join('')}${P(paras)}</div>`;
   }
   return open + body + '</article>';
 }).join('');

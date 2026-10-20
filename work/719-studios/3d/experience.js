@@ -62,7 +62,8 @@ const stops = [
            'Across the three lofts, we earned more than 1,000 reviews with a 5.0 average.'],
     photos:[V('04-terra-build-timelapse'),...['terra-01','solaris-01','terra-02','solaris-02','terra-03','solaris-04'].map(T)] },   // the Terra build timelapse: the reel that went viral (JC)
   { id:'end', sum:`We sold 719 Studios on ${SOLD.date}.`,  chip:`${SOLD.year} · Home`, title:'Home to Colorado',
-    detail:`In January 2025, we moved home to Colorado to start our family and ran the lofts from there. On ${SOLD.date}, we sold 719 Studios to new owners. We owned and operated the studios from 2021 to ${SOLD.year}.` },
+    detail:`In January 2025, we moved home to Colorado to start our family and ran the lofts from there. On ${SOLD.date}, we sold 719 Studios to new owners. We owned and operated the studios from 2021 to ${SOLD.year}.`,
+    photos:[{ src:'../colorado-family.webp', w:480, h:640, alt:'JC, Kristi and their baby by a mountain lake in Colorado.' }] },   // JC 2026-10-19: the closing Colorado image
 ];
 // Twelve pins from JC's Etherea board, one row per set it fed: the desert's pink arches, the pool, the forest's moss, and the
 // red-sun portraits. Shown from Pinterest and linked to each pin (other people's work: credited, not copied).
