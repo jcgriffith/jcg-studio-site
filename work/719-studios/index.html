@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>719 Studios — JCG Studio</title>
+<meta name="description" content="719 Studios: three photo and production lofts Kristi and I designed in 3D, built and ran in downtown Los Angeles, 2021 to 2026.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0B0C0E">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,800&display=swap">
+<script>if ('scrollRestoration' in history) history.scrollRestoration = 'manual';   /* always open at the hero, unless a link names a part */
+/* the page jumps to a named part itself, once the part is built; the browser's own jump would land on the empty section */
+window.__jump = location.hash.slice(1); if (window.__jump) history.replaceState(null, '', location.pathname + location.search);
+document.documentElement.classList.add('js'); if (/[?&]embed\b/.test(location.search)) document.documentElement.classList.add('is-embed');</script>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js" } }</script>
+
+<style>
+  :root { color-scheme: dark; --edge-x: 16px; --measure: 680px; --wide: 1120px; }
+  html { scroll-behavior: smooth; overflow-anchor: none; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body { background: var(--void); color: var(--chrome-2); }
+  body::after { content: none; }
+  .is-embed body { padding-right: 0; }
+  img, video { display: block; max-width: 100%; height: auto; }
+  .hud { font: 400 11px/1.3 var(--font-hud); letter-spacing: var(--track-hud); text-transform: uppercase; color: var(--chrome-3); margin: 0; }
+  .wrap { width: 100%; max-width: var(--wide); margin: 0 auto; padding: 0 var(--edge-x); }
+  .measure { max-width: var(--measure); }
+  .cta { all: unset; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-height: 48px; padding: 0 20px; cursor: pointer;
+         font: 400 12px/1 var(--font-hud); letter-spacing: var(--track-hud); text-transform: uppercase; border: 1px solid var(--line-strong); color: var(--chrome); }
+  .cta.primary { background: var(--chrome); color: var(--void); border-color: var(--chrome); }
+  .cta:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
+  .cta:hover { border-color: var(--chrome); } .cta.primary:hover { background: #fff; }
+  .back { position: fixed; z-index: 6; top: calc(env(safe-area-inset-top) + 12px); left: 12px; width: 44px; height: 44px; display: grid; place-items: center;
+          border: 1px solid var(--line-strong); background: rgba(11,12,14,.72); color: var(--chrome-2); }
+  .is-embed .back { display: none; }
+
+  /* 1. hero: the model fills the top of the screen; the words and the two buttons sit under it (phone) or over its lower left (wide) */
+  .hero { position: relative; min-height: 100svh; display: grid; grid-template-rows: minmax(52svh, 1fr) auto; background: radial-gradient(120% 90% at 50% 30%, #d8c9b6 0%, #b99d84 55%, #6f5a4a 100%); }
+  .hero-3d { position: relative; }
+  .hero-3d iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; pointer-events: none; }
+  .hero-copy { position: relative; padding: 20px var(--edge-x) calc(env(safe-area-inset-bottom) + 24px); background: linear-gradient(to bottom, rgba(11,12,14,0), rgba(11,12,14,.86) 34%); display: grid; gap: 14px; }
+  .hero-copy .hud { color: #d9cfc4; }
+  .hero h1 { margin: 0; font: 560 clamp(48px, 13vw, 120px)/.92 var(--font-display); font-stretch: var(--wdth-display); letter-spacing: var(--track-display); color: #fff; }
+  .hero p.line { margin: 0; max-width: 34em; font-size: 17px; line-height: 1.5; color: #ece6df; }
+  .hero .ctas { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+  .facts { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 4px 0 0; padding: 0; list-style: none; }
+  .facts li { font: 400 11px/1.3 var(--font-hud); letter-spacing: var(--track-hud); text-transform: uppercase; color: #d9cfc4; }
+  @media (min-width: 900px) {
+    .hero { grid-template-rows: 1fr; }
+    .hero-3d { position: absolute; inset: 0; }
+    .hero-copy { align-self: end; max-width: 760px; padding: 48px 48px 56px; background: linear-gradient(to right, rgba(11,12,14,.78), rgba(11,12,14,0)); }
+  }
+
+  /* section scaffolding (the portfolio layout): label, title, one line */
+  .sec { padding: 72px 0 24px; scroll-margin-top: 56px; }
+  .s-head { display: grid; gap: 8px; margin-bottom: 28px; }
+  .s-head h2 { margin: 0; font: 540 clamp(30px, 6vw, 52px)/1.04 var(--font-display); font-stretch: var(--wdth-display); letter-spacing: var(--track-display); color: var(--chrome); }
+  .s-head p { margin: 0; max-width: 36em; font-size: 17px; line-height: 1.5; }
+
+  /* 2. the story, art-directed like a magazine (JC 2026-10-19: "a curated sexy digital magazine", not a blog post):
+     each chapter has its own layout (cover spread, sticky split, drifting moodboard, film, diptych, statement, quiet end),
+     a pull quote taken from its own text, an oversized outline number, and the background drifts through dark tints of
+     719's palette as you read. Three text styles: the mono label, the display face (titles, numbers, quotes), the body. */
+  .story { background: var(--tint, var(--void)); transition: background-color 1.2s linear; padding: 72px 0 40px; scroll-margin-top: 0; }
+  .story-open { margin-bottom: 40px; }
+  .story-open h2 { margin: 10px 0 0; max-width: 14em; font: 540 clamp(40px, 9vw, 96px)/.98 var(--font-display); font-stretch: var(--wdth-display); letter-spacing: var(--track-display); color: var(--chrome); }
+  .ch { position: relative; padding: 64px 0; scroll-margin-top: 56px; }
+  .ch-head { position: relative; margin: 0 0 22px; }
+  .ch-head .num, .s-head .num { display: block; margin: 0 0 -.28em; font: 600 clamp(88px, 22vw, 220px)/.8 var(--font-display); font-stretch: var(--wdth-display); color: transparent; -webkit-text-stroke: 1px rgba(230,233,237,.22); letter-spacing: -.04em; user-select: none; }
+  .ch-head .hud { position: relative; color: var(--chrome-3); }
+  .ch h3 { position: relative; margin: 8px 0 0; font: 540 clamp(36px, 8vw, 72px)/1 var(--font-display); font-stretch: var(--wdth-display); letter-spacing: var(--track-display); color: var(--chrome); text-wrap: balance; }
+  .ch p { margin: 0 0 18px; max-width: 34em; font-size: 18px; line-height: 1.62; color: #d0d4da; }
+  .ch p.dek { font-size: clamp(21px, 4.6vw, 28px); line-height: 1.32; color: var(--chrome); max-width: 22em; }
+  .pull { margin: 40px 0; padding: 0; border: 0; }
+  .pull p { margin: 0; max-width: 16em; font: 540 clamp(34px, 7.4vw, 76px)/1.02 var(--font-display); font-stretch: var(--wdth-display); letter-spacing: var(--track-display); color: var(--chrome); text-wrap: balance; }
+  .pull p::before { content: '“'; } .pull p::after { content: '”'; }
+  .f { margin: 0 0 14px; }
+  .f button { all: unset; box-sizing: border-box; display: block; width: 100%; cursor: zoom-in; overflow: hidden; background: #15171a; }
+  .f img, .f video { display: block; width: 100%; height: 100%; object-fit: cover; aspect-ratio: var(--ar, 3 / 2); }
+  .f figcaption { margin-top: 8px; }
+  .vidfig video { aspect-ratio: 9 / 16; background: #15171a; }
+  .vidfig { position: relative; }
+  .badge { position: absolute; z-index: 1; left: 10px; top: 10px; padding: 7px 10px; background: var(--signal); color: #0B0C0E; font: 400 11px/1 var(--font-hud); letter-spacing: var(--track-hud); text-transform: uppercase; pointer-events: none; }
+  .card { display: flex; align-items: center; gap: 16px; padding: 14px 16px; margin: 8px 0 22px; border-radius: 4px; background: #ece8e1; color: #252724; text-decoration: none; max-width: 520px; }
+  .card img { flex: none; width: 64px; height: auto; }
+  .card span { font-size: 16px; line-height: 1.35; } .card b { display: block; font-weight: 600; } .card i { display: block; margin-top: 8px; font: 400 11px/1 var(--font-hud); font-style: normal; letter-spacing: .08em; text-transform: uppercase; color: #5d5f5a; }
+
+  /* cover: a full-bleed spread, the title set on the photograph */
+  .bleed { position: relative; margin: 0 0 40px; overflow: hidden; height: 88svh; min-height: 460px; }
+  .bleed button { all: unset; display: block; position: absolute; inset: 0; cursor: zoom-in; }
+  .bleed img { position: absolute; inset: -6% 0; width: 100%; height: 112%; object-fit: cover; transform: translateY(var(--py, 0)); will-change: transform; }
+  .bleed::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to top, rgba(11,12,14,.92), rgba(11,12,14,.15) 55%, rgba(11,12,14,0)); }
+  .bleed .ch-head { position: absolute; z-index: 1; left: 0; right: 0; bottom: 0; margin: 0; padding: 0 var(--edge-x) 28px; pointer-events: none; }
+  .cols { display: grid; gap: 8px; }
+  .inset { max-width: 420px; margin-left: auto; }
+  /* split: on wide screens the pictures stay put while the words scroll past */
+  .split { display: grid; gap: 28px; }
+  /* board: the moodboard drifts in two rows, the 3D renders sit beside the rooms they became */
+  .marquee { overflow: hidden; display: grid; gap: 6px; margin: 34px 0 10px; mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent); }
+  .marquee .row { display: flex; gap: 6px; width: max-content; animation: drift 70s linear infinite; }
+  .marquee .row + .row { animation-direction: reverse; animation-duration: 84s; }
+  .marquee:hover .row { animation-play-state: paused; }
+  .marquee a { flex: none; display: block; width: 150px; aspect-ratio: 1; overflow: hidden; background: #15171a; }
+  .marquee img { width: 100%; height: 100%; object-fit: cover; }
+  @keyframes drift { to { transform: translateX(-50%); } }
+  .pairs { display: grid; gap: 22px; margin: 34px 0; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .pair .f { margin: 0; }
+  .pair .cap { grid-column: 1 / -1; margin: 2px 0 0; }
+  /* film: a dark room, the timelapse standing in it */
+  .ch--film { background: #060708; }
+  .film-grid { display: grid; gap: 28px; align-items: center; }
+  .film-grid .vidfig { max-width: 380px; width: 100%; justify-self: center; }
+  /* diptych */
+  .dip { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 30px 0; }
+  .dip .f { margin: 0; } .dip .f img { aspect-ratio: 3 / 4; }
+  .row3 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 26px 0; }
+  .row3 .f:first-child { grid-column: 1 / -1; }
+  /* reel: the Terra timelapse beside the rooms */
+  .reel-grid { display: grid; gap: 6px; margin: 30px 0; grid-template-columns: 1fr 1fr; }
+  .reel-grid .vidfig { grid-column: 1 / -1; max-width: 380px; width: 100%; justify-self: center; }
+  .reel-grid .f { margin: 0; } .reel-grid .f img { aspect-ratio: 4 / 5; }
+  /* statement + quiet */
+  .ch--statement h3, .ch--quiet h3 { font-size: clamp(48px, 12vw, 132px); }
+  .ch--quiet { text-align: center; padding: 120px 0 80px; }
+  .ch--quiet p { margin-left: auto; margin-right: auto; }
+  .ch--quiet .num { margin-left: auto; margin-right: auto; }
+
+  /* arrival: words rise, pictures open like a curtain (base.css's [data-reveal], set going by this page) */
+  .ch [data-reveal], .story-open[data-reveal] { translate: 0 28px; }
+  .js .f[data-reveal] img, .js .f[data-reveal] video, .js .bleed[data-reveal] img { clip-path: inset(14% 0 0 0); transition: clip-path 1.2s var(--ease-out); }
+  .js .f[data-reveal].in img, .js .f[data-reveal].in video, .js .bleed[data-reveal].in img { clip-path: inset(0); }
+  @media (prefers-reduced-motion: reduce) {
+    .js .f[data-reveal] img, .js .f[data-reveal] video, .js .bleed[data-reveal] img { clip-path: none; transition: none; }
+    .marquee { overflow-x: auto; mask-image: none; } .marquee .row { animation: none; }
+    .bleed img { transform: none; }
+  }
+
+  @media (min-width: 900px) {
+    .ch { padding: 96px 0; }
+    .bleed .ch-head { padding: 0 48px 48px; max-width: 1200px; }
+    .cols { grid-template-columns: 1fr 1.1fr; gap: 64px; align-items: start; }
+    .split { grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+    .split-media { position: sticky; top: 72px; display: grid; gap: 10px; }
+    .split-media .vidfig { max-width: 340px; }
+    .marquee a { width: 220px; }
+    .pairs { gap: 40px; } .pair { gap: 12px; }
+    .film-grid { grid-template-columns: 1.2fr 1fr; gap: 80px; }
+    .dip { gap: 12px; }
+    .row3 { grid-template-columns: 2fr 1fr 1fr; gap: 12px; } .row3 .f:first-child { grid-column: auto; }
+    .reel-grid { grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; align-items: start; } .reel-grid .vidfig { grid-column: 1; grid-row: 1 / span 2; max-width: none; }
+    .pull { margin: 64px 0; }
+  }
+
+  /* 3. what I made: the at-a-glance map, a sticky index, then each kind of work */
+  .map { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .map a { display: grid; gap: 6px; padding: 18px 16px; background: var(--void); color: var(--chrome); text-decoration: none; }
+  .map a b { font: 540 20px/1.1 var(--font-display); font-stretch: var(--wdth-display); }
+  .map a span { font-size: 14px; line-height: 1.4; color: var(--chrome-3); }
+  .map a:hover b, .map a:focus-visible b { color: #fff; }
+  @media (min-width: 900px) { .map { grid-template-columns: repeat(5, 1fr); } }
+  .index { position: sticky; top: 0; z-index: 4; background: rgba(11,12,14,.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  .is-embed .index .wrap { padding-right: 64px; }
+  html:not(.is-embed) .index .wrap { padding-left: 64px; }   /* clear of the back button */   /* clear of the floor panel's × */
+  .index nav { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; padding: 8px 0; }
+  .index nav::-webkit-scrollbar { display: none; }
+  .index a { flex: none; padding: 9px 12px; font: 400 11px/1 var(--font-hud); letter-spacing: var(--track-hud); text-transform: uppercase; color: var(--chrome-3); text-decoration: none; border: 1px solid transparent; }
+  .index a[aria-current="true"] { color: var(--chrome); border-color: var(--line-strong); }
+
+  /* identity: 719 in its own skin (its style guide: Beige, white cards, 24px corners, DM Sans) */
+  .skin { background: #FCF6F1; color: #1f1a16; border-radius: 24px; padding: 18px; font-family: 'DM Sans', Arial, sans-serif; display: grid; gap: 14px; }
+  .skin .b-card { background: #fff; border-radius: 20px; padding: 20px 18px; display: grid; gap: 14px; }
+  .skin .b-label { margin: 0; font: 500 11px/1.3 var(--font-hud); letter-spacing: .08em; text-transform: uppercase; color: #8a5a43; }
+  .skin h3 { margin: 0; color: #1f1a16; font-family: inherit; font-stretch: normal; font-weight: 800; font-size: 22px; line-height: 1.15; letter-spacing: -.01em; }
+  .b-logos { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .b-logos > * { min-width: 0; }
+  .b-logo { display: grid; place-items: center; aspect-ratio: 4 / 3; border-radius: 16px; background: #FCF6F1; padding: 14px; }
+  .b-logo.dark { background: #000; }
+  .b-logo img { width: auto; max-width: 84%; max-height: 66%; object-fit: contain; }
+  .b-swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 14px 10px; }
+  .b-sw { display: grid; justify-items: center; gap: 4px; text-align: center; font-size: 13px; line-height: 1.3; }
+  .b-sw i { width: 64px; height: 64px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); }
+  .b-sw b { font-weight: 800; } .b-sw code { font: 12px/1.3 var(--font-hud); color: #7b6e64; }
+  .b-type { display: grid; gap: 10px; }
+  .b-type > * { min-width: 0; border-radius: 16px; background: #FCF6F1; padding: 18px; display: grid; gap: 6px; align-content: start; }
+  .b-type .aa { font-size: 52px; line-height: 1; }
+  .b-type img { width: auto; max-width: 100%; height: 42px; object-fit: contain; object-position: left; }
+  .b-tokens { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; font: 12px/1.5 var(--font-hud); }
+  .b-tokens dt { color: #7b6e64; } .b-tokens dd { margin: 0; display: flex; align-items: center; gap: 8px; min-width: 0; overflow-wrap: anywhere; }
+  .b-tokens dd i { flex: none; width: 14px; height: 14px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0,0,0,.12); }
+  @media (min-width: 900px) {
+    .skin { padding: 28px; gap: 18px; }
+    .skin .b-card { padding: 28px; }
+    .b-logos { grid-template-columns: repeat(3, 1fr); }
+    .b-logo:first-child { grid-row: span 2; aspect-ratio: auto; }
+    .b-type { grid-template-columns: 1.3fr 1fr 1fr; }
+    .skin .split { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  }
+
+  /* galleries (spaces, applications, proof): tap for full screen */
+  .gal { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .gal > * { min-width: 0; }
+  .gal button, .gal figure { all: unset; box-sizing: border-box; display: block; margin: 0; overflow: hidden; border-radius: 4px; background: #15171a; cursor: zoom-in; }
+  .gal img, .gal video { width: 100%; height: 100%; object-fit: cover; aspect-ratio: var(--ar, 4 / 5); }
+  .gal .lead { grid-column: 1 / -1; }
+  .gal.mason { display: block; columns: 2; column-gap: 6px; }
+  .gal.mason > * { break-inside: avoid; margin-bottom: 6px; }
+  .gal.light button { background: #FCF6F1; }
+  .sub { margin: 36px 0 12px; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .sub h3 { margin: 0; font: 540 24px/1.1 var(--font-display); font-stretch: var(--wdth-display); color: var(--chrome); }
+  @media (min-width: 900px) {
+    .gal { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .gal.two { grid-template-columns: 1fr 1fr; }
+    .gal.five { grid-template-columns: repeat(5, 1fr); }
+    .gal.mason { columns: 3; column-gap: 10px; } .gal.mason > * { margin-bottom: 10px; }
+  }
+  .loft { padding: 8px 0 28px; border-top: 1px solid var(--line); }
+  .loft-lead button, .strip button { all: unset; box-sizing: border-box; display: block; overflow: hidden; background: #15171a; cursor: zoom-in; }
+  .loft-lead img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+  .strip { display: flex; gap: 8px; margin-top: 8px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
+  .strip::-webkit-scrollbar { display: none; }
+  .strip > * { flex: 0 0 72%; scroll-snap-align: start; }
+  .strip img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+  @media (min-width: 900px) { .loft-lead img { aspect-ratio: 21 / 9; } .strip > * { flex-basis: calc((100% - 24px) / 4); } }
+  .loft:first-of-type { border-top: 0; }
+  .loft .sub { margin-top: 24px; }
+  .loft p { margin: 0 0 14px; max-width: 36em; font-size: 17px; line-height: 1.5; }
+  .reels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .reels figure { margin: 0; }
+  .reels video { width: 100%; aspect-ratio: 9 / 16; object-fit: cover; border-radius: 4px; background: #15171a; }
+  @media (min-width: 900px) { .reels { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; } }
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 16px; margin: 0 0 28px; padding: 0; list-style: none; }
+  .stats li { display: grid; gap: 6px; border-top: 1px solid var(--line-strong); padding-top: 12px; }
+  .stats b { font: 540 clamp(32px, 7vw, 48px)/1 var(--font-display); font-stretch: var(--wdth-display); color: var(--chrome); }
+  @media (min-width: 900px) { .stats { grid-template-columns: repeat(4, 1fr); } }
+  .credits { display: grid; grid-template-columns: auto 1fr; gap: 10px 24px; margin: 0; font-size: 16px; }
+  .credits dt { font: 400 11px/1.6 var(--font-hud); letter-spacing: var(--track-hud); text-transform: uppercase; color: var(--chrome-3); }
+  .credits dd { margin: 0; color: var(--chrome); }
+  .next { display: flex; flex-wrap: wrap; gap: 10px; margin: 40px 0 0; padding-bottom: calc(env(safe-area-inset-bottom) + 56px); }
+
+  /* Explore: the 3D takes the whole screen; switch loft, tap a set; Done returns to the page where it was */
+  .explore { position: fixed; inset: 0; z-index: 10; background: #c8c4bd; display: grid; grid-template-rows: auto 1fr; }
+  .explore[hidden] { display: none; }
+  .explore header { display: flex; align-items: center; gap: 8px; padding: calc(env(safe-area-inset-top) + 10px) 10px 10px; background: #0B0C0E; }
+  .is-embed .explore header { padding-right: 64px; }
+  .seg { display: flex; flex: 1 1 420px; min-width: 0; max-width: 460px; border: 1px solid var(--line-strong); }
+  .seg button { all: unset; box-sizing: border-box; flex: 1 1 0; min-width: 0; min-height: 44px; padding: 0 8px; display: grid; place-items: center; cursor: pointer;
+                font: 400 11px/1 var(--font-hud); letter-spacing: var(--track-hud); text-transform: uppercase; color: var(--chrome-3); }
+  .seg button + button { border-left: 1px solid var(--line-strong); }
+  .seg button[aria-selected="true"] { color: var(--void); background: var(--chrome); }
+  .seg button:focus-visible { outline: 2px solid var(--signal); outline-offset: -2px; }
+  .explore .done { min-height: 44px; padding: 0 16px; }
+  .explore iframe { width: 100%; height: 100%; border: 0; display: block; }
+  html.exploring main { display: none; }
+
+  /* full-screen photo */
+  .lightbox { position: fixed; inset: 0; z-index: 20; margin: 0; width: 100%; height: 100%; max-width: none; max-height: none; border: 0; padding: 0; background: rgba(0,0,0,.96); color: var(--chrome); }
+  .lightbox[open] { display: grid; grid-template-rows: auto 1fr auto; }
+  .lightbox header, .lightbox footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px; }
+  .is-embed .lightbox header { padding-right: 64px; }
+  .lightbox img { place-self: center; max-width: 100%; max-height: 100%; object-fit: contain; min-height: 0; }
+  .lightbox button { all: unset; box-sizing: border-box; min-width: 44px; min-height: 44px; display: grid; place-items: center; cursor: pointer; border: 1px solid var(--line-strong); }
+  .lightbox p { margin: 0; font-size: 14px; color: var(--chrome-3); text-align: center; flex: 1; }
+</style>
+</head>
+<body>
+<a class="back hud" href="../../" aria-label="Back to the work">←</a>
+<main>
+  <section class="hero" id="top" aria-labelledby="h-719">
+    <div class="hero-3d" inert><iframe src="3d/?cover" title="" tabindex="-1" aria-hidden="true"></iframe></div>   
+    <div class="hero-copy">
+      <p class="hud">S-01 · Los Angeles · 2021–2026</p>
+      <h1 id="h-719">719 Studios</h1>
+      <p class="line">Three photo studios Kristi and I designed in 3D, built and ran in downtown Los Angeles. Booked from day one. Sold in 2026.</p>
+      <div class="ctas"><button type="button" class="cta primary" data-explore="etherea">Explore the studios <span aria-hidden="true">↗</span></button><a class="cta" href="#story">The story <span aria-hidden="true">↓</span></a></div>
+      <ul class="facts"><li>3 lofts</li><li>1,000+ reviews · 5.0</li><li>Peerspace Top 10 · 2023</li><li>3.2M views on one reel</li></ul>
+    </div>
+  </section>
+
+  <section class="story" id="story" aria-labelledby="h-story">
+    <div class="wrap story-open" data-reveal><p class="hud">The story</p><h2 id="h-story">Two photographers, three dream spaces</h2></div>
+    <div id="chapters"></div>
+  </section>
+
+  <div class="index" aria-label="What I made"><div class="wrap"><nav id="index"></nav></div></div>
+
+  <section class="sec" id="work" aria-labelledby="h-work">
+    <div class="wrap">
+      <div class="s-head"><p class="hud">What I made</p><h2 id="h-work">Three spaces, one brand, every detail</h2>
+        <p>Tap a part to jump to it.</p></div>
+      <nav class="map" id="map" aria-label="What I made, at a glance"></nav>
+    </div>
+  </section>
+  <section class="sec" id="identity" aria-labelledby="h-identity"><div class="wrap" id="identity-body"></div></section>
+  <section class="sec" id="spaces" aria-labelledby="h-spaces"><div class="wrap" id="spaces-body"></div></section>
+  <section class="sec" id="applications" aria-labelledby="h-applications"><div class="wrap" id="applications-body"></div></section>
+  <section class="sec" id="motion" aria-labelledby="h-motion"><div class="wrap" id="motion-body"></div></section>
+  <section class="sec" id="proof" aria-labelledby="h-proof"><div class="wrap" id="proof-body"></div></section>
+  <section class="sec" id="credits" aria-labelledby="h-credits">
+    <div class="wrap">
+      <div class="s-head"><p class="hud">Credits</p><h2 id="h-credits">Made by two</h2></div>
+      <dl class="credits"><dt>Concept, 3D design, build</dt><dd>JC and Kristi Griffith</dd><dt>Brand</dt><dd>719 Studios</dd><dt>Run</dt><dd>2021–2026, on Peerspace</dd></dl>
+      <div class="next"><a class="cta" href="#top">Back to the top <span aria-hidden="true">↑</span></a><a class="cta primary" href="../../about/" target="_top">About me <span aria-hidden="true">→</span></a></div>
+    </div>
+  </section>
+</main>
+
+<div class="explore" id="explore" role="dialog" aria-modal="true" aria-label="Explore the studios in 3D" hidden>
+  <header>
+    <div class="seg" role="tablist" aria-label="Choose a studio">
+      <button type="button" role="tab" data-loft="etherea" aria-selected="true">Etherea</button>
+      <button type="button" role="tab" data-loft="terra" aria-selected="false">Terra</button>
+      <button type="button" role="tab" data-loft="solaris" aria-selected="false">Solaris</button>
+    </div>
+    <button type="button" class="cta done" id="explore-done">Done</button>
+  </header>
+  <div id="explore-view"></div>
+</div>
+
+<dialog class="lightbox" id="lightbox" aria-label="Photo">
+  <header><span class="hud" id="lb-count"></span><button type="button" class="hud" id="lb-close" aria-label="Close">✕</button></header>
+  <img id="lb-img" alt="">
+  <footer><button type="button" id="lb-prev" aria-label="Previous">←</button><p id="lb-cap"></p><button type="button" id="lb-next" aria-label="Next">→</button></footer>
+</dialog>
+
+<script type="module">
+import { stops, MOOD } from './3d/experience.js?v=20261019-views';
+const IMG = '../../assets/img/work/719/', SETS = new URL(`${IMG}sets/`, location.href), BRAND = `${IMG}brand/`;
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const url = (src) => new URL(src, SETS).href;   // story media paths are relative to sets/
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ---- full-screen photos: one list per gallery ---------------------------------------------------------------------
+const lists = []; let lb = { list: [], i: 0 };
+const lbEl = document.getElementById('lightbox'), lbImg = document.getElementById('lb-img');
+function reg(items) { lists.push(items); return lists.length - 1; }   // items: [src, caption]
+function lbShow(i) {
+  lb.i = (i + lb.list.length) % lb.list.length; const [src, cap] = lb.list[lb.i];
+  lbImg.src = src; lbImg.alt = cap || ''; document.getElementById('lb-cap').textContent = cap || '';
+  document.getElementById('lb-count').textContent = `${String(lb.i + 1).padStart(2, '0')} / ${String(lb.list.length).padStart(2, '0')}`;
+}
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-l]'); if (!b) return;
+  lb.list = lists[Number(b.dataset.l)]; lbShow(Number(b.dataset.i)); lbEl.showModal();
+});
+document.getElementById('lb-close').onclick = () => lbEl.close();
+document.getElementById('lb-prev').onclick = () => lbShow(lb.i - 1);
+document.getElementById('lb-next').onclick = () => lbShow(lb.i + 1);
+lbEl.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') lbShow(lb.i + 1); if (e.key === 'ArrowLeft') lbShow(lb.i - 1); });
+const tile = (l, i, src, alt, w, h, cls = '') => `<button type="button" class="${cls}" data-l="${l}" data-i="${i}" style="--ar:${w} / ${h}" aria-label="Open: ${esc(alt)}"><img src="${src}" width="${w}" height="${h}" alt="${esc(alt)}" loading="lazy" decoding="async"></button>`;
+const vid = (src, poster, label, cls = 'm-vid') => `<div class="vid ${cls}"><video src="${src}" poster="${poster}" muted loop playsinline controls preload="none" aria-label="${esc(label)}"></video></div>`;
+
+// ---- 2. the story ---------------------------------------------------------------------------------------------------
+const [sets, brand] = await Promise.all([fetch(`${IMG}sets/manifest.json`).then((r) => r.json()), fetch(`${BRAND}manifest.json`, { cache: 'no-cache' }).then((r) => r.json())]);
+// the diptych pairs desert | forest, then the pool
+const setPhotos = { stage: [sets.stage[0], sets['green-wall'][0], sets.pool[0]], 'photo-corner': sets['photo-corner'].slice(0, 3) };
+const AWARD = `<a class="card" href="https://web.archive.org/web/20230929030652/https://madein.peerspace.com/awards/los-angeles/production" target="_blank" rel="noopener"><img src="${IMG}peerspace-open-door-2023.webp" width="285" height="400" alt="Peerspace Open Door Awards 2023 winner badge"><span><b>Open Door Awards 2023</b>No. 9 of the top 10 production spaces in Los Angeles<i>See the winners ↗</i></span></a>`;
+const BOARD = `<a class="card" href="https://www.pinterest.com/jc_griffith/etherea/" target="_blank" rel="noopener"><span><b>The Etherea board</b>Hundreds of pins: the dreamscapes the studio was designed from<i>See the board on Pinterest ↗</i></span></a>`;
+function paragraphs(s) {
+  if (s.paras) return s.paras;
+  const parts = s.detail.split(/(?<=[.!?])(?<!\bNo\.)\s+(?=[A-Z“"])/);
+  if (parts.length < 3) return [s.detail];
+  const half = Math.ceil(parts.length / 2); return [parts.slice(0, half).join(' '), parts.slice(half).join(' ')];
+}
+// Each chapter's layout, pull quote (a sentence from its own text) and background tint (a dark step of 719's palette).
+const LAYOUT = { intro: 'cover', sign: 'split', dreamscape: 'board', build: 'film', stage: 'diptych', 'photo-corner': 'trio', proof: 'statement', expand: 'reel', end: 'quiet' };
+const QUOTE = { sign: 'We took it as a sign.', dreamscape: 'I grew up working in renovation and construction, so building one felt possible.', build: 'That is why the pink wall stops short of the ceiling.', 'photo-corner': 'We left a blank canvas for anything.' };
+const TINT = { intro: '#0B0C0E', sign: '#15100f', dreamscape: '#1a110e', build: '#060708', stage: '#11150f', 'photo-corner': '#121212', proof: '#0f1210', expand: '#16130f', end: '#0B0C0E' };
+const N = (i) => String(i + 1).padStart(2, '0');
+const P = (arr) => arr.map((x) => `<p data-reveal>${esc(x)}</p>`).join('');
+const fig = (l, i, p, cls = '') => `<figure class="f ${cls}" data-reveal style="--ar:${p.w} / ${p.h}">${tile(l, i, p.src, p.alt || '', p.w, p.h)}</figure>`;
+const filmFig = (v, label, badge = '') => `<figure class="f vidfig" data-reveal>${badge ? `<span class="badge">${badge}</span>` : ''}<video src="${v.video}" poster="${v.src}" muted loop playsinline controls preload="none" aria-label="${esc(label)}"></video></figure>`;
+const quote = (q) => q ? `<blockquote class="pull" data-reveal><p>${esc(q)}</p></blockquote>` : '';
+const MARQUEE = (() => { const pins = MOOD.map(([id, img, alt]) => `<a href="https://www.pinterest.com/pin/${id}/" target="_blank" rel="noopener"><img src="https://i.pinimg.com/736x/${img}" alt="${esc(alt)}" loading="lazy" decoding="async" referrerpolicy="no-referrer"></a>`);
+  const half = Math.ceil(pins.length / 2), row = (a) => `<div class="row">${a.join('')}${a.join('').replace(/<a /g, '<a tabindex="-1" aria-hidden="true" ')}</div>`;   // each row twice, for a seamless loop
+  return `<div class="marquee" data-reveal>${row(pins.slice(0, half))}${row(pins.slice(half))}</div>`; })();
+document.getElementById('chapters').innerHTML = stops.map((s, i) => {
+  const paras = paragraphs(s), lay = LAYOUT[s.id] || 'split', q = QUOTE[s.id];
+  const list = (s.photos || setPhotos[s.id] || []).map((p) => ({ ...p, src: url(p.src), video: p.video && url(p.video), alt: p.alt || '' }));
+  const stills = list.filter((p) => !p.video), videos = list.filter((p) => p.video), l = reg(stills.map((p) => [p.src, p.alt || s.title]));
+  const head = `<div class="ch-head" data-reveal><span class="num" aria-hidden="true">${N(i)}</span><p class="hud">${esc(s.chip)}</p><h3 id="t-${s.id}">${esc(s.title)}</h3></div>`;
+  const dek = s.sum && !s.detail.startsWith(s.sum) ? `<p class="dek" data-reveal>${esc(s.sum)}</p>` : '';
+  const open = `<article class="ch ch--${lay}" id="ch-${s.id}" data-tint="${TINT[s.id] || '#0B0C0E'}" aria-labelledby="t-${s.id}">`;
+  let body;
+  switch (lay) {
+    case 'cover': {
+      const lead = stills[0];
+      body = `<figure class="bleed" data-reveal>${lead ? `<button type="button" data-l="${l}" data-i="0" aria-label="Open the photo"><img src="${lead.src}" alt="${esc(lead.alt)}" width="${lead.w}" height="${lead.h}" decoding="async"></button>` : ''}${head}</figure>
+        <div class="wrap cols"><div>${dek}</div><div>${P(paras)}${stills[1] ? fig(l, 1, stills[1], 'inset') : ''}</div></div>`;
+      break;
+    }
+    case 'split':
+      body = `<div class="wrap split"><div class="split-media">${videos.map((v) => filmFig(v, s.title)).join('')}${stills.map((p, k) => fig(l, k, p)).join('')}</div>
+        <div>${head}${dek}${P(paras)}${quote(q)}</div></div>`;
+      break;
+    case 'board': {
+      const plan = stills.find((p) => /eth-plan/.test(p.src)), rooms = ['stage', 'lounge', 'pool'];
+      const pairs = rooms.map((r) => [stills.find((p) => p.src.includes(`eth-${r}-render`)), stills.find((p) => p.src.includes(`eth-${r}-built`))]).filter(([a, b]) => a && b);
+      const at = (p) => stills.indexOf(p);
+      body = `<div class="wrap">${head}${dek}${P(paras.slice(0, 1))}</div>${MARQUEE}
+        <div class="wrap"><p class="hud" data-reveal>From my Etherea board on Pinterest · tap a pin to see it there</p>${quote(q)}
+          ${plan ? fig(l, at(plan), plan).replace('</figure>', '<figcaption class="hud">An early 3D layout</figcaption></figure>') : ''}
+          <p data-reveal>These are early iterations. The design kept changing until we built it, and the final version is the model at the top of this page.</p>
+          <div class="pairs">${pairs.map(([a, b]) => `<div class="pair" data-reveal>${fig(l, at(a), a)}${fig(l, at(b), b)}<p class="hud cap">Early 3D concept · as built</p></div>`).join('')}</div>
+          <p data-reveal><button type="button" class="cta" data-explore="etherea">Explore the final design in 3D <span aria-hidden="true">↗</span></button></p>
+          ${videos.map((v) => `<div class="film-grid">${filmFig(v, 'From the 3D render to the real room')}<div>${P(paras.slice(1))}${BOARD}</div></div>`).join('') || P(paras.slice(1)) + BOARD}</div>`;
+      break;
+    }
+    case 'film':
+      body = `<div class="wrap film-grid"><div>${head}${dek}${P(paras)}${quote(q)}</div>${videos.map((v) => filmFig(v, s.title)).join('')}</div>`;
+      break;
+    case 'diptych':
+      body = `<div class="wrap">${head}${dek}<div class="dip">${stills.slice(0, 2).map((p, k) => fig(l, k, p)).join('')}</div>${P(paras)}${stills.slice(2).map((p, k) => fig(l, k + 2, p)).join('')}</div>`;
+      break;
+    case 'trio':
+      body = `<div class="wrap">${head}${dek}${P(paras)}<div class="row3">${stills.map((p, k) => fig(l, k, p)).join('')}</div>${quote(q)}</div>`;
+      break;
+    case 'reel':
+      body = `<div class="wrap">${head}${dek}${P(paras.slice(0, 2))}<div class="reel-grid">${videos.map((v) => filmFig(v, 'The Terra build, sped up', '3.2M views on Instagram')).join('')}${stills.map((p, k) => fig(l, k, p)).join('')}</div>${P(paras.slice(2))}</div>`;
+      break;
+    case 'statement':
+      body = `<div class="wrap">${head}${dek}${P(paras)}${s.award ? AWARD : ''}</div>`;
+      break;
+    default:   // quiet
+      body = `<div class="wrap">${head}${dek}${P(paras)}</div>`;
+  }
+  return open + body + '</article>';
+}).join('');
+// the background drifts to each chapter's tint; things arrive as they come on screen; the cover photo drifts slower than the page
+{
+  const story = document.getElementById('story');
+  const tio = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) story.style.setProperty('--tint', e.target.dataset.tint); }), { rootMargin: '-45% 0px -45% 0px' });
+  document.querySelectorAll('.ch').forEach((c) => tio.observe(c));
+}
+
+// ---- 3. what I made ------------------------------------------------------------------------------------------------
+const PARTS = [
+  ['identity', 'Identity', 'Logo, colour, type, tokens'],
+  ['spaces', 'Spaces', 'Etherea, Terra, Solaris'],
+  ['applications', 'Applications', 'Signs, listings, merch, social'],
+  ['motion', 'Motion and video', 'The ad and the reels'],
+  ['proof', 'Proof', 'Reviews, numbers, the award'],
+];
+document.getElementById('map').innerHTML = PARTS.map(([id, t, d], k) => `<a href="#${id}"><span class="hud">${String(k + 1).padStart(2, '0')}</span><b>${t}</b><span>${d}</span></a>`).join('');
+document.getElementById('index').innerHTML = [['story', 'Story'], ...PARTS.map(([id, t]) => [id, t])].map(([id, t]) => `<a href="#${id}" data-for="${id}">${t}</a>`).join('');
+const head = (id, label, title, line) => `<div class="s-head" data-reveal>${/^\d\d · /.test(label) ? `<span class="num" aria-hidden="true">${label.slice(0, 2)}</span>` : ''}<p class="hud">${label}</p><h2 id="h-${id}">${title}</h2>${line ? `<p>${line}</p>` : ''}</div>`;
+const src = (f) => BRAND + f, small = (f) => /\.webp$/.test(f) ? BRAND + f.replace(/\.webp$/, '-800.webp') : BRAND + f;
+const coll = (g) => (brand.collateral || []).filter((c) => c.group === g);
+
+// identity
+{
+  const logos = brand.logos || [], wordmark = logos.find((x) => /black.*horizontal/i.test(x.label));
+  const groups = [...new Set((brand.palette || []).map((c) => c.group))];
+  const guide = brand.styleGuide || [], gl = reg(guide.map((g) => [src(g.file), g.label]));
+  const tokens = [
+    ...(brand.palette || []).map((c) => [`color.${c.name.toLowerCase().replace(/\s+/g, '-')}`, `<i style="background:${c.hex}"></i>${c.hex}`]),
+    ...(brand.type || []).map((t) => [`font.${t.role.split(' ')[0].toLowerCase()}`, esc(`${t.family} ${t.weight}`)]),
+    ...(brand.tokens || []).map((t) => [t.name, esc(t.value)]),
+  ];
+  document.getElementById('identity-body').innerHTML = head('identity', '01 · Identity', 'An arch inside a circle', 'The shape that runs through the sets, in each loft’s own colours, built as a system down to the tokens.') + `
+  <div class="skin">
+    <div class="b-card"><p class="b-label">Logo</p><h3>Badge, stacked wordmark, horizontal wordmark</h3>
+      <div class="b-logos">${logos.map((l) => `<div class="b-logo${l.bg === 'dark' ? ' dark' : ''}"><img src="${src(l.file)}" alt="${esc(l.label)}" loading="lazy"></div>`).join('')}</div></div>
+    <div class="split">
+      <div class="b-card"><p class="b-label">Colour</p><h3>Each loft wears its own palette</h3>
+        ${groups.map((g) => `<div><p class="b-label">${esc(g)}</p><div class="b-swatches">${brand.palette.filter((c) => c.group === g).map((c) => `<div class="b-sw"><i style="background:${c.hex}"></i><b>${esc(c.name)}</b><code>${c.hex}</code></div>`).join('')}</div></div>`).join('')}</div>
+      <div class="b-card"><p class="b-label">Tokens</p><h3>The same choices, named for code</h3><dl class="b-tokens">${tokens.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${v}</dd>`).join('')}</dl></div>
+    </div>
+    <div class="b-card"><p class="b-label">Type</p><h3>A display face for the big moments, DM Sans for everything else</h3>
+      <div class="b-type">${(brand.type || []).map((t) => /mak/i.test(t.family)
+        ? `<div>${wordmark ? `<img src="${src(wordmark.svg || wordmark.file)}" alt="719 Studios, set in Mak" loading="lazy">` : ''}<p class="b-label">Mak ${t.weight} · ${esc(t.role)}</p></div>`
+        : `<div><span class="aa" style="font-weight:${t.weight}">Aa</span><p class="b-label">${esc(t.family)} ${t.weight} · ${esc(t.role)}</p></div>`).join('')}</div></div>
+    <div class="b-card"><p class="b-label">Style guide</p><h3>One guide for every brand contributor</h3>
+      <div class="gal two light">${guide.map((g, k) => tile(gl, k, small(g.file), g.label, g.w, g.h)).join('')}</div></div>
+  </div>`;
+}
+
+// spaces
+{
+  const T = (n, alt, w = 1600, h = 1068) => [`${IMG}${n}.webp`, alt, w, h];
+  const s = (f) => [url(f.src), '', f.w, f.h];
+  const LOFTS = [
+    ['etherea', 'Etherea Loft', '2021 · Units 902 + 903', 'Our first and biggest loft: desert and forest sets, a pool, a lounge between the sets and a blank-canvas corner.',
+      [T('hero', 'The Etherea lounge between the desert and forest sets.', 1600, 1067), T('eth-stage-built', 'The desert set: rust circle, arches and steps.', 1600, 1067), T('eth-pool-built', 'The pool set under a green arch.', 1600, 1067), s(sets['green-wall'][0]), s(sets['photo-corner'][0])]],
+    ['terra', 'Terra Loft', '2023', 'Our natural earth-tone multi-set studio: the iconic circle, a grand U cut-out, semi-circles and southeast-facing loft windows.',
+      [T('terra-04', 'The whole loft: curved steps under tall windows.'), T('terra-01', 'A round plaster niche above a curved platform, in morning sun.'), T('terra-02', 'Curved steps and an arched niche by the loft windows.'), T('terra-03', 'A built-in sofa inside a deep plaster arch.'), T('terra-05', 'The round niche and curved steps, wide.')]],
+    ['solaris', 'Solaris Loft', '2023', 'Our bright corner studio, with tall loft windows on two walls, limewash walls and archway textures. The windows were the draw, so we kept it simple.',
+      [T('solaris-01', 'Late sun across a white sofa and tall corner windows.'), T('solaris-02', 'Blush armchairs and an arched mirror by the windows.'), T('solaris-03', 'Arched wall panels and a rug in window light.'), T('solaris-04', 'The lounge: white sofa, glass table, city windows.'), T('solaris-06', 'A sofa corner with plants and pendant light.')]],
+  ];
+  document.getElementById('spaces-body').innerHTML = head('spaces', '02 · Spaces', 'Three lofts, each designed in 3D first', 'The rooms as we offered them for bookings. Open each one in 3D.') +
+    LOFTS.map(([id, name, when, line, photos]) => {
+      const l = reg(photos.map(([p, alt]) => [p, alt || name]));
+      return `<div class="loft"><div class="sub"><h3>${name}</h3><span class="hud">${when}</span></div><p>${line}</p>
+        <div class="loft-lead" data-reveal>${tile(l, 0, photos[0][0], photos[0][1] || name, photos[0][2], photos[0][3])}</div>
+        <div class="strip">${photos.slice(1).map(([p, alt, w, h], k) => tile(l, k + 1, p.replace(/(terra|solaris)-0(\d)\.webp$/, '$1-0$2-800.webp'), alt || name, w, h)).join('')}</div>
+        <p style="margin-top:12px"><button type="button" class="cta" data-explore="${id}">Explore ${name.split(' ')[0]} in 3D <span aria-hidden="true">↗</span></button></p></div>`;
+    }).join('');
+}
+
+// applications
+{
+  const groups = [['Signage', 'Signs and wall decals', 'mason light'], ['Peerspace', 'Peerspace listing covers', 'two'], ['Merch', 'Merch', 'five'], ['Social', 'Social', 'two']];
+  document.getElementById('applications-body').innerHTML = head('applications', '03 · Applications', 'Everywhere the brand showed up', 'We put it on doors, on Peerspace, on hoodies and in the feed.') +
+    groups.map(([g, title, cls]) => { const items = coll(g), l = reg(items.map((c) => [src(c.file), c.label]));
+      return items.length ? `<div class="sub"><h3>${title}</h3><span class="hud">${items.length}</span></div><div class="gal ${cls}">${items.map((c, k) => tile(l, k, small(c.file), c.label, c.w, c.h)).join('')}</div>` : ''; }).join('');
+}
+
+// motion
+{
+  const ad = coll('Ads')[0], R = '../../assets/video/719/';
+  const reels = [['04-terra-build-timelapse', 'The Terra build, sped up: 3.2M views on Instagram'], ['01-etherea-empty-studio', 'The empty studio'], ['02-etherea-render-to-real', 'From the 3D render to the real room'], ['03-etherea-build-timelapse', 'The build, sped up']];
+  document.getElementById('motion-body').innerHTML = head('motion', '04 · Motion and video', 'The ad and the reels', 'Short vertical films for Instagram and the listings.') +
+    `<div class="reels">${reels.slice(0, 1).map(([n, label]) => `<figure class="vidfig"><span class="badge">3.2M views</span><video src="${R}${n}.mp4" poster="${R}${n}.jpg" muted loop playsinline controls preload="none" aria-label="${esc(label)}"></video><figcaption class="hud" style="margin-top:8px">${esc(label)}</figcaption></figure>`).join('')}
+      ${ad ? `<figure>${`<video src="${src(ad.video)}" poster="${src(ad.file)}" muted loop playsinline controls preload="none" aria-label="${esc(ad.label)}"></video>`}<figcaption class="hud" style="margin-top:8px">${esc(ad.label.replace(/^Vertical ad: /, 'Ad: '))}</figcaption></figure>` : ''}
+      ${reels.slice(1).map(([n, label]) => `<figure><video src="${R}${n}.mp4" poster="${R}${n}.jpg" muted loop playsinline controls preload="none" aria-label="${esc(label)}"></video><figcaption class="hud" style="margin-top:8px">${esc(label)}</figcaption></figure>`).join('')}</div>`;
+}
+
+// proof
+{
+  const rev = coll('Reviews'), l = reg(rev.map((c) => [src(c.file), c.label]));
+  document.getElementById('proof-body').innerHTML = head('proof', '05 · Proof', 'Booked from day one', '') +
+    `<ul class="stats"><li><b data-count="1000" data-format="thousands" data-suffix="+">1,000+</b><span class="hud">Reviews across the three lofts</span></li><li><b data-count="5" data-format="one-decimal">5.0</b><span class="hud">Average rating</span></li><li><b>No. 9</b><span class="hud">Peerspace Top 10, Los Angeles, 2023</span></li><li><b data-count="3.2" data-format="one-decimal" data-suffix="M">3.2M</b><span class="hud">Views on the Terra build reel</span></li></ul>
+    ${AWARD}<div class="sub"><h3>Review graphics</h3><span class="hud">${rev.length}</span></div><div class="gal">${rev.map((c, k) => tile(l, k, small(c.file), c.label, c.w, c.h)).join('')}</div>`;
+}
+
+// the index follows the reader; videos play while on screen
+const ids = ['story', ...PARTS.map(([id]) => id)], links = new Map([...document.querySelectorAll('#index a')].map((a) => [a.dataset.for, a]));
+const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) links.forEach((a, id) => a.setAttribute('aria-current', String(id === e.target.id))); }), { rootMargin: '-45% 0px -50% 0px' });
+ids.forEach((id) => io.observe(document.getElementById(id)));
+// arrival: base.css animates [data-reveal] once it has .in; grids stagger by --i. The cover photo drifts slower than the page.
+document.querySelectorAll('.gal > *, .skin > *, .stats li, .reels figure, .loft, .map a, .credits, .next').forEach((el, k) => { el.setAttribute('data-reveal', ''); el.style.setProperty('--i', String(k % 5)); });
+const rio = new IntersectionObserver((es) => es.forEach((e) => { if (!e.isIntersecting) return; e.target.classList.add('in'); rio.unobserve(e.target);
+  e.target.querySelectorAll?.('[data-count]').forEach(countUp); if (e.target.matches?.('[data-count]')) countUp(e.target); }), { rootMargin: '0px 0px -8% 0px' });
+document.querySelectorAll('[data-reveal]').forEach((el) => rio.observe(el));
+function countUp(b) {
+  const to = Number(b.dataset.count), fmt = b.dataset.format, suf = b.dataset.suffix || '', show = (v) => (fmt === 'one-decimal' ? v.toFixed(1) : Math.round(v).toLocaleString('en-US')) + suf;
+  if (reduce) { b.textContent = show(to); return; }
+  const t0 = performance.now(), dur = 1400; b.textContent = show(0);
+  const step = (now) => { const k = Math.min((now - t0) / dur, 1), e = 1 - Math.pow(1 - k, 3); b.textContent = show(to * e); if (k < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+}
+if (!reduce) {
+  const bleeds = [...document.querySelectorAll('.bleed img')]; let raf = 0;
+  const par = () => { raf = 0; bleeds.forEach((im) => { const r = im.closest('.bleed').getBoundingClientRect(); const k = (r.top + r.height / 2 - innerHeight / 2) / innerHeight; im.style.setProperty('--py', `${(-k * 6).toFixed(2)}%`); }); };
+  addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(par); }, { passive: true }); par();
+}
+if (!reduce) {
+  const vio = new IntersectionObserver((es) => es.forEach((e) => { const v = e.target; if (e.isIntersecting) v.play().catch(() => {}); else v.pause(); }), { threshold: 0.6 });
+  document.querySelectorAll('main video').forEach((v) => vio.observe(v));
+}
+
+// ---- Explore: the 3D, full screen ---------------------------------------------------------------------------------
+const VIEWERS = { etherea: '3d/', terra: 'terra-3d/', solaris: 'solaris-3d/' }, NAMES = { etherea: 'Etherea Loft', terra: 'Terra Loft', solaris: 'Solaris Loft' };
+const ex = document.getElementById('explore'), view = document.getElementById('explore-view'); let back = 0, opener = null;
+function loft(id) {
+  document.querySelectorAll('[data-loft]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.loft === id)));
+  view.innerHTML = `<iframe src="${VIEWERS[id]}?embed&hub&explore" title="${NAMES[id]} in 3D: drag to turn, tap a set for its photos" allow="fullscreen"></iframe>`;
+}
+function explore(id, from) {
+  back = window.scrollY; opener = from; ex.hidden = false; document.documentElement.classList.add('exploring'); loft(id);
+  ex.querySelector(`[data-loft="${id}"]`).focus();
+}
+function done() {
+  view.innerHTML = ''; ex.hidden = true; document.documentElement.classList.remove('exploring');
+  window.scrollTo({ top: back, behavior: 'instant' }); opener?.focus({ preventScroll: true });
+}
+document.addEventListener('click', (e) => { const b = e.target.closest('[data-explore]'); if (b) explore(b.dataset.explore, b); });
+document.querySelectorAll('[data-loft]').forEach((b) => b.addEventListener('click', () => loft(b.dataset.loft)));
+document.getElementById('explore-done').addEventListener('click', done);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !ex.hidden && !lbEl.open) done(); });
+// In-page links scroll this page only: the browser's own jump would also scroll the Work floor around the panel.
+document.addEventListener('click', (e) => {
+  const a = e.target.closest('a[href^="#"]'); if (!a) return;
+  const t = document.getElementById(a.getAttribute('href').slice(1)); if (!t) return;
+  e.preventDefault();
+  const m = parseFloat(getComputedStyle(t).scrollMarginTop) || 0;
+  window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - m, behavior: reduce ? 'instant' : 'smooth' });
+});
+// deep links: #story and the parts scroll; #explore-<loft> opens that loft
+const h = window.__jump || '';
+if (h.startsWith('explore-') && VIEWERS[h.slice(8)]) explore(h.slice(8), null);
+else if (h && document.getElementById(h)) {   // the sections are built after load, so jump once they exist, and again once fonts settle
+  const t = document.getElementById(h), jump = () => window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - (parseFloat(getComputedStyle(t).scrollMarginTop) || 0), behavior: 'instant' });
+  let moved = false; const stop = () => { moved = true; }; ['wheel', 'touchstart', 'keydown'].forEach((ev) => addEventListener(ev, stop, { once: true, passive: true }));
+  jump(); document.fonts.ready.then(() => { if (!moved) jump(); });
+  const ro = new ResizeObserver(() => { if (!moved) jump(); }); ro.observe(document.querySelector('main')); setTimeout(() => ro.disconnect(), 5000);   // images settling above
+}
+</script>
+</body>
+</html>

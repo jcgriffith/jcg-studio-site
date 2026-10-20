@@ -1,0 +1,63 @@
+{
+  "version": 3,
+  "note": "Public build (scripts/build-ship.sh): published concepts only.",
+  "world": {
+    "w": 1200,
+    "h": 1560
+  },
+  "kinds": {
+    "systems": "Systems",
+    "collateral": "Collateral",
+    "sites": "Sites",
+    "products": "Products",
+    "spaces": "Spaces"
+  },
+  "concepts": [
+    {
+      "id": "719-studios",
+      "concept": "719 Studios",
+      "label": "S-01 / 719 STUDIOS",
+      "kind": "spaces",
+      "layoutMotif": "product",
+      "tag": "BUILT",
+      "member": "Three photo and production lofts in downtown Los Angeles",
+      "blurb": "The brand and the three lofts behind it, Etherea, Terra and Solaris: designed in 3D, built, booked from the start, and sold in 2026.",
+      "description": "The 719 Studios brand and its three lofts, Etherea, Terra and Solaris. Turn each one in 3D, see the real photographs, and walk through the identity and everything made with it.",
+      "date": "Built \u00b7 2021",
+      "workType": "Brand, set and interior design \u00b7 3D",
+      "coverW": 720,
+      "coverH": 960,
+      "poster": "assets/concepts/719-studios-cover.jpg?v=20261019",
+      "src": "assets/concepts/719-studios-cover.jpg?v=20261019",
+      "page": "work/719-studios/",
+      "stageEmbed": "work/719-studios/?embed",
+      "coverHud": true,
+      "coverFact": "Built in 2021",
+      "coverKind": "Photo studios",
+      "x": 240,
+      "y": 240,
+      "expand": "right",
+      "frames": []
+    }
+  ],
+  "layout": {
+    "cover": {
+      "w": 960,
+      "h": 600
+    },
+    "cell": {
+      "w": 384,
+      "h": 288
+    },
+    "gutter": 24,
+    "cols": 3,
+    "head": 0,
+    "titleCard": {
+      "w": 960,
+      "h": 600
+    },
+    "grid": 24,
+    "start": "719-studios",
+    "caption": 120
+  }
+}

@@ -1,0 +1,418 @@
+{
+  "$comment": "719 Studios brand collateral for the portfolio page. Every image has <file> (long edge <=1600) and a -800 sibling. w/h are the pixel sizes of the main file. Source of truth for values: clients/719-studios/marketing/design/branding/01-identity/tokens.json. `tokens` (added for the page): a display-only selection from tokens.json.",
+  "palette": [
+    {
+      "name": "Rose",
+      "hex": "#EFDCCD",
+      "group": "Etherea Loft"
+    },
+    {
+      "name": "Rust",
+      "hex": "#A67359",
+      "group": "Etherea Loft"
+    },
+    {
+      "name": "Dark Green",
+      "hex": "#A2B6A7",
+      "group": "Etherea Loft"
+    },
+    {
+      "name": "Light Green",
+      "hex": "#BFD2C1",
+      "group": "Etherea Loft"
+    },
+    {
+      "name": "Black",
+      "hex": "#000000",
+      "group": "Text / backgrounds"
+    },
+    {
+      "name": "White",
+      "hex": "#FFFFFF",
+      "group": "Text / backgrounds"
+    },
+    {
+      "name": "Beige",
+      "hex": "#FCF6F1",
+      "group": "Terra & Solaris Loft"
+    },
+    {
+      "name": "Limestone",
+      "hex": "#DBD0BD",
+      "group": "Terra & Solaris Loft"
+    },
+    {
+      "name": "Earth",
+      "hex": "#998373",
+      "group": "Terra & Solaris Loft"
+    }
+  ],
+  "type": [
+    {
+      "role": "Display (big headings)",
+      "family": "Mak",
+      "weight": 700,
+      "source": "style guide p.3",
+      "web": "not on Google Fonts; installed locally only (~/Library/Fonts/MAK-bold.otf). Use the logo/decal SVGs or an image for Mak specimens, or self-host after confirming the license (font name table says free for personal and commercial use)."
+    },
+    {
+      "role": "Heading",
+      "family": "DM Sans",
+      "weight": 800,
+      "source": "style guide p.3",
+      "web": "Google Fonts: DM Sans 800"
+    },
+    {
+      "role": "Body",
+      "family": "DM Sans",
+      "weight": 400,
+      "source": "style guide p.3",
+      "web": "Google Fonts: DM Sans 400"
+    }
+  ],
+  "logos": [
+    {
+      "file": "logos/719-logo-primary.webp",
+      "png": "logos/719-logo-primary.png",
+      "svg": "logos/719-logo-primary.svg",
+      "label": "Primary logo (badge)",
+      "bg": "light",
+      "w": 1025,
+      "h": 1025
+    },
+    {
+      "file": "logos/719-logo-black-stacked.webp",
+      "png": "logos/719-logo-black-stacked.png",
+      "svg": "logos/719-logo-black-stacked.svg",
+      "label": "Black logo, stacked",
+      "bg": "light",
+      "w": 1600,
+      "h": 956
+    },
+    {
+      "file": "logos/719-logo-black-horizontal.webp",
+      "png": "logos/719-logo-black-horizontal.png",
+      "svg": "logos/719-logo-black-horizontal.svg",
+      "label": "Black logo, horizontal",
+      "bg": "light",
+      "w": 1600,
+      "h": 162
+    },
+    {
+      "file": "logos/719-logo-white-stacked.webp",
+      "png": "logos/719-logo-white-stacked.png",
+      "svg": "logos/719-logo-white-stacked.svg",
+      "label": "White logo, stacked",
+      "bg": "dark",
+      "w": 1600,
+      "h": 956
+    },
+    {
+      "file": "logos/719-logo-white-horizontal.webp",
+      "png": "logos/719-logo-white-horizontal.png",
+      "svg": "logos/719-logo-white-horizontal.svg",
+      "label": "White logo, horizontal",
+      "bg": "dark",
+      "w": 1600,
+      "h": 162
+    }
+  ],
+  "styleGuide": [
+    {
+      "file": "style-guide/style-guide-1.webp",
+      "label": "Style guide: cover",
+      "w": 1600,
+      "h": 900
+    },
+    {
+      "file": "style-guide/style-guide-2.webp",
+      "label": "Style guide: palette",
+      "w": 1600,
+      "h": 900
+    },
+    {
+      "file": "style-guide/style-guide-3.webp",
+      "label": "Style guide: typography",
+      "w": 1600,
+      "h": 900
+    },
+    {
+      "file": "style-guide/style-guide-4.webp",
+      "label": "Style guide: logos",
+      "w": 1600,
+      "h": 900
+    }
+  ],
+  "collateral": [
+    {
+      "group": "Signage",
+      "file": "signage/decal-719-studios.webp",
+      "label": "Wall decal: 719 Studios",
+      "w": 1600,
+      "h": 425,
+      "svg": "signage/decal-719-studios.svg",
+      "bg": "light"
+    },
+    {
+      "group": "Signage",
+      "file": "signage/decal-etherea-loft.webp",
+      "label": "Wall decal: Etherea Loft",
+      "w": 1600,
+      "h": 425,
+      "svg": "signage/decal-etherea-loft.svg",
+      "bg": "light"
+    },
+    {
+      "group": "Signage",
+      "file": "signage/decal-terra-loft.webp",
+      "label": "Wall decal: Terra Loft",
+      "w": 1600,
+      "h": 425,
+      "svg": "signage/decal-terra-loft.svg",
+      "bg": "light"
+    },
+    {
+      "group": "Signage",
+      "file": "signage/decal-solaris-loft.webp",
+      "label": "Wall decal: Solaris Loft",
+      "w": 1600,
+      "h": 425,
+      "svg": "signage/decal-solaris-loft.svg",
+      "bg": "light"
+    },
+    {
+      "group": "Signage",
+      "file": "signage/door-sign-etherea.webp",
+      "label": "Door sign: The Etherea Loft",
+      "w": 1600,
+      "h": 1237
+    },
+    {
+      "group": "Signage",
+      "file": "signage/door-sign-terra.webp",
+      "label": "Door sign: The Terra Loft",
+      "w": 1600,
+      "h": 1237
+    },
+    {
+      "group": "Signage",
+      "file": "signage/door-sign-solaris.webp",
+      "label": "Door sign: The Solaris Loft",
+      "w": 1600,
+      "h": 1237
+    },
+    {
+      "group": "Signage",
+      "file": "signage/sign-5x7-instagram.webp",
+      "label": "5x7 sign: Instagram",
+      "w": 1143,
+      "h": 1600
+    },
+    {
+      "group": "Signage",
+      "file": "signage/sign-5x7-platform-care.webp",
+      "label": "5x7 sign: platform care",
+      "w": 1143,
+      "h": 1600
+    },
+    {
+      "group": "Signage",
+      "file": "signage/sign-5x7-do-not-move.webp",
+      "label": "5x7 sign: do not move",
+      "w": 1143,
+      "h": 1600
+    },
+    {
+      "group": "Peerspace",
+      "file": "peerspace/cover-etherea-2025.webp",
+      "label": "Peerspace cover: The Etherea Loft (2025)",
+      "w": 1600,
+      "h": 950
+    },
+    {
+      "group": "Peerspace",
+      "file": "peerspace/cover-terra-2025.webp",
+      "label": "Peerspace cover: The Terra Loft (2025)",
+      "w": 1600,
+      "h": 950
+    },
+    {
+      "group": "Peerspace",
+      "file": "peerspace/cover-solaris-2025.webp",
+      "label": "Peerspace cover: The Solaris Loft (2025)",
+      "w": 1600,
+      "h": 950
+    },
+    {
+      "group": "Peerspace",
+      "file": "peerspace/cover-solaris-halloween-1953.webp",
+      "label": "Peerspace cover: The Solaris Loft, Halloween 1953 edition",
+      "w": 1600,
+      "h": 950
+    },
+    {
+      "group": "Reviews",
+      "file": "reviews/review-etherea.webp",
+      "label": "Review graphic: Etherea",
+      "w": 1600,
+      "h": 900
+    },
+    {
+      "group": "Reviews",
+      "file": "reviews/review-terra.webp",
+      "label": "Review graphic: Terra",
+      "w": 1600,
+      "h": 900
+    },
+    {
+      "group": "Reviews",
+      "file": "reviews/review-solaris.webp",
+      "label": "Review graphic: Solaris",
+      "w": 1600,
+      "h": 900
+    },
+    {
+      "group": "Merch",
+      "file": "merch/merch-green-front.webp",
+      "label": "Hoodie mockup: Green, front",
+      "w": 1600,
+      "h": 1600
+    },
+    {
+      "group": "Merch",
+      "file": "merch/merch-green-back.webp",
+      "label": "Hoodie mockup: Green, back",
+      "w": 1600,
+      "h": 1600
+    },
+    {
+      "group": "Merch",
+      "file": "merch/merch-earth-front.webp",
+      "label": "Hoodie mockup: Earth, front",
+      "w": 1600,
+      "h": 1600
+    },
+    {
+      "group": "Merch",
+      "file": "merch/merch-earth-back.webp",
+      "label": "Hoodie mockup: Earth, back",
+      "w": 1600,
+      "h": 1600
+    },
+    {
+      "group": "Merch",
+      "file": "merch/merch-black-front.webp",
+      "label": "Hoodie mockup: Black, front",
+      "w": 1600,
+      "h": 1600
+    },
+    {
+      "group": "Merch",
+      "file": "merch/merch-black-back.webp",
+      "label": "Hoodie mockup: Black, back",
+      "w": 1600,
+      "h": 1600
+    },
+    {
+      "group": "Merch",
+      "file": "merch/merch-blush-front.webp",
+      "label": "Hoodie mockup: Blush, front",
+      "w": 1600,
+      "h": 1600
+    },
+    {
+      "group": "Merch",
+      "file": "merch/merch-blush-back.webp",
+      "label": "Hoodie mockup: Blush, back",
+      "w": 1600,
+      "h": 1600
+    },
+    {
+      "group": "Merch",
+      "file": "merch/merch-white-front.webp",
+      "label": "Hoodie mockup: White, front",
+      "w": 1600,
+      "h": 1600
+    },
+    {
+      "group": "Merch",
+      "file": "merch/merch-white-back.webp",
+      "label": "Hoodie mockup: White, back",
+      "w": 1600,
+      "h": 1600
+    },
+    {
+      "group": "Social",
+      "file": "social/profile-pic-2024.webp",
+      "label": "Social profile picture (2024)",
+      "w": 1200,
+      "h": 1200
+    },
+    {
+      "group": "Social",
+      "file": "social/facebook-cover.webp",
+      "label": "Facebook cover",
+      "w": 1600,
+      "h": 608
+    },
+    {
+      "group": "Ads",
+      "file": "ads/ad-elevate-your-brand-15s-poster.webp",
+      "label": "Vertical ad: Elevate Your Brand (15s)",
+      "w": 900,
+      "h": 1600,
+      "video": "ads/ad-elevate-your-brand-15s.mp4",
+      "videoW": 608,
+      "videoH": 1080,
+      "poster_jpg": "ads/ad-elevate-your-brand-15s-poster.jpg",
+      "muted": true,
+      "duration_s": 15
+    }
+  ],
+  "notes": [
+    "Palette hexes are exact from the 719 Studios Style Guide (p.2).",
+    "The Primary (badge) logo files use two colours not in the guide palette: #E7D3C4 (ring) and #C6917F (lettering). They are measured from the logo PNG and AI, not from the guide. Show them as logo colours, not as palette entries.",
+    "Logo SVGs were converted from the Illustrator files (pdftocairo -svg) and checked against the PNGs. Rust logo variants (stacked, horizontal) exist only as .ai; their PDF-compatible content renders white, so no faithful Rust export was possible. Not exported.",
+    "Wall decal SVGs were converted from the EPS files with a small path converter (no Ghostscript available). Vector paths are exact; the CMYK rich black is shown as #060808. Decals are black on transparent: show on a light background.",
+    "Door signs and loft wall decals show unit numbers (902, 924, 926). No street address, codes or contact details appear on any exported file. Drop them if unit numbers should stay off the public site.",
+    "Held back for sensitive content: 5x7 Wi-Fi signs (network password), 5x7 backdrop add-on sign (payment QR code), Guest Guide (private phone number on every page, Wi-Fi and iPad passcodes inside; cropping would break the layout), Binder Info (Wi-Fi password, street address), Administrator and Cleaning Crew guides (operational), Ninth Floor directory (other tenants' names).",
+    "Not exported: house-rules door signs (text-heavy), older 'The 719 Studio' identity pieces (2021 profile pics, directional signage, early 5x7 signs, Guest Guide). The style guide brand is '719 Studios'; earlier files use 'The 719 Studio'.",
+    "Merch exports are hoodie mockups only (5 colours, front and back). Hat mockups exist only inside the PSDs; not exported.",
+    "Peerspace: 2025 covers for all three lofts plus the Solaris 'Halloween 1953' edition. A 'Holidays 2024' cover also exists and was not exported.",
+    "Ad: 15s vertical 'Elevate Your Brand', re-encoded H.264 608x1080, no audio track, faststart. Poster frame at 3.5s."
+  ],
+  "tokens": [
+    {
+      "name": "semantic.surface",
+      "value": "Beige #FCF6F1"
+    },
+    {
+      "name": "semantic.ink",
+      "value": "Black #000000"
+    },
+    {
+      "name": "semantic.action",
+      "value": "Rust #A67359"
+    },
+    {
+      "name": "semantic.line",
+      "value": "Limestone #DBD0BD"
+    },
+    {
+      "name": "font.size",
+      "value": "72 · 48 · 32 · 24 · 16 · 12 px"
+    },
+    {
+      "name": "font.tracking.caps",
+      "value": "0.15em"
+    },
+    {
+      "name": "radius.card",
+      "value": "24px"
+    },
+    {
+      "name": "space.base",
+      "value": "8px · card gap 40 · card padding 56"
+    }
+  ]
+}

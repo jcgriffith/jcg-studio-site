@@ -39,9 +39,16 @@ function brickPath(p, br, x, y, b) {
 const BALLS = 3;
 // Chunks (JC, 2026-10-13): a hit knocks out a whole chunk, a quarter of a logo block (4 x 4 bricks), a corner of a
 // letter, or 2 x 2 pixels of the word. Now one brick per block, ten in all; a hit block fades out quickly.
-// The payoff (JC, 2026-10-13): clear the mark and it bursts into confetti, the creed types itself huge across the game
+// The payoff (JC, 2026-10-13; win line 2026-10-19): clear the mark and it bursts into confetti, a new win line types itself huge across the game
 // with a random slang combo, +1,000 points, and a Post-it-on-X link; then the mark buds back.
-const COMBOS = ['RAD, BRUH', 'LOWKEY LIT', 'HELLA DOPE', 'SUCH A VIBE', 'BUSSIN’, FR', 'EPIC SAUCE', 'SO WILD', 'PURE MAGIC', 'SO FETCH', 'MAD FRESH', 'FRIGGIN’ SICK'];
+// Win lines (JC, 2026-10-19): a new one every win, never the same twice in a row; then the logo comes back and the game resets.
+const WINS = ['WALL DOWN.', 'CLEAN SWEEP.', 'NAILED IT.', 'TOO EASY.', 'SENT IT.', 'NO NOTES.', 'CERTIFIED.', 'LEGENDARY.', 'BIG MOVE.', 'CALM. PRECISE.', 'GG.', 'RUN IT BACK?'];
+function nextWin() {
+  let last = -1; try { last = +(localStorage.getItem('jcg-win-last') ?? -1); } catch (e) {}
+  let i = Math.floor(Math.random() * (WINS.length - 1)); if (i >= last && last >= 0) i += 1;   // any line but the last one
+  try { localStorage.setItem('jcg-win-last', String(i)); } catch (e) {}
+  return WINS[i];
+}
 const PARTY = 4200, BONUS = 1000;
 const LETTER_CHUNK = 4, GHOST = 0, FADE = 220;   // a hit brick fades to black (JC, 2026-10-13)
 function chunkKey(br) {
@@ -278,8 +285,8 @@ class FooterGame {
   startRebuild() {
     this.canvas.style.touchAction = '';
     if (this.level === 0) {                                                  // the payoff
-      this.score += BONUS; this.combo = COMBOS[Math.floor(Math.random() * COMBOS.length)];
-      const text = `I cleared the JCG wall: ${this.score} points. The future is gonna be ${this.combo.toLowerCase()}.`;
+      this.score += BONUS; this.combo = nextWin();
+      const text = `I cleared the JCG wall: ${this.score} points. ${this.combo.charAt(0) + this.combo.slice(1).toLowerCase()}`;
       this.out.share.href = 'https://x.com/intent/post?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent('https://jcg.studio');
       this.out.share.hidden = false;
       const b = this.b; this.bits = this.wall.bricks.filter((q) => q.kind !== 'web').map((q) => {
@@ -293,11 +300,11 @@ class FooterGame {
     if (this.level === 0 && !reduce.matches) { this.state = 'rebuild'; this.t0 = performance.now(); this.parkBall(); this.show(); return; }
     this.nextWall();
   }
+  // After the win the logo is back and the game is reset: the next tap starts a fresh game (2026-10-19: no word wall).
   nextWall() {
-    this.level = this.level === 0 && this.wordWall ? 1 : 0;
-    this.wall = this.level ? this.wordWall : this.logo;
+    this.level = 0; this.wall = this.logo;
     this.place(); this.reset();
-    this.state = 'serve'; this.parkBall(); this.show();
+    this.state = 'idle'; this.played = true; this.balls = BALLS; this.parkBall(); this.show();
   }
 
   // The payoff: confetti from the wall's own bricks, then the creed typed big.
@@ -309,11 +316,10 @@ class FooterGame {
       ctx.save(); ctx.translate(p.x + p.s / 2, p.y + p.s / 2); ctx.rotate(p.r);
       ctx.fillStyle = p.o ? SIG : CH; ctx.globalAlpha = Math.max(0, 1 - t / PARTY); ctx.fillRect(-p.s / 2, -p.s / 2, p.s, p.s); ctx.restore();
     }
-    const lead = 'THE FUTURE IS GONNA BE', combo = this.combo || 'FRIGGIN’ SICK';
+    const combo = this.combo || WINS[0];
     const size = Math.max(18, Math.min(72, Math.floor(this.W * 0.9 / (combo.length * 0.62 + 1)))), small = Math.round(size * 0.36);
     const cy = this.wy + (this.logo.h * this.b0) / 2, typed = reduce.matches ? combo.length : Math.max(0, Math.floor((t - 600) / 70));
     ctx.textAlign = 'center';
-    ctx.font = `${small}px "Departure Mono"`; ctx.fillStyle = DIM; ctx.fillText(lead, this.W / 2, cy - size * 0.75);
     ctx.font = `${size}px "Departure Mono"`; ctx.fillStyle = CH;
     const shown = combo.slice(0, Math.min(combo.length, typed)); ctx.fillText(shown, this.W / 2, cy + size * 0.35);
     const w = ctx.measureText(combo).width, cx = this.W / 2 - w / 2 + ctx.measureText(shown).width;
