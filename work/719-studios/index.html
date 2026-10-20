@@ -454,7 +454,7 @@ document.getElementById('chapters').innerHTML = stops.map((s, i) => {
 const PARTS = [
   ['identity', 'Identity', 'Logo, colour, type, tokens'],
   ['spaces', 'Spaces', 'Etherea, Terra, Solaris'],
-  ['applications', 'Applications', 'Signs, listings, merch, social'],
+  ['applications', 'Applications', 'Listings, merch, social'],
   ['motion', 'Motion and video', 'The ad and the reels'],
   ['proof', 'Proof', 'Reviews, numbers, the award'],
 ];
@@ -462,7 +462,10 @@ document.getElementById('map').innerHTML = PARTS.map(([id, t, d], k) => `<a href
 document.getElementById('index').innerHTML = [['story', 'Story'], ...PARTS.map(([id, t]) => [id, t])].map(([id, t]) => `<a href="#${id}" data-for="${id}">${t}</a>`).join('');
 const head = (id, label, title, line) => `<div class="s-head" data-reveal>${/^\d\d · /.test(label) ? `<span class="num" aria-hidden="true">${label.slice(0, 2)}</span>` : ''}<p class="hud">${label}</p><h2 id="h-${id}">${title}</h2>${line ? `<p>${line}</p>` : ''}</div>`;
 const src = (f) => BRAND + f, small = (f) => /\.webp$/.test(f) ? BRAND + f.replace(/\.webp$/, '-800.webp') : BRAND + f;
-const coll = (g) => (brand.collateral || []).filter((c) => c.group === g);
+// Curated (JC 2026-10-19: "remove things if they don't reach a certain level of quality"): no signage (utility notices,
+// plain door and wall lettering), and only the hoodie backs, which carry the big mark.
+const KEEP = (c) => c.group !== 'Signage' && !(c.group === 'Merch' && /-front\./.test(c.file));
+const coll = (g) => (brand.collateral || []).filter((c) => c.group === g && KEEP(c));
 
 // identity
 {
@@ -516,8 +519,8 @@ const coll = (g) => (brand.collateral || []).filter((c) => c.group === g);
 
 // applications
 {
-  const groups = [['Signage', 'Signs and wall decals', 'mason light'], ['Peerspace', 'Peerspace listing covers', 'two'], ['Merch', 'Merch', 'five'], ['Social', 'Social', 'two']];
-  document.getElementById('applications-body').innerHTML = head('applications', '03 · Applications', 'Everywhere the brand showed up', 'We put it on doors, on Peerspace, on hoodies and in the feed.') +
+  const groups = [['Peerspace', 'Peerspace listing covers', 'two'], ['Merch', 'Merch', 'five'], ['Social', 'Social', 'two']];
+  document.getElementById('applications-body').innerHTML = head('applications', '03 · Applications', 'Everywhere the brand showed up', 'On Peerspace, on hoodies and in the feed.') +
     groups.map(([g, title, cls]) => { const items = coll(g), l = reg(items.map((c) => [src(c.file), c.label]));
       return items.length ? `<div class="sub"><h3>${title}</h3><span class="hud">${items.length}</span></div><div class="gal ${cls}">${items.map((c, k) => tile(l, k, small(c.file), c.label, c.w, c.h)).join('')}</div>` : ''; }).join('');
 }
