@@ -17,10 +17,12 @@
 <link rel="stylesheet" href="../assets/css/feedback.css">
 <link rel="stylesheet" href="../assets/css/play.css">
 <link rel="stylesheet" href="../assets/css/footer-game.css">
+<link rel="stylesheet" href="../assets/css/dawn.css?v=20261020c">
 <script>document.documentElement.classList.replace('no-js', 'js'); try { if (!sessionStorage.getItem('jcg-intro')) document.documentElement.classList.add('mark-intro'); } catch (e) {}</script>
 <script type="module" src="../assets/js/main.js" onerror="document.documentElement.classList.replace('js','no-js')"></script>
 <script type="module" src="../assets/js/site-menu.js"></script>
 <script type="module" src="../assets/js/footer-game.js"></script>
+<script type="module" src="../assets/js/dawn.js?v=20261020c"></script>
 <script type="module" src="../assets/js/about.js"></script>
 </head>
 <body class="has-hud-nav">
@@ -46,7 +48,9 @@
 
 <main id="main">
   
-  <section class="section" aria-labelledby="about-title" style="padding-top:clamp(48px,8vw,96px)">
+  
+  <section class="dawn dawn-band" data-dawn data-x=".78" data-y="1.18" data-reach=".32" aria-hidden="true"></section>
+  <section class="section" aria-labelledby="about-title" style="padding-top:clamp(40px,6vw,72px)">
     <div class="wrap about">
       <span class="eyebrow ticks snap" data-reveal><span class="dot" aria-hidden="true"></span>About</span>
       <div class="about-intro">
@@ -76,7 +80,13 @@
         <p>Building new products and posting the process on <a class="link" href="https://x.com/jc_griffith">X</a>.</p>
       </div>
 
-      <p style="margin-top:var(--s-8)">
+    </div>
+  </section>
+  
+  <section class="dawn dawn-close" data-dawn data-rise="scroll" data-x=".5" aria-label="Work with me">
+    <div class="wrap about">
+      <p class="dawn-line">Tell me what you’re working on.</p>
+      <p style="margin-top:var(--s-6)">
         <a class="btn btn--ghost" href="mailto:hello@jcg.studio">hello@jcg.studio</a>
       </p>
     </div>

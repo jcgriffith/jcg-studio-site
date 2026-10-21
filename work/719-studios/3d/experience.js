@@ -21,8 +21,8 @@ export const SOLD = { date: 'June 15, 2026', year: '2026' };
 const T = (n) => ({ src: `../${n}.webp`, w: 1600, h: 1068 });
 const stops = [
   { id:'intro', sum:'My wife Kristi and I built Etherea, then kept going.',  chip:'The dream team', title:'The dream team',   // JC 2026-10-19: "Dream team", more playful
-    detail:'Two photographers, one big idea, three lofts. Kristi and I owned and ran 719 Studios in Los Angeles: Etherea, Terra and Solaris. Etherea came first. Before the studios, we shot all over downtown LA. Kristi came from dance, so her portraits move; I came from marketing and graphic design, so mine look like movie stills. Friends with thriving studios on Peerspace kept telling us to build one, and eventually we listened.',
-    paras:['Two photographers, one big idea, three lofts. Kristi and I owned and ran 719 Studios in Los Angeles: Etherea, Terra and Solaris. Etherea came first.',
+    detail:'Kristi and I owned and ran 719 Studios in Los Angeles: Etherea, Terra and Solaris. Etherea came first. Before the studios, we shot all over downtown LA. Kristi came from dance, so her portraits move; I came from marketing and graphic design, so mine look like movie stills. Friends with thriving studios on Peerspace kept telling us to build one, and eventually we listened.',
+    paras:['Kristi and I owned and ran 719 Studios in Los Angeles: Etherea, Terra and Solaris. Etherea came first.',
            'Before the studios, we shot all over downtown LA. Kristi came from dance, so her portraits move; I came from marketing and graphic design, so mine look like movie stills. Friends with thriving studios on Peerspace kept telling us to build one, and eventually we listened.'],
     photos:[{ src:'../jc-and-kristi-etherea.webp', srcset:'../jc-and-kristi-etherea-1200.webp 1200w, ../jc-and-kristi-etherea.webp 1600w, ../jc-and-kristi-etherea-2400.webp 2400w', w:1600, h:1067,
               alt:'JC and Kristi Griffith inside Etherea, their Los Angeles photo loft.' },   // JC (right) and Kristi in Etherea (added 2026-10-19; original in website/assets/)
@@ -32,7 +32,7 @@ const stops = [
     paras:['Kristi fell for the loft, and the address sealed it. 719 is the area code of Colorado Springs, where she grew up, and it was still the area code of her phone number. We took it as a sign.',
            'We started in 2021 with units 902 and 903, combined into one big space. That became the Etherea Loft.'],
     photos:[V('01-etherea-empty-studio'),P('hero')] },
-  { id:'dreamscape', sum:'We built the dreamscapes everyone was pinning.',  chip:'The dreamscape', title:'From Blender to building materials',
+  { id:'dreamscape', sum:'I wanted to turn those saved images into a real studio.',  chip:'The dreamscape', title:'From Blender to building materials',
     detail:'Surreal dreamscapes filled the feed. Most only existed in Blender. I pinned hundreds: pink and terracotta arches, stairs running into pools, moss walls and portraits against a big orange sun. I grew up working in renovation and construction, so building one felt possible. Every set was designed in 3D first, pairing natural tones with bright white subway tile.',
     paras:['Surreal dreamscapes filled the feed. Most only existed in Blender. I pinned hundreds: pink and terracotta arches, stairs running into pools, moss walls and portraits against a big orange sun.',
            'I grew up working in renovation and construction, so building one felt possible. Every set was designed in 3D first, pairing natural tones with bright white subway tile.'], board:true,
@@ -47,17 +47,16 @@ const stops = [
     paras:['For the Desert Set: arches, warm plaster and sculptural steps. For the Forest Set: greenery, water and layered platforms.',
            'We tied them together with a lounge in between.'], position:B(-3.5,-5.5,5), target:B(4.5,-2.2,1.2) },
   { id:'photo-corner', sum:'We left a seamless paper corner open to whatever came next.',  chip:'Blank canvas', title:'Room for anything', position:B(.4,-.6,3.2), target:B(4.5,4.2,1.2),
-    detail:'The best studios we knew offered several looks in one booking. Beside the sets, we kept a seamless paper corner with nothing in the way. We left a blank canvas for anything.',
-    paras:['The best studios we knew offered several looks in one booking. Beside the sets, we kept a seamless paper corner with nothing in the way.',
-           'We left a blank canvas for anything.'] },
+    detail:'The best studios we knew offered several looks in one booking. Beside the sets, we kept a seamless paper corner with nothing in the way.',
+    paras:['The best studios we knew offered several looks in one booking. Beside the sets, we kept a seamless paper corner with nothing in the way.'] },
   { id:'proof', sum:'We were booked from day one.',  chip:'What it became', title:'Booked from the start',
     detail:'Etherea booked right away, with celebrities on set. In the Peerspace Open Door Awards 2023, Etherea ranked No. 9 of the top 10 production spaces in LA.',
     paras:['Etherea booked right away, with celebrities on set. In the Peerspace Open Door Awards 2023, Etherea ranked No. 9 of the top 10 production spaces in LA.'], award:true },
   { id:'expand', sum:'In 2023, we added Terra and Solaris on the same floor.',  chip:'2023 · Terra + Solaris', title:'Two more lofts', studio:'terra solaris',
-    detail:'We expanded in 2023 with Terra and Solaris, on the same floor as Etherea: the 9th floor of a 1927 building in the Fashion District. Our timelapse of the Terra build went viral: 3.2 million views on Instagram. We gave Terra a natural earth-tone palette and multiple sets: the iconic circle, a grand U cut-out and semi-circles. Southeast-facing loft windows complete the space. Solaris is a bright corner studio with tall loft windows on two walls, limewash walls and archway textures. We designed it in 3D first, like the others, but it needed far less build-out. The windows were the draw, so we kept it clean and simple. Across the three lofts, we earned more than 1,000 reviews with a 5.0 average.',
+    detail:'We expanded in 2023 with Terra and Solaris, on the same floor as Etherea: the 9th floor of a 1927 building in the Fashion District. Our timelapse of the Terra build went viral: 3.2 million views on Instagram. We gave Terra a natural earth-tone palette and multiple sets: the circle, a U-shaped cut-out and semi-circles. Southeast-facing loft windows complete the space. Solaris is a bright corner studio with tall loft windows on two walls, limewash walls and archway textures. We designed it in 3D first, like the others, but it needed far less build-out. The windows were the draw, so we kept it clean and simple. Across the three lofts, we earned more than 1,000 reviews with a 5.0 average.',
     paras:['We expanded in 2023 with Terra and Solaris, on the same floor as Etherea: the 9th floor of a 1927 building in the Fashion District.',
            'Our timelapse of the Terra build went viral: 3.2 million views on Instagram.',   // JC 2026-10-19
-           'We gave Terra a natural earth-tone palette and multiple sets: the iconic circle, a grand U cut-out and semi-circles. Southeast-facing loft windows complete the space.',
+           'We gave Terra a natural earth-tone palette and multiple sets: the circle, a U-shaped cut-out and semi-circles. Southeast-facing loft windows complete the space.',
            'Solaris is a bright corner studio with tall loft windows on two walls, limewash walls and archway textures. We designed it in 3D first, like the others, but it needed far less build-out. The windows were the draw, so we kept it clean and simple.',
            'Across the three lofts, we earned more than 1,000 reviews with a 5.0 average.'],
     photos:[V('04-terra-build-timelapse'),...['terra-01','solaris-01','terra-02','solaris-02','terra-03','solaris-04'].map(T)] },   // the Terra build timelapse: the reel that went viral (JC)

@@ -1,0 +1,155 @@
+/* Journal stories (assets/js/story.js), JC 2026-10-20: the 719 Studios story moved off the case study onto its own page,
+   art-directed like a magazine. Each chapter has its own layout (cover, split, moodboard, film, diptych, statement,
+   reel, quiet end), the background drifts through dark tints as you read. Three text styles: the mono label (.hud),
+   the display face (titles, quotes), the body. */
+:root { color-scheme: dark; --edge-x: 16px; --wide: 1120px; }
+html { scroll-behavior: smooth; overflow-anchor: none; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { background: var(--void); color: var(--chrome-2); }
+body::after { content: none; }
+img, video { display: block; max-width: 100%; height: auto; }
+.hud { font: 400 11px/1.3 var(--font-hud); letter-spacing: var(--track-hud); text-transform: uppercase; color: var(--chrome-3); margin: 0; }
+.wrap { width: 100%; max-width: var(--wide); margin: 0 auto; padding: 0 var(--edge-x); }
+.cta { all: unset; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-height: 48px; padding: 0 20px; cursor: pointer;
+       font: 400 12px/1 var(--font-hud); letter-spacing: var(--track-hud); text-transform: uppercase; border: 1px solid var(--line-strong); color: var(--chrome); }
+.cta.primary { background: var(--chrome); color: var(--void); border-color: var(--chrome); }
+.cta:focus-visible, .back:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
+.cta:hover { border-color: var(--chrome); } .cta.primary:hover { background: #fff; }
+.back { position: fixed; z-index: 6; top: calc(env(safe-area-inset-top) + 12px); left: 12px; width: 44px; height: 44px; display: grid; place-items: center;
+        border: 1px solid var(--line-strong); background: rgba(11,12,14,.72); color: var(--chrome-2); text-decoration: none; }
+
+.story { background: var(--tint, var(--void)); transition: background-color 1.2s linear; }
+.ch { position: relative; padding: 64px 0; }
+.ch-head { position: relative; margin: 0 0 22px; }
+.ch-head .hud { position: relative; color: var(--chrome-3); }
+.ch h3 { position: relative; margin: 8px 0 0; font: 540 clamp(36px, 8vw, 72px)/1 var(--font-display); font-stretch: var(--wdth-display); letter-spacing: var(--track-display); color: var(--chrome); text-wrap: balance; }
+.ch p { margin: 0 0 18px; max-width: 34em; font-size: 18px; line-height: 1.62; color: #d0d4da; }
+.ch p.dek { font-size: clamp(21px, 4.6vw, 28px); line-height: 1.32; color: var(--chrome); max-width: 22em; }
+.ch p.links { display: flex; flex-wrap: wrap; gap: 10px; margin: 26px 0 0; }
+.pull { margin: 40px 0; padding: 0; border: 0; }
+.pull p { margin: 0; max-width: 16em; font: 540 clamp(34px, 7.4vw, 76px)/1.02 var(--font-display); font-stretch: var(--wdth-display); letter-spacing: var(--track-display); color: var(--chrome); text-wrap: balance; }
+.pull p::before { content: '“'; } .pull p::after { content: '”'; }
+.f { margin: 0 0 14px; }
+.f button { all: unset; box-sizing: border-box; display: block; width: 100%; cursor: zoom-in; overflow: hidden; background: #15171a; }
+.f img, .f video { display: block; width: 100%; height: 100%; object-fit: cover; aspect-ratio: var(--ar, 3 / 2); }
+.f figcaption { margin-top: 8px; }
+.vidfig { position: relative; }
+.vidfig video { aspect-ratio: 9 / 16; background: #15171a; }
+.badge { position: absolute; z-index: 1; left: 10px; top: 10px; padding: 7px 10px; background: var(--signal); color: #0B0C0E; font: 400 11px/1 var(--font-hud); letter-spacing: var(--track-hud); text-transform: uppercase; pointer-events: none; }
+.card { display: flex; align-items: center; gap: 16px; padding: 14px 16px; margin: 8px 0 22px; border-radius: 4px; background: #ece8e1; color: #252724; text-decoration: none; max-width: 520px; }
+.card img { flex: none; width: 64px; height: auto; }
+.card span { font-size: 16px; line-height: 1.35; } .card b { display: block; font-weight: 600; } .card i { display: block; margin-top: 8px; font: 400 11px/1 var(--font-hud); font-style: normal; letter-spacing: .08em; text-transform: uppercase; color: #5d5f5a; }
+
+/* the opening: a full-bleed spread, the title set on the photograph */
+.bleed { position: relative; margin: 0; overflow: hidden; height: 88svh; min-height: 460px; }
+.bleed button { all: unset; display: block; position: absolute; inset: 0; cursor: zoom-in; }
+.bleed img { position: absolute; inset: -6% 0; width: 100%; height: 112%; object-fit: cover; object-position: 50% 40%; transform: translateY(var(--py, 0)); will-change: transform; }
+.bleed::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to top, rgba(11,12,14,.92), rgba(11,12,14,.15) 55%, rgba(11,12,14,0)); }
+.j-head { position: absolute; z-index: 1; left: 0; right: 0; bottom: 0; margin: 0; padding: 0 var(--edge-x) 28px; pointer-events: none; display: grid; gap: 10px; }
+.j-head h1 { margin: 0; max-width: 12em; font: 540 clamp(44px, 11vw, 112px)/.96 var(--font-display); font-stretch: var(--wdth-display); letter-spacing: var(--track-display); color: #fff; text-wrap: balance; }
+.j-head .hud { color: #d9cfc4; }
+.cols { display: grid; gap: 8px; }
+.inset { max-width: 420px; margin-left: auto; }
+/* split: words first on phones; on wide screens the pictures stay put while the words scroll past */
+.split { display: grid; gap: 28px; }
+/* board: the moodboard drifts in two rows */
+.marquee { overflow: hidden; display: grid; gap: 6px; margin: 34px 0 10px; mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent); }
+.marquee .row { display: flex; gap: 6px; width: max-content; animation: drift 70s linear infinite; }
+.marquee .row + .row { animation-direction: reverse; animation-duration: 84s; }
+.marquee:hover .row { animation-play-state: paused; }
+.marquee a { flex: none; display: block; width: 150px; aspect-ratio: 1; overflow: hidden; background: #15171a; }
+.marquee img { width: 100%; height: 100%; object-fit: cover; }
+@keyframes drift { to { transform: translateX(-50%); } }
+.pair { display: grid; gap: 6px; margin: 34px 0; }
+.pair .f { margin: 0; }
+.ch--film { background: #060708; }
+.film-grid { display: grid; gap: 28px; align-items: center; }
+.film-grid .vidfig { max-width: 380px; width: 100%; justify-self: center; }
+.dip { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 30px 0; }
+.dip .f { margin: 0; } .dip .f img { aspect-ratio: 3 / 4; }
+.reel-grid { display: grid; gap: 6px; margin: 30px 0; grid-template-columns: 1fr 1fr; }
+.reel-grid .vidfig { grid-column: 1 / -1; max-width: 380px; width: 100%; justify-self: center; }
+.reel-grid .f { margin: 0; } .reel-grid .f img { aspect-ratio: 4 / 5; }
+.ch--statement h3, .ch--quiet h3 { font-size: clamp(48px, 12vw, 132px); }
+.ch--quiet { text-align: center; padding: 120px 0 48px; }
+.ch--quiet p { margin-left: auto; margin-right: auto; }
+.end-photo { max-width: 400px; margin: 36px auto 30px; } .end-photo img { aspect-ratio: 3 / 4; }
+
+/* arrival: words rise, pictures open like a curtain (base.css's [data-reveal]) */
+.ch [data-reveal] { translate: 0 28px; }
+.js .f[data-reveal] img, .js .f[data-reveal] video { clip-path: inset(14% 0 0 0); transition: clip-path 1.2s var(--ease-out); }
+.js .f[data-reveal].in img, .js .f[data-reveal].in video { clip-path: inset(0); }
+@media (prefers-reduced-motion: reduce) {
+  .js .f[data-reveal] img, .js .f[data-reveal] video { clip-path: none; transition: none; }
+  .marquee { overflow-x: auto; mask-image: none; } .marquee .row { animation: none; }
+  .bleed img { transform: none; }
+}
+@media (min-width: 900px) {
+  .ch { padding: 96px 0; }
+  .j-head { padding: 0 48px 56px; max-width: 1200px; }
+  .cols { grid-template-columns: 1fr 1.1fr; gap: 64px; align-items: start; }
+  .split { grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+  .split-media { order: -1; position: sticky; top: 72px; display: grid; gap: 10px; }
+  .split-media .vidfig { max-width: 340px; }
+  .marquee a { width: 220px; }
+  .pair { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .film-grid { grid-template-columns: 1.2fr 1fr; gap: 80px; }
+  .dip { gap: 12px; }
+  .reel-grid { grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; align-items: start; } .reel-grid .vidfig { grid-column: 1; grid-row: 1 / span 2; max-width: none; }
+  .pull { margin: 64px 0; }
+}
+
+/* the close: the next steps, then the sunrise as the page's footer */
+.j-next { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; padding: 8px var(--edge-x) clamp(56px, 9vw, 96px); }
+.j-dawn { display: block; width: 100%; max-width: none; margin: 0; background: transparent; }   /* height: dawn.css .dawn-foot */
+
+/* full-screen photo */
+.lightbox { position: fixed; inset: 0; z-index: 20; margin: 0; width: 100%; height: 100%; max-width: none; max-height: none; border: 0; padding: 0; background: rgba(0,0,0,.96); color: var(--chrome); }
+.lightbox[open] { display: grid; grid-template-rows: auto 1fr auto; }
+.lightbox header, .lightbox footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px; }
+.lightbox img { place-self: center; max-width: 100%; max-height: 100%; object-fit: contain; min-height: 0; }
+.lightbox button { all: unset; box-sizing: border-box; min-width: 44px; min-height: 44px; display: grid; place-items: center; cursor: pointer; border: 1px solid var(--line-strong); }
+.lightbox p { margin: 0; font-size: 14px; color: var(--chrome-3); text-align: center; flex: 1; }
+
+/* ---- Editorial pass (JC 2026-10-20, ported from the Astra mockup, journal/719-studios-astra/): every chapter reads
+   label, big heading, a one-line intro, then the body; fine rules and generous space between chapters; pull quotes as
+   large pauses with an orange opening mark; the close as a ruled list. Three text styles in view: the mono label, the
+   display face (titles, quotes), the body (the intro is body type, brighter). The opening photo, the tint drift, the
+   moving moodboard, the award and the ending as big moments, and the rising sun all stay. */
+.ch { padding: 88px 0; }
+.ch + .ch > .wrap:first-child, .ch + .ch > .wrap.split, .ch + .ch > .wrap.film-grid { border-top: 1px solid var(--line-strong); padding-top: 36px; }
+.ch-head { margin-bottom: 18px; }
+.ch-head .hud { margin-bottom: 14px; }
+.ch h3 { margin-top: 0; }
+.ch p.dek { font-size: 18px; line-height: 1.5; color: var(--chrome); max-width: 34em; margin-bottom: 28px; }
+.ch p { font-size: 17px; line-height: 1.72; }
+.pull { margin: 64px 0; padding-top: 28px; border-top: 1px solid var(--line-strong); }
+.pull p::before { content: '“'; color: var(--signal); }
+.ch--statement h3, .ch--quiet h3 { font-size: clamp(48px, 12vw, 132px); line-height: .98; }
+.card { border-radius: 0; }
+/* the close: a ruled list, not buttons */
+.j-next { display: grid; gap: 0; justify-content: stretch; max-width: var(--wide); margin: 0 auto; padding: 24px var(--edge-x) clamp(64px, 9vw, 104px); }
+.j-next .cta, .j-next .cta.primary { justify-content: space-between; width: 100%; min-height: 56px; padding: 0; background: none; color: var(--chrome); border: 0; border-bottom: 1px solid var(--line-strong); }
+.j-next .cta:first-child { border-top: 1px solid var(--line-strong); }
+.j-next .cta span { color: var(--signal); }
+.j-next .cta:hover, .j-next .cta:focus-visible { border-bottom-color: var(--chrome); }
+@media (min-width: 900px) {
+  .ch { padding: 128px 0; }
+  .ch + .ch > .wrap:first-child, .ch + .ch > .wrap.split, .ch + .ch > .wrap.film-grid { padding-top: 48px; }
+  .ch p { font-size: 18px; }
+  .ch p.dek { font-size: 20px; }
+  .pull { margin: 96px 0 96px 12%; padding-top: 36px; }
+  /* the opening on wide screens: the title set above the photograph, which shows unshaded */
+  .bleed { height: auto; min-height: 0; display: flex; flex-direction: column; padding: 132px 0 0; }
+  .bleed::after { content: none; }
+  .bleed .j-head { position: static; order: -1; max-width: var(--wide); width: 100%; margin: 0 auto; padding: 0 var(--edge-x) 48px; }
+  .bleed .j-head h1 { color: var(--chrome); }
+  .bleed .j-head .hud { color: var(--chrome-3); }
+  .bleed > button { position: relative; inset: auto; height: min(58vw, 760px); width: calc(100% - 96px); max-width: 1344px; margin: 0 auto; overflow: hidden; }
+  .j-next { grid-template-columns: repeat(3, 1fr); column-gap: 32px; }
+  .j-next .cta:first-child { border-top: 0; }
+  .j-next .cta { border-top: 1px solid var(--line-strong) !important; }
+}
+@media (min-width: 900px) { .wrap { padding: 0 48px; } }
+/* the pull quote keeps the display face at its size (the body rule above would shrink it) */
+.ch .pull p { font: 540 clamp(34px, 7.4vw, 76px)/1.02 var(--font-display); font-stretch: var(--wdth-display); letter-spacing: var(--track-display); color: var(--chrome); max-width: 16em; margin: 0; }

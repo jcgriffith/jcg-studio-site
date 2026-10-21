@@ -12,6 +12,8 @@ import { scan } from './scanline.js';
 import { initSplitFlap } from './splitflap.js';
 
 const MIN_S = 0.08;
+// what a cover is, for screen readers: a built project says what it was (719: "Photo studios"), not "Studio concept"
+const kindOf = (c) => (c.product ? 'Product' : c.tag === 'BUILT' ? (c.coverKind || 'Case study') : 'Studio concept');
 const MAX_S = 3;
 const FLY_MS = 450;
 const DIVE_MS = 700;     // opening / closing an item: the morph + camera dive
@@ -390,7 +392,7 @@ export function createFloor(root, data, opts = {}) {
     // Target acquired (play layer): while the cover is locked on, mono tags show real facts from concepts.json.
     // (2026-10-08: the lock-on chips removed; JC: "please remove the chips that appear when I hover on a portfolio item")
     cov.el.href = c.openPage && c.page ? new URL(c.page, document.baseURI).href : `${o.work}#${c.id}`;
-    cov.el.setAttribute('aria-label', `${c.concept}. ${c.product ? 'Product' : 'Studio concept'}. Click or Enter to open.`);
+    cov.el.setAttribute('aria-label', `${c.concept}: ${kindOf(c)}`);
     cov.el.setAttribute('aria-expanded', 'false');
     cl.cover = cov;
     sec.append(cov.el, bandEl);
@@ -422,7 +424,7 @@ export function createFloor(root, data, opts = {}) {
       r.el.inert = true;
       if (!r.plan) {
         r.el.href = `${o.work}#${r.key}`;
-        r.el.setAttribute('aria-label', `${f.label}, ${c.concept}. Studio concept.`);
+        r.el.setAttribute('aria-label', `${f.label}, ${c.concept}. ${kindOf(c)}.`);
       }
       byKey.set(r.key, r);
       cl.kids.push(r);
@@ -1561,7 +1563,7 @@ export function createFloor(root, data, opts = {}) {
     drawer.style.transform = '';
     drawerOpen = true;
     document.documentElement.classList.add('drawer-open');
-    if (o.hud.live) o.hud.live.textContent = `Opened ${f.label}, ${c.concept}. Studio concept.`;
+    if (o.hud.live) o.hud.live.textContent = `Opened ${f.label}, ${c.concept}. ${kindOf(c)}.`;
     drawer.querySelector('.drawer-scroll')?.scrollTo(0, 0);
     if (kb) drawer.querySelector('#drawer-title').focus({ preventScroll: true });
   }

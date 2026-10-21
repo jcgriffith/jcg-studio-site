@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Two photographers, three dream spaces — Journal — JCG Studio</title>
+<meta name="description" content="The story of 719 Studios: three photo lofts Kristi and I designed in 3D, built and ran in downtown Los Angeles, 2021 to 2026.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0B0C0E">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/dawn.css?v=20261020c">
+<link rel="stylesheet" href="../../assets/css/story.css?v=20261020d">
+<script>document.documentElement.classList.add('js');</script>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js" } }</script>
+
+</head>
+<body>
+<a class="back hud" href="../../work/719-studios/" aria-label="Back to the 719 Studios case study">←</a>
+<main class="story" id="story" aria-labelledby="j-title">
+  <div id="chapters"><noscript><div class="wrap ch"><p>This story needs JavaScript. <a href="../../work/719-studios/">See the 719 Studios case study</a>.</p></div></noscript></div>
+  <nav class="j-next" aria-label="Next">
+    <a class="cta primary" href="mailto:hello@jcg.studio">Email me <span aria-hidden="true">→</span></a>
+    <a class="cta" href="../../work/719-studios/">The case study <span aria-hidden="true">→</span></a>
+    <a class="cta" href="../../about/">About me <span aria-hidden="true">→</span></a>
+  </nav>
+  <footer class="dawn dawn-foot j-dawn" data-dawn data-rise="scroll" data-x=".5" aria-hidden="true"></footer>
+</main>
+<script type="module" src="../../assets/js/dawn.js?v=20261020c"></script>
+<script type="module">
+import { stops, MOOD } from '../../work/719-studios/3d/experience.js?v=20261020-journal';
+import { mountStory } from '../../assets/js/story.js?v=20261020';
+const IMG = '../../assets/img/work/719/';
+const sets = await fetch(`${IMG}sets/manifest.json`).then((r) => r.json());
+mountStory({ stops, MOOD, sets, IMG, root: document.getElementById('chapters'),
+  hero: { label: 'Journal · 01', title: 'Two photographers, three dream spaces', byline: 'By JC Griffith · 3 min read' },
+  exploreHref: (loft) => `../../work/719-studios/#explore-${loft}` });
+</script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+/* Dawn (assets/js/dawn.js): the brand's sunrise, drawn and animated in code. A band is mostly dark on purpose. */
+.dawn { position: relative; overflow: hidden; background: var(--void); isolation: isolate; width: 100%; max-width: none; margin-inline: 0; }   /* always full bleed, edge to edge */
+.dawn > canvas { position: absolute; inset: 0; display: block; z-index: -1; pointer-events: none; }
+/* scroll bands (data-rise="scroll"): the sun rises and sets on its own layer, moved and faded only */
+.dawn > canvas.dawn-sun { will-change: transform, opacity; backface-visibility: hidden; }
+/* footers (JC 2026-10-20): room for the whole glow to fan out and fade to black before the top and the sides */
+.dawn-foot { display: block; height: calc(clamp(210px, 31vw, 470px) + env(safe-area-inset-bottom)); }
+/* the About header: image only (JC 2026-10-19: no line), kept shallow so the introduction comes quickly */
+.dawn-band { height: clamp(240px, 38vh, 420px); display: flex; align-items: flex-start; padding-top: calc(var(--nav-h) + clamp(24px, 6vw, 72px)); }
+.dawn-line { margin: 0; max-width: 17em; font: 540 clamp(30px, 4.6vw, 60px)/1.04 var(--font-display); font-stretch: var(--wdth-display); letter-spacing: var(--track-display); color: var(--chrome); text-wrap: balance; }
+.dawn-line .mute { color: var(--chrome-3); }
+/* closing bands: the light comes up behind the last word on a page */
+.dawn-close { padding: clamp(72px, 12vw, 140px) 0 clamp(170px, 26vw, 300px); }
+@media (max-width: 599px) { .dawn-band { height: 250px; } }
