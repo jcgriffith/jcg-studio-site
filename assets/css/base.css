@@ -1479,3 +1479,12 @@ details[open] .pm::after { transform: rotate(0deg); }
   line-height: 1;
   opacity: .92;
 }
+
+/* HUD panels, one height (JC 2026-10-22: "remove the corner brackets from the 4 widget areas ... make them all the
+   same height ... meet in the middle because JCG Studio is already a bit too big"): every panel is 40 px with its
+   border (38 inside), the logo mark and word run at 84%, and the panels lose their corner ticks. */
+.hud-panel.ticks::before { content: none; }
+.hud-brand .brand { min-height: 38px; }
+.hud-brand .brand > .brand-mark, .hud-brand .brand > .brand-word { zoom: .84; }
+.hud-actions.hud-panel, .hud-actions .hud-subscribe { min-height: 38px; }
+.hud-actions .site-menu-btn { width: 38px; height: 38px; min-width: 38px; min-height: 38px; }

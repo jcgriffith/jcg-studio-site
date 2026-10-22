@@ -10,3 +10,6 @@ Both families are licensed under the **SIL Open Font License 1.1**. Each full li
 ## Modifications (permitted by OFL; Reserved Font Names not used for derivatives)
 
 Downloaded 2026-09-29 and subset with fontTools (`pyftsubset`) to Basic Latin + Latin-1, general punctuation, arrows, box drawing, block elements, and geometric shapes, then output as woff2. Archivo was also instanced with `fontTools varLib.instancer` to `wdth` 100–125 and `wght` 400–700. The family names are unchanged; these are web-delivery subsets, not renamed derivatives.
+
+## Mak (mak-bold.woff2)
+Mak Bold by Valentyn Tkachenko, version 2.003. The font's own licence field reads "Free for personal and commercial use". Subset to basic Latin for the web (2026-10-22); used for the 719 Studios loft names and poster.

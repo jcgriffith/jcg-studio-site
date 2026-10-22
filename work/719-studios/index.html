@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>719 Studios — JCG Studio</title>
-<meta name="description" content="719 Studios: three photo and production lofts Kristi and I designed in 3D, built and ran in downtown Los Angeles, 2021 to 2026.">
+<meta name="description" content="719 Studios: three production studios Kristi and I designed in 3D and built in downtown Los Angeles, 2021 to 2026.">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0B0C0E">
 <link rel="stylesheet" href="../../assets/css/tokens.css">
@@ -310,46 +310,96 @@ document.documentElement.classList.add('js'); if (/[?&]embed\b/.test(location.se
     .duo { grid-template-columns: 1fr 1fr; gap: 12px; max-width: 760px; }
     .proof-grid { grid-template-columns: 1fr 340px; gap: 64px; align-items: center; }
   }
+
+  /* ── the template version (case.html, JC 2026-10-22): one skeleton per section, short, work only ── */
+  .cs { padding: 56px 0 8px; }
+  .snap { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 18px 28px; margin: 0; padding: 22px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .snap div { display: grid; gap: 6px; } .snap dt { font: 400 11px/1.4 var(--font-hud); letter-spacing: var(--track-hud); text-transform: uppercase; color: var(--chrome-3); } .snap dd { margin: 0; color: var(--chrome); font-size: 16px; }
+  .cs-brief { margin: 0; max-width: 30em; font: 400 clamp(22px, 3vw, 32px)/1.3 var(--font-sans); color: var(--chrome); }
+  .lofts3 { display: grid; grid-template-columns: 1fr; gap: 12px; margin: 0 0 12px; }
+  .loft3 { all: unset; cursor: pointer; display: block; position: relative; overflow: hidden; background: #15171a; }
+  .loft3 img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; transition: transform 600ms var(--ease-out); }
+  .loft3:hover img, .loft3:focus-visible img { transform: scale(1.03); }
+  .loft3-cap { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 40px 16px 14px; background: linear-gradient(transparent, rgba(0,0,0,.6)); color: #fff; }
+  .loft3-cap b { font: 540 22px/1 var(--font-display); font-stretch: var(--wdth-display); }
+  .loft3-cap .hud { color: rgba(255,255,255,.8); }
+  .cs-apps { margin-top: 14px; }
+  .cs-films { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 760px; }
+  .cs-films .vidfig { margin: 0; }
+  .cs-films figcaption { margin-top: 8px; }
+  .cs-stats b { font: 540 clamp(30px, 5vw, 48px)/1 var(--font-display); font-stretch: var(--wdth-display); color: var(--chrome); }
+  .cs-proof { display: grid; gap: 12px; }
+  .cs-next { padding-bottom: 0; }
+  /* Hero B: the poster */
+  @font-face { font-family: 'Mak'; src: url('../../assets/fonts/mak-bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+  .hero.hero--poster { display: block; min-height: 0; height: auto; padding: 0; background: var(--void); }
+  .poster { position: relative; height: min(86svh, 920px); min-height: 520px; background: #F5EFE4; color: #2B2623; overflow: hidden; }
+  .poster::after { content: ''; position: absolute; inset: clamp(14px, 2.2vw, 28px); border: 1px solid rgba(43,38,35,.16); pointer-events: none; }
+  .poster-name { position: absolute; left: 0; right: 0; top: clamp(56px, 9vh, 110px); margin: 0; z-index: 0; display: grid; justify-items: center; gap: .1em; text-align: center; color: #2B2623; }
+  .poster-name .pn-big { font: 700 clamp(100px, 17vw, 250px)/.8 'Mak', Georgia, serif; letter-spacing: 0; }
+  .poster-name .pn-sub { font: 400 clamp(14px, 1.6vw, 22px)/1 var(--font-hud); letter-spacing: .6em; text-transform: lowercase; padding-left: .6em; opacity: .7; }
+  .hero--poster .hero-3d { position: absolute; inset: 0; z-index: 1; }
+  .pl { position: absolute; z-index: 2; font: 400 clamp(11px, 1vw, 14px)/1 var(--font-hud); letter-spacing: .04em; color: rgba(43,38,35,.72); }
+  .pl.tl { top: calc(clamp(14px, 2.2vw, 28px) + 18px); left: calc(clamp(14px, 2.2vw, 28px) + 22px); } .pl.tr { top: calc(clamp(14px, 2.2vw, 28px) + 18px); right: calc(clamp(14px, 2.2vw, 28px) + 22px); }
+  .pl.bl { bottom: calc(clamp(14px, 2.2vw, 28px) + 18px); left: calc(clamp(14px, 2.2vw, 28px) + 22px); } .pl.br { bottom: calc(clamp(14px, 2.2vw, 28px) + 18px); right: calc(clamp(14px, 2.2vw, 28px) + 22px); }
+  .pc { position: absolute; z-index: 2; width: 22px; height: 22px; --e: clamp(14px, 2.2vw, 28px); }
+  .pc::before, .pc::after { content: ''; position: absolute; background: rgba(43,38,35,.5); }
+  .pc::before { left: 0; right: 0; top: 50%; height: 1px; } .pc::after { top: 0; bottom: 0; left: 50%; width: 1px; }
+  .pc.c1 { top: calc(var(--e) - 11px); left: calc(var(--e) - 11px); } .pc.c2 { top: calc(var(--e) - 11px); right: calc(var(--e) - 11px); }
+  .pc.c3 { bottom: calc(var(--e) - 11px); left: calc(var(--e) - 11px); } .pc.c4 { bottom: calc(var(--e) - 11px); right: calc(var(--e) - 11px); }
+  .hero.hero--poster .poster-name, .hero.hero--poster .poster-name span { color: #2B2623; }
+  .hero--poster .hero-3d { inset: 30% 0 0 0; }   /* the 3D's box runs to the poster's edges, so only the ivory frame ever cuts the model */   /* the model sits under the name, inside the frame */
+  .pl.tl { left: calc(clamp(14px, 2.2vw, 28px) + 64px); }   /* clear of the back button */
+  .hero-band { padding: 40px 0 8px; }
+  .hero-band .cs-brief { margin: 10px 0 22px; }
+  @media (max-width: 899px) { .poster { height: auto; aspect-ratio: 4 / 5; min-height: 0; } .poster-name { top: 64px; } .hero--poster .hero-3d { inset: 30% 0 4% 0; } }
+  @media (max-width: 599px) { .pl.tr { display: none; } }   /* a phone has room for one top label */
+  @media (min-width: 900px) {
+    .lofts3 { grid-template-columns: repeat(3, 1fr); }
+    .cs-stats { grid-template-columns: repeat(4, 1fr); }
+    .cs-proof { grid-template-columns: 300px 1fr; align-items: start; } .cs-proof .card { margin: 0; }
+    /* Brand: logo, colour and type side by side in one row, not stacked */
+    #brand .skin { grid-template-columns: 1.1fr 1fr 1fr; align-items: stretch; }
+  }
+  #brand .skin .b-logos { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  #brand .skin .b-logo { min-height: 0; padding: 14px; } #brand .skin .b-logo img { max-height: 110px; width: 100%; object-fit: contain; }
+  #brand .skin .b-type img { max-height: 40px; }
 </style>
 </head>
 <body>
 <a class="back hud" href="../../" aria-label="Back to the work">←</a>
 <main>
-  <section class="hero" id="top" aria-labelledby="h-719">
-    <div class="hero-3d" inert><picture class="hero-still"><source media="(max-width: 899px)" srcset="../../assets/img/work/719/hero-3d-phone.webp"><img src="../../assets/img/work/719/hero-3d-desktop.webp" alt="" fetchpriority="high" decoding="async"></picture><iframe data-src="3d/?cover" title="" tabindex="-1" aria-hidden="true"></iframe></div>   
-    <div class="hero-copy">
-      <p class="hud">S-01 · Los Angeles · 2021–2026</p>
-      <h1 id="h-719">719 Studios</h1>
-      <p class="line">Three photo lofts Kristi and I designed in 3D, built and ran in downtown LA. Booked from day one.</p>
-      <div class="ctas"><button type="button" class="cta primary" data-explore="etherea">Explore in 3D <span aria-hidden="true">↗</span></button><a class="cta" href="../../journal/719-studios/" target="_top">Read the story <span aria-hidden="true">→</span></a></div>
-      <ul class="facts"><li>3 lofts</li><li>1,000+ reviews · 5.0 average</li><li>No. 9 in LA · Peerspace 2023</li><li>3.2M views on one reel</li></ul>
-    </div>
-  </section>
-
-  <section class="sec sec--credits" id="overview" aria-label="Credits">
-    <div class="wrap"><dl class="credits" data-reveal><dt>Concept, 3D design, build</dt><dd>JC and Kristi Griffith</dd><dt>Run</dt><dd>2021–2026, on Peerspace</dd></dl></div>
-  </section>
-  <section class="sec" id="spaces" aria-labelledby="h-spaces"><div class="wrap" id="spaces-body"></div></section>
-  <section class="sec" id="process" aria-labelledby="h-process">
-    <div class="wrap">
-      <div class="s-head" data-reveal><p class="hud">Process</p><h2 id="h-process">From render to room</h2><p>Every set was designed in 3D first. The fire code had a say: that is why the pink wall stops short of the ceiling.</p></div>
-      <div class="r2r" id="process-body"></div>
-    </div>
-  </section>
-  <section class="sec" id="identity" aria-labelledby="h-identity"><div class="wrap" id="identity-body"></div></section>
-  <section class="sec" id="applications" aria-labelledby="h-applications"><div class="wrap" id="applications-body"></div></section>
-  <section class="sec" id="proof" aria-labelledby="h-proof"><div class="wrap" id="proof-body"></div></section>
-
   
-  <section class="story ending" id="ending" aria-labelledby="t-end">
-    <article class="ch ch--quiet" id="ch-end">
-      <div class="wrap">
-        <div class="ch-head" data-reveal><p class="hud">2026 · Home</p><h3 id="t-end">Home to Colorado</h3></div>
-        <figure class="f end-photo" data-reveal style="--ar:480 / 640"><button type="button" data-l="0" data-i="0" aria-label="Open photo: JC, Kristi and their baby by a mountain lake in Colorado."><img src="../../assets/img/work/719/colorado-family.webp" width="480" height="640" alt="JC, Kristi and their baby by a mountain lake in Colorado." loading="lazy" decoding="async"></button></figure>
-        <p data-reveal>In January 2025, we moved home to Colorado to start our family. On June 15, 2026, we sold 719 Studios.</p>
-      </div>
-    </article>
-    <div class="wrap"><div class="next"><a class="cta primary" href="../../journal/719-studios/" target="_top">Read the full story <span aria-hidden="true">→</span></a><a class="cta" href="mailto:hello@jcg.studio">Email me <span aria-hidden="true">→</span></a><a class="cta" href="../../about/" target="_top">About me <span aria-hidden="true">→</span></a></div></div>
+  <section class="hero hero--poster" id="top" aria-labelledby="h-719">
+    <div class="poster">
+      <h1 id="h-719" class="poster-name"><span class="pn-big">719</span><span class="pn-sub">studios</span></h1>
+      <div class="hero-3d" inert><picture class="hero-still"><source media="(max-width: 899px)" srcset="../../assets/img/work/719/hero-3d-phone.webp"><img src="../../assets/img/work/719/hero-3d-desktop.webp" alt="" fetchpriority="high" decoding="async"></picture><iframe data-src="3d/?cover" title="" tabindex="-1" aria-hidden="true"></iframe></div>   
+      <span class="pl tl">s-01 · los angeles</span><span class="pl tr">production studios</span>
+      <span class="pl bl">built 2021–2023</span><span class="pl br">sold 2026</span>
+      <i class="pc c1"></i><i class="pc c2"></i><i class="pc c3"></i><i class="pc c4"></i>
+    </div>
+    <div class="hero-band"><div class="wrap">
+      <p class="hud">The brief</p>
+      <p class="cs-brief" id="brief">Kristi and I designed three production studios in downtown LA in 3D first, then built them together. We launched them with a brand, website, Peerspace listing copy and covers, and social assets so people would love the spaces, book them and come back.</p>
+      <div class="ctas"><button type="button" class="cta primary" data-explore="etherea">Explore in 3D <span aria-hidden="true">↗</span></button><a class="cta" href="#snapshot">Read the case study <span aria-hidden="true">↓</span></a><a class="cta" href="../../journal/719-studios/" target="_top">Read the story <span aria-hidden="true">→</span></a></div>
+    </div></div>
+  </section>
+
+  <section class="sec cs-snap" id="snapshot" aria-label="Snapshot">
+    <div class="wrap"><dl class="snap" data-reveal>
+      <div><dt>Project</dt><dd>719 Studios</dd></div>
+      <div><dt>Role</dt><dd>Concept, 3D design, build</dd></div>
+      <div><dt>Services</dt><dd>Product · Brand</dd></div>
+      <div><dt>Years</dt><dd>2021–2026</dd></div>
+      <div><dt>Outcome</dt><dd>1,000+ reviews · 5.0 · sold</dd></div>
+    </dl></div>
+  </section>
+  <section class="sec cs" id="product" aria-labelledby="h-product"><div class="wrap" id="product-body"></div></section>
+  <section class="sec cs" id="brand" aria-labelledby="h-brand"><div class="wrap" id="brand-body"></div></section>
+  <section class="sec cs" id="launch" aria-labelledby="h-launch"><div class="wrap" id="launch-body"></div></section>
+  <section class="sec cs" id="results" aria-labelledby="h-results"><div class="wrap" id="results-body"></div></section>
+  <section class="sec cs cs-next" id="next" aria-labelledby="h-next">
+    <div class="wrap" id="next-body"></div>
     <footer class="dawn dawn-foot story-dawn" data-dawn data-rise="scroll" data-x=".5" aria-hidden="true"></footer>
   </section>
 </main>
@@ -402,6 +452,14 @@ const vid = (src, poster, label, cls = 'm-vid') => `<div class="vid ${cls}"><vid
 // ---- the hero's live 3D: after the page has loaded (and on phones after it has settled), so words and stills come first
 {
   const box = document.querySelector('.hero-3d'), frame = box.querySelector('iframe');
+  // opened from a loft's tile on the Work grid (?loft=terra): that loft's 3D and still, and Explore starts there
+  const loft = new URLSearchParams(location.search).get('loft');
+  if (loft === 'terra' || loft === 'solaris') {
+    frame.dataset.src = `${loft}-3d/?cover`;
+    box.querySelector('source').srcset = `../../assets/img/work/719/hero-3d-${loft}-phone.webp`;
+    box.querySelector('img').src = `../../assets/img/work/719/hero-3d-${loft}-desktop.webp`;
+    document.querySelector('.hero [data-explore]').dataset.explore = loft;
+  }
   addEventListener('message', (e) => { if (e.origin === location.origin && e.data?.type === 'viewer:ready') box.classList.add('live'); });
   const start = () => { if (!frame.src) frame.src = frame.dataset.src; };
   const later = () => (window.requestIdleCallback ? requestIdleCallback(start, { timeout: 2500 }) : setTimeout(start, 1200));
@@ -409,9 +467,9 @@ const vid = (src, poster, label, cls = 'm-vid') => `<div class="vid ${cls}"><vid
   if (document.readyState === 'complete') phone ? later() : start(); else addEventListener('load', () => (phone ? later() : start()), { once: true });
 }
 
+// ---- the case study, template version (JC 2026-10-22) ----------------------------------------------------------
 // ---- the case study (JC 2026-10-20: tight and skimmable; the full story is the journal, journal/719-studios/) -----
 const [sets, brand] = await Promise.all([fetch(`${IMG}sets/manifest.json`).then((r) => r.json()), fetch(`${BRAND}manifest.json`, { cache: 'no-cache' }).then((r) => r.json())]);
-reg([[`${IMG}colorado-family.webp`, 'JC, Kristi and their baby by a mountain lake in Colorado.']]);   // list 0: the closing photo
 const head = (id, label, title, line) => `<div class="s-head" data-reveal><p class="hud">${label}</p><h2 id="h-${id}">${title}</h2>${line ? `<p>${line}</p>` : ''}</div>`;
 const src = (f) => BRAND + f, small = (f) => /\.webp$/.test(f) ? BRAND + f.replace(/\.webp$/, '-800.webp') : BRAND + f;
 // Curated (JC 2026-10-19: "remove things if they don't reach a certain level of quality"): no signage, one hoodie back,
@@ -422,40 +480,40 @@ const fig = (l, i, p, cap = '') => `<figure class="f" data-reveal style="--ar:${
 const film = (base, label, badge = '', cap = '') => `<figure class="f vidfig" data-reveal>${badge ? `<span class="badge">${badge}</span>` : ''}<video src="${VID}${base}.mp4" poster="${VID}${base}.jpg" muted loop playsinline controls preload="none" aria-label="${esc(label)}"></video>${cap ? `<figcaption class="hud">${cap}</figcaption>` : ''}</figure>`;
 const VID = '../../assets/video/719/';
 
-// spaces
-{
-  const T = (n, alt, w = 1600, h = 1068) => [`${IMG}${n}.webp`, alt, w, h];
-  const s = (f, alt) => [url(f.src), alt, f.w, f.h];
-  const LOFTS = [
-    ['etherea', 'Etherea Loft', '2021 · Units 902 + 903', 'Our first and biggest. Desert and forest sets, a pool, a lounge in between.',
-      [T('hero', 'The Etherea lounge between the desert and forest sets.', 1600, 1067), s(sets.stage[0], 'The desert set: rust circle, arches and steps.'), T('eth-pool-built', 'The pool set under a green arch.', 1600, 1067), s(sets['green-wall'][0], 'The forest set.')]],
-    ['terra', 'Terra Loft', '2023', 'Natural earth tones. The circle, a U-shaped cut-out, semi-circles and southeast-facing windows.',
-      [T('terra-04', 'The whole loft: curved steps under tall windows.'), T('terra-01', 'A round plaster niche above a curved platform, in morning sun.'), T('terra-02', 'Curved steps and an arched niche by the loft windows.'), T('terra-03', 'A built-in sofa inside a deep plaster arch.')]],
-    ['solaris', 'Solaris Loft', '2023', 'A bright corner studio with tall windows on two walls. The windows were the draw, so we kept it simple.',
-      [T('solaris-01', 'Late sun across a white sofa and tall corner windows.'), T('solaris-02', 'Blush armchairs and an arched mirror by the windows.'), T('solaris-03', 'Arched wall panels and a rug in window light.'), T('solaris-04', 'The lounge: white sofa, glass table, city windows.')]],
-  ];
-  document.getElementById('spaces-body').innerHTML = head('spaces', 'Spaces', 'Three lofts, designed in 3D first') +
-    LOFTS.map(([id, name, when, line, photos]) => {
-      const l = reg(photos.map(([p, alt]) => [p, alt || name]));
-      return `<div class="loft"><div class="sub"><h3>${name}</h3><span class="hud">${when}</span></div><p>${line}</p>
-        <div class="loft-lead" data-reveal>${tile(l, 0, photos[0][0], photos[0][1] || name, photos[0][2], photos[0][3])}</div>
-        <div class="strip">${photos.slice(1).map(([p, alt, w, h], k) => tile(l, k + 1, p.replace(/(terra|solaris)-0(\d)\.webp$/, '$1-0$2-800.webp'), alt || name, w, h)).join('')}</div>
-        <p style="margin-top:12px"><button type="button" class="cta" data-explore="${id}">Explore ${name.split(' ')[0]} in 3D <span aria-hidden="true">↗</span></button></p></div>`;
-    }).join('');
-}
+const COPY = {
+ "brief": "Kristi and I designed three production studios in downtown LA in 3D first, then built them together. We launched them with a brand, website, Peerspace listing copy and covers, and social assets so people would love the spaces, book them and come back.",
+ "product-title": "From 3D to built sets",
+ "product": "Kristi and I designed every loft in 3D first, then built them together. We refined the concepts until the build and kept set walls below the ceiling so sprinklers could reach over.",
+ "brand-title": "An identity drawn from the sets",
+ "brand": "I paired an arch-in-a-circle identity with a distinct palette for each loft. The identity echoed the arches in the spaces and carried through to Peerspace listing covers, merch and social.",
+ "launch-title": "Showing the build in motion",
+ "launch": "I created a Terra build timelapse and a 15-second vertical ad for the launch. The timelapse reel reached 3.2M views on Instagram.",
+ "results-title": "Booked from day one",
+ "results": "We booked from day one and received 1,000+ reviews across the three studios, with a 5.0 average.",
+ "next-title": "Have something new to launch?",
+ "next": "I can be your team’s senior designer, shaping the product and the brand around it.",
+ "inspiration-title": "From renders to real life",
+ "inspiration": "As photographers, we were drawn to the surreal Blender dreamscapes filling Pinterest: pink arches, stairs into pools, and giant suns. We designed 719 Studios to build our own version in real life."
+};
+const C = (k) => esc(COPY[k] || '');
 
-// process: one render beside the room it became, and the render-to-real film
+
+// Product: the three lofts (each opens in 3D), then one early concept beside the room it became
 {
+  const LOFTS = [['etherea', 'Etherea', '2021', `${IMG}eth-pool-built-800.webp`], ['terra', 'Terra', '2023', `${IMG}terra-04-800.webp`], ['solaris', 'Solaris', '2023', `${IMG}solaris-01-800.webp`]];
   const pair = [[`${IMG}eth-stage-render.webp`, 'The desert set, an early 3D concept.', 1600, 1067], [`${IMG}eth-stage-built.webp`, 'The desert set, as built.', 1600, 1067]], l = reg(pair.map(([p, a]) => [p, a]));
-  document.getElementById('process-body').innerHTML = `<div class="pair r2r-pair">${fig(l, 0, pair[0], 'Early 3D concept')}${fig(l, 1, pair[1], 'As built')}</div>
-    <div class="r2r-film">${film('02-etherea-render-to-real', 'From the 3D render to the real room')}<p><button type="button" class="cta" data-explore="etherea">Explore the final design in 3D <span aria-hidden="true">↗</span></button></p></div>`;
+  document.getElementById('product-body').innerHTML = head('product', 'Product', C('product-title'), C('product')) +
+    `<div class="lofts3">${LOFTS.map(([id, name, yr, img]) => `<button type="button" class="loft3" data-explore="${id}" data-reveal><img src="${img}" alt="" loading="lazy" decoding="async"><span class="loft3-cap"><b>${name}</b><span class="hud">${yr} · Explore in 3D ↗</span></span></button>`).join('')}</div>
+    <div class="pair r2r-pair" data-reveal>${fig(l, 0, pair[0], 'Early 3D concept')}${fig(l, 1, pair[1], 'As built')}</div>`;
 }
 
+// Brand: the identity, then where it showed up
+let IDENTITY = '';
 // identity
 {
   const logos = (brand.logos || []).filter((x) => /^(Primary|Black logo, stacked)/.test(x.label)), wordmark = (brand.logos || []).find((x) => /black.*horizontal/i.test(x.label));
   const groups = [...new Set((brand.palette || []).map((c) => c.group))];
-  document.getElementById('identity-body').innerHTML = head('identity', 'Brand · Identity', 'An arch inside a circle', 'The arches in the sets carry through to the identity.') + `
+  IDENTITY = `
   <div class="skin">
     <div class="b-card"><p class="b-label">Logo</p>
       <div class="b-logos">${logos.map((l) => `<div class="b-logo"><img src="${src(l.file)}" alt="${esc(l.label)}" loading="lazy"></div>`).join('')}</div></div>
@@ -465,27 +523,36 @@ const VID = '../../assets/video/719/';
       <div class="b-type">${wordmark ? `<div><img src="${src(wordmark.svg || wordmark.file)}" alt="719 Studios, set in Mak" loading="lazy"></div>` : ''}${(brand.type || []).filter((t) => !/mak/i.test(t.family)).map((t) => `<div><span class="aa" style="font-weight:${t.weight}">Aa</span></div>`).join('')}</div></div>
   </div>`;
 }
-
-// applications
 {
-  const covers = coll('Peerspace').filter((c) => !/halloween/i.test(c.file)), hoodie = coll('Merch').find((c) => /earth-back/.test(c.file)), ad = coll('Ads')[0];
-  const lc = reg(covers.map((c) => [src(c.file), c.label])), lh = hoodie ? reg([[src(hoodie.file), hoodie.label]]) : -1;
-  document.getElementById('applications-body').innerHTML = head('applications', 'Brand · Applications', 'Everywhere the brand showed up', 'On Peerspace, on hoodies and in the feed.') +
-    `<div class="sub"><h3>Peerspace listing covers</h3><span class="hud">${covers.length}</span></div><div class="strip strip--wide">${covers.map((c, k) => tile(lc, k, small(c.file), c.label, c.w, c.h)).join('')}</div>
-    <div class="duo">${hoodie ? `<div><div class="sub"><h3>Merch</h3></div><div class="gal one">${tile(lh, 0, small(hoodie.file), hoodie.label, hoodie.w, hoodie.h)}</div></div>` : ''}${ad ? `<div><div class="sub"><h3>Studio ad · 15 seconds</h3></div><div class="reels one"><figure><video src="${src(ad.video)}" poster="${src(ad.file)}" muted loop playsinline controls preload="none" aria-label="Studio ad, 15 seconds"></video></figure></div></div>` : ''}</div>`;
+  const covers = coll('Peerspace').filter((c) => !/halloween/i.test(c.file)), hoodie = coll('Merch').find((c) => /earth-back/.test(c.file));
+  const lc = reg([...covers, ...(hoodie ? [hoodie] : [])].map((c) => [src(c.file), c.label]));
+  document.getElementById('brand-body').innerHTML = head('brand', 'Brand', C('brand-title'), C('brand')) + IDENTITY +
+    `<div class="strip strip--wide cs-apps">${[...covers, ...(hoodie ? [hoodie] : [])].map((c, k) => tile(lc, k, small(c.file), c.label, c.w, c.h)).join('')}</div>`;
 }
 
-// proof: the evidence, not the numbers again (the hero carries them)
+// Launch: the build timelapse that went viral, and the ad
+{
+  const ad = coll('Ads')[0];
+  document.getElementById('launch-body').innerHTML = head('launch', 'Launch', C('launch-title'), C('launch')) +
+    `<div class="cs-films">${film('04-terra-build-timelapse', 'The Terra build, sped up', '3.2M views on Instagram', 'The Terra build timelapse')}
+      ${ad ? `<figure class="f vidfig" data-reveal><video src="${src(ad.video)}" poster="${src(ad.file)}" muted loop playsinline controls preload="none" aria-label="Studio ad, 15 seconds"></video><figcaption class="hud">Studio ad · 15 seconds</figcaption></figure>` : ''}</div>`;
+}
+
+// Results: what people did with it
 {
   const AWARD = `<a class="card" href="https://web.archive.org/web/20230929030652/https://madein.peerspace.com/awards/los-angeles/production" target="_blank" rel="noopener"><img src="${IMG}peerspace-open-door-2023.webp" width="285" height="400" alt="Peerspace Open Door Awards 2023 winner badge"><span><b>Open Door Awards 2023</b>No. 9 of the top 10 production spaces in Los Angeles<i>See the winners ↗</i></span></a>`;
   const rev = coll('Reviews'), l = reg(rev.map((c) => [src(c.file), c.label]));
-  document.getElementById('proof-body').innerHTML = head('proof', 'Results', 'Booked from day one', 'Etherea booked right away, with celebrities on set.') +
-    `<div class="proof-grid"><div>${AWARD}</div>${film('04-terra-build-timelapse', 'The Terra build, sped up', '3.2M views on Instagram', 'Our timelapse of the Terra build went viral.')}</div>
-    <div class="sub"><h3>1,000+ reviews. 5.0 average.</h3><span class="hud">${rev.length}</span></div><div class="strip strip--wide">${rev.map((c, k) => tile(l, k, small(c.file), c.label, c.w, c.h)).join('')}</div>`;
+  document.getElementById('results-body').innerHTML = head('results', 'Results', C('results-title'), C('results')) +
+    `<ul class="stats cs-stats"><li><b>1,000+</b><span class="hud">Reviews across the three lofts</span></li><li><b>5.0</b><span class="hud">Average rating</span></li><li><b>No. 9</b><span class="hud">Top 10 production spaces, LA · Peerspace 2023</span></li><li><b>2026</b><span class="hud">Sold</span></li></ul>
+    <div class="cs-proof">${AWARD}<div class="strip strip--wide">${rev.map((c, k) => tile(l, k, small(c.file), c.label, c.w, c.h)).join('')}</div></div>`;
 }
 
+// Next
+document.getElementById('next-body').innerHTML = head('next', 'Next', C('next-title'), C('next')) +
+  `<div class="next"><a class="cta primary" href="mailto:hello@jcg.studio">Email me <span aria-hidden="true">→</span></a><a class="cta" href="../../journal/719-studios/" target="_top">Read the full story <span aria-hidden="true">→</span></a><a class="cta" href="../../" target="_top">More work <span aria-hidden="true">→</span></a></div>`;
+
 // things arrive as they come on screen; videos play while on screen
-document.querySelectorAll('.skin > *, .loft, .next, .strip--wide, .duo > *').forEach((el, k) => { el.setAttribute('data-reveal', ''); el.style.setProperty('--i', String(k % 5)); });
+document.querySelectorAll('.skin > *, .loft3, .next, .strip--wide, .cs-films > *').forEach((el, k) => { el.setAttribute('data-reveal', ''); el.style.setProperty('--i', String(k % 5)); });
 const rio = new IntersectionObserver((es) => es.forEach((e) => { if (!e.isIntersecting) return; e.target.classList.add('in'); rio.unobserve(e.target); }), { rootMargin: '0px 0px -8% 0px' });
 document.querySelectorAll('[data-reveal]').forEach((el) => rio.observe(el));
 if (!reduce) {

@@ -21,11 +21,11 @@ export const SOLD = { date: 'June 15, 2026', year: '2026' };
 const T = (n) => ({ src: `../${n}.webp`, w: 1600, h: 1068 });
 const stops = [
   { id:'intro', sum:'My wife Kristi and I built Etherea, then kept going.',  chip:'The dream team', title:'The dream team',   // JC 2026-10-19: "Dream team", more playful
-    detail:'Kristi and I owned and ran 719 Studios in Los Angeles: Etherea, Terra and Solaris. Etherea came first. Before the studios, we shot all over downtown LA. Kristi came from dance, so her portraits move; I came from marketing and graphic design, so mine look like movie stills. Friends with thriving studios on Peerspace kept telling us to build one, and eventually we listened.',
-    paras:['Kristi and I owned and ran 719 Studios in Los Angeles: Etherea, Terra and Solaris. Etherea came first.',
+    detail:'Kristi and I co-founded 719 Studios in Los Angeles: Etherea, Terra and Solaris. We designed and built them together, and Kristi ran them day to day. Etherea came first. Before the studios, we shot all over downtown LA. Kristi came from dance, so her portraits move; I came from marketing and graphic design, so mine look like movie stills. Friends with thriving studios on Peerspace kept telling us to build one, and eventually we listened.',
+    paras:['Kristi and I co-founded 719 Studios in Los Angeles: Etherea, Terra and Solaris. We designed and built them together, and Kristi ran them day to day. Etherea came first.',
            'Before the studios, we shot all over downtown LA. Kristi came from dance, so her portraits move; I came from marketing and graphic design, so mine look like movie stills. Friends with thriving studios on Peerspace kept telling us to build one, and eventually we listened.'],
     photos:[{ src:'../jc-and-kristi-etherea.webp', srcset:'../jc-and-kristi-etherea-1200.webp 1200w, ../jc-and-kristi-etherea.webp 1600w, ../jc-and-kristi-etherea-2400.webp 2400w', w:1600, h:1067,
-              alt:'JC and Kristi Griffith inside Etherea, their Los Angeles photo loft.' },   // JC (right) and Kristi in Etherea (added 2026-10-19; original in website/assets/)
+              alt:'JC and Kristi Griffith inside Etherea, their Los Angeles production studio.' },   // JC (right) and Kristi in Etherea (added 2026-10-19; original in website/assets/)
             { src:'../jc-and-kristi.webp', w:1281, h:1600 }] },   // JC and Kristi in the studio mirror (@kmo_18, July 2024)
   { id:'sign', sum:'In 2021, an address helped us choose our first loft.',  chip:'2021 · Etherea', title:'A sign at 719', studio:'etherea',
     detail:'Kristi fell for the loft, and the address sealed it. 719 is the area code of Colorado Springs, where she grew up, and it was still the area code of her phone number. We took it as a sign. We started in 2021 with units 902 and 903, combined into one big space. That became the Etherea Loft.',
@@ -61,19 +61,20 @@ const stops = [
            'Across the three lofts, we earned more than 1,000 reviews with a 5.0 average.'],
     photos:[V('04-terra-build-timelapse'),...['terra-01','solaris-01','terra-02','solaris-02','terra-03','solaris-04'].map(T)] },   // the Terra build timelapse: the reel that went viral (JC)
   { id:'end', sum:`We sold 719 Studios on ${SOLD.date}.`,  chip:`${SOLD.year} · Home`, title:'Home to Colorado',
-    detail:`In January 2025, we moved home to Colorado to start our family and ran the lofts from there. On ${SOLD.date}, we sold 719 Studios to new owners. We owned and operated the studios from 2021 to ${SOLD.year}.`,
+    detail:`In January 2025, we moved home to Colorado to start our family, and Kristi ran the lofts from there. On ${SOLD.date}, we sold 719 Studios to new owners. We owned the studios from 2021 to ${SOLD.year}.`,
     photos:[{ src:'../colorado-family.webp', w:480, h:640, alt:'JC, Kristi and their baby by a mountain lake in Colorado.' }] },   // JC 2026-10-19: the closing Colorado image
 ];
 // Twelve pins from JC's Etherea board, one row per set it fed: the desert's pink arches, the pool, the forest's moss, and the
 // red-sun portraits. Shown from Pinterest and linked to each pin (other people's work: credited, not copied).
+// [pin id, image, alt, original artist?, original source?]: credits only where the source names the maker (2026-10-22)
 export const MOOD=[
-  ['387591111696360805','35/b9/5a/35b95aa0eca3305c939b57377b755758.jpg','Pink arches and stairs with two white spheres'],
-  ['387591111693548159','3f/0d/7f/3f0d7fb55e9ff67039d05fbcfcb14674.jpg','A pink tunnel of arches'],
+  ['387591111696360805','35/b9/5a/35b95aa0eca3305c939b57377b755758.jpg','Pink arches and stairs with two white spheres','Charlotte Taylor','https://us.gestalten.com/blogs/journal/reverie-in-charlotte-taylor-serene-digital-worlds'],
+  ['387591111693548159','3f/0d/7f/3f0d7fb55e9ff67039d05fbcfcb14674.jpg','A pink tunnel of arches','Simon Kämpfer','https://holmandhimmel.com/products/simon-kaempfer-opportunities-2019'],
   ['387591111692933351','6b/4a/7b/6b4a7b0a76a8e8275c4f292ebb6f00bb.jpg','A pink building of arches and steps'],
-  ['387591111692380251','f0/d2/1f/f0d21fa9e58edbe14b437e30a2fe923f.jpg','Arches over a pool, rendered'],
+  ['387591111692380251','f0/d2/1f/f0d21fa9e58edbe14b437e30a2fe923f.jpg','Arches over a pool, rendered','@PeterTarka','https://twitter.com/PeterTarka/status/1423383395191730178'],
   ['387591111696360761','16/16/d0/1616d000752a10779008f270653dc0ae.jpg','An arch over water and trees'],
   ['387591111692424623','25/5c/91/255c910b1a319efd7b62d59adf22c832.jpg','An indoor pool among rocks'],
-  ['387591111692866683','67/2d/b2/672db23ee2005d9ac53910b405e5d864.jpg','Curtains framing a path to a tree'],
+  ['387591111692866683','67/2d/b2/672db23ee2005d9ac53910b405e5d864.jpg','Curtains framing a path to a tree','James Tralie','https://www.reddit.com/r/Art/comments/kw5g4o/stairway_to_relaxation_james_tralie_me_3d_2021/'],
   ['387591111692933336','f3/14/4b/f3144b13c2306f76bee41ecbfb3fe239.jpg','A moss-covered wall piece'],
   ['387591111691892203','ce/f6/e5/cef6e54d6fc53e2adfe5857fc3906c9c.jpg','A living green wall'],
   ['387591111691632275','74/97/df/7497dff87eac89529cabc8710093b71a.jpg','Moss growing indoors by a window'],
@@ -241,3 +242,19 @@ export function createExperience({ camera, controls, reduce, phone, openGallery,
 }
 
 export { stops };   // read by the story review export (story-review.html)
+
+// The case study's inspiration rows (JC 2026-10-22: "only pull ones you can verify"): pins from the Etherea board whose
+// maker is named by Pinterest's own creator credit or by the source itself. [pin id, image, alt, maker, maker's page]
+export const INSPO=[
+  ['387591111696360805','35/b9/5a/35b95aa0eca3305c939b57377b755758.jpg','Pink arches and stairs with two white spheres','Charlotte Taylor','https://us.gestalten.com/blogs/journal/reverie-in-charlotte-taylor-serene-digital-worlds'],
+  ['387591111692866683','67/2d/b2/672db23ee2005d9ac53910b405e5d864.jpg','Curtains framing a path to a tree','James Tralie','https://www.reddit.com/r/Art/comments/kw5g4o/stairway_to_relaxation_james_tralie_me_3d_2021/'],
+  ['387591111691101016','17/58/ee/1758ee0c934910d91c24a290ce4b9857.jpg','Arches and a lounge in green light','Rafael Eifler','https://www.behance.net/rafaeleifler'],
+  ['387591111691867326','16/9e/d1/169ed1c01d32eeb2d41c3fdd0137eeb3.jpg','A figure in front of a red sun','India Gorokhova','https://www.behance.net/indiagorokhova'],
+  ['387591111691044527','b6/1a/2c/b61a2c42cdc8b8224363c6a9f6ad05bf.jpg','A red room with a white moon','Timur Mitin','https://www.behance.net/timurmitin'],
+  ['387591111693548159','3f/0d/7f/3f0d7fb55e9ff67039d05fbcfcb14674.jpg','A pink tunnel of arches','Simon Kämpfer','https://holmandhimmel.com/products/simon-kaempfer-opportunities-2019'],
+  ['387591111692380251','f0/d2/1f/f0d21fa9e58edbe14b437e30a2fe923f.jpg','Arches over a pool','Peter Tarka','https://twitter.com/PeterTarka/status/1423383395191730178'],
+  ['387591111691057698','56/8a/ac/568aac707b4970815d53a5e60d6813ef.jpg','A round mirror in a dark plaster room','Liam Pitchford','https://www.behance.net/LiamPitchford'],
+  ['387591111690480874','91/80/87/9180870e928a627f4e2992386019a67b.jpg','A pink tree on a pink island','mbsjq','https://www.behance.net/JonathanQuintin'],
+  ['387591111690852445','70/a2/04/70a20454155d9819a525cdf130c8f2c2.jpg','A lounge under arched palm windows','Peter Tarka','https://www.behance.net/trk'],
+  ['387591111690480857','f1/a8/60/f1a8607cf4ff6938f653d31ed9700320.jpg','Flowers hanging from a mossy ceiling','PicturesSG','https://www.flickr.com/photos/snapsg/'],
+  ['387591111691460389','98/99/de/9899de3315a8698e8a0e7a108c7322be.jpg','A woman on a swing above the clouds','Vladimir Zotov','https://500px.com/VladimirZotov']];

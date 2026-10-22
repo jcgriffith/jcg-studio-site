@@ -30,9 +30,17 @@ export function mountStory({ stops, MOOD = [], sets, IMG, root, hero, exploreHre
   const go3d = (pairs) => `<p class="links" data-reveal>${pairs.map(([id, label]) => `<a class="cta" href="${exploreHref(id)}">${label} <span aria-hidden="true">↗</span></a>`).join('')}</p>`;
   const AWARD = `<a class="card" data-reveal href="https://web.archive.org/web/20230929030652/https://madein.peerspace.com/awards/los-angeles/production" target="_blank" rel="noopener"><img src="${IMG}peerspace-open-door-2023.webp" width="285" height="400" alt="Peerspace Open Door Awards 2023 winner badge"><span><b>Open Door Awards 2023</b>No. 9 of the top 10 production spaces in Los Angeles<i>See the winners ↗</i></span></a>`;
   const BOARD = `<a class="card" data-reveal href="https://www.pinterest.com/jc_griffith/etherea/" target="_blank" rel="noopener"><span><b>The Etherea board</b>Hundreds of pins: the dreamscapes the studio was designed from<i>See the board on Pinterest ↗</i></span></a>`;
-  const MARQUEE = (() => { const pins = MOOD.map(([id, img, alt]) => `<a href="https://www.pinterest.com/pin/${id}/" target="_blank" rel="noopener"><img src="https://i.pinimg.com/736x/${img}" alt="${esc(alt)}" loading="lazy" decoding="async" referrerpolicy="no-referrer"></a>`);
-    const half = Math.ceil(pins.length / 2), row = (a) => `<div class="row">${a.join('')}${a.join('').replace(/<a /g, '<a tabindex="-1" aria-hidden="true" ')}</div>`;
-    return pins.length ? `<div class="marquee" data-reveal>${row(pins.slice(0, half))}${row(pins.slice(half))}</div>` : ''; })();
+  // The board rows: only pins whose maker is confirmed (work/719-studios/3d/experience.js INSPO, JC 2026-10-22). The
+  // picture and the name go to the maker's page; the small Pinterest mark goes to the pin. Older lists without a maker
+  // still work (they link to the pin).
+  const PI = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#E60023"/><path fill="#fff" d="M12.3 5.2c-3.9 0-5.9 2.8-5.9 5.1 0 1.4.5 2.7 1.7 3.1.2.1.4 0 .4-.2l.2-.7c.1-.2 0-.3-.1-.5-.3-.4-.6-1-.6-1.8 0-2.3 1.7-4.4 4.5-4.4 2.4 0 3.8 1.5 3.8 3.5 0 2.6-1.2 4.9-2.9 4.9-1 0-1.7-.8-1.4-1.7.3-1.1.8-2.4.8-3.2 0-.7-.4-1.3-1.2-1.3-1 0-1.7 1-1.7 2.3 0 .8.3 1.4.3 1.4l-1.1 4.6c-.3 1.4 0 3.1 0 3.3 0 .1.2.1.2 0 .1-.1 1.2-1.5 1.6-2.9l.6-2.4c.3.6 1.2 1.1 2.2 1.1 2.9 0 4.8-2.6 4.8-6.1 0-2.6-2.3-5.1-5.7-5.1z"/></svg>';
+  const MARQUEE = (() => {
+    const pin = ([id, img, alt, by, from], hide) => {
+      const t = hide ? ' tabindex="-1"' : '', pinUrl = `https://www.pinterest.com/pin/${id}/`, to = by && from ? from : pinUrl;
+      return `<div class="pin"${hide ? ' aria-hidden="true"' : ''}><a class="pin-img" href="${esc(to)}" target="_blank" rel="noopener"${t}><img src="https://i.pinimg.com/736x/${img}" alt="${esc(alt)}${by ? ` by ${esc(by)}` : ''}" loading="lazy" decoding="async" referrerpolicy="no-referrer"></a>${by ? `<a class="pin-credit" href="${esc(to)}" target="_blank" rel="noopener"${t}>${esc(by)}</a>` : ''}<a class="pin-pi" href="${pinUrl}" target="_blank" rel="noopener" aria-label="${esc(alt)} on Pinterest"${t}>${PI}</a></div>`;
+    };
+    const half = Math.ceil(MOOD.length / 2), row = (a) => `<div class="row">${a.map((p) => pin(p)).join('')}${a.map((p) => pin(p, true)).join('')}</div>`;   // each row twice, for a seamless loop
+    return MOOD.length ? `<div class="marquee" data-reveal>${row(MOOD.slice(0, half))}${row(MOOD.slice(half))}</div>` : ''; })();
 
   const paragraphs = (s) => { if (s.paras) return s.paras; const parts = s.detail.split(/(?<=[.!?])(?<!\bNo\.)\s+(?=[A-Z“"])/);
     if (parts.length < 3) return [s.detail]; const half = Math.ceil(parts.length / 2); return [parts.slice(0, half).join(' '), parts.slice(half).join(' ')]; };
@@ -66,7 +74,7 @@ export function mountStory({ stops, MOOD = [], sets, IMG, root, hero, exploreHre
         const plan = stills.find((p) => /eth-plan/.test(p.src));
         const pair = [stills.find((p) => p.src.includes('eth-stage-render')), stills.find((p) => p.src.includes('eth-stage-built'))].filter(Boolean);
         body = `<div class="wrap">${head}${dek}${words(paras.slice(0, 1))}</div>${MARQUEE}
-          <div class="wrap">${MARQUEE ? '<p class="hud" data-reveal>From my Etherea board on Pinterest · tap a pin to see it there</p>' : ''}${quote(q)}
+          <div class="wrap">${MARQUEE ? '<p class="hud" data-reveal>From my Etherea board on Pinterest · each piece links to its maker</p>' : ''}${quote(q)}
           ${plan ? fig(l, at(plan), plan, '', 'An early 3D layout') : ''}
           <p data-reveal>These are early iterations. The design kept changing until we built it.</p>
           ${pair.length === 2 ? `<div class="pair">${fig(l, at(pair[0]), pair[0], '', 'Early 3D concept')}${fig(l, at(pair[1]), pair[1], '', 'As built')}</div>` : ''}

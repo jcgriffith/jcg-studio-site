@@ -63,28 +63,69 @@ function nameLines(name) {
     ${w.length === longest ? 'textLength="630" lengthAdjust="spacingAndGlyphs"' : ''} style="font-size:${size.toFixed(1)}px">${w}</text>`).join('');
 }
 
-export function hud(c) {
-  const [no] = c.label.split(' / ');
+// The HUD's frame sits an equal 36 units in from every edge of the cover (JC 2026-10-22: the side margins were wider than
+// top and bottom). The art box isn't always 3:4 (the caption takes height from it), so the drawing is 960 units tall and
+// as wide as the box's own shape; a ResizeObserver redraws it when the box changes. The name and circle stay centred.
+const HUDS = new Map();
+// Grid pieces (works.json): the first word big and the same size on every card, the rest (LOFT) small and spaced on the
+// line below (JC 2026-10-22, from his warm-card mock: "all big and the loft words on the next line much smaller and
+// uniform in size"). 92 units fits a seven-letter name (ETHEREA, SOLARIS) inside the frame.
+function pieceName(name, W) {
+  const [first, ...rest] = name.toUpperCase().split(/\s+/);
+  return `<text class="ph-name" x="${W / 2}" y="222" text-anchor="middle" style="font-size:92px">${first}</text>`
+    + (rest.length ? `<text class="ph-sub" x="${W / 2}" y="272" text-anchor="middle">${rest.join(' ')}</text>` : '');
+}
+function hudBody(c, W) {
+  const R = W - 36;
   const ticks = Array.from({ length: 31 }, (_, i) => {
     const y = 120 + i * 24, long = i % 5 === 0;
-    return `<line x1="${long ? 652 : 660}" y1="${y}" x2="672" y2="${y}"/>`;
+    return `<line x1="${R - (long ? 32 : 24)}" y1="${y}" x2="${R - 12}" y2="${y}"/>`;
   }).join('');
   const corner = (x, y) => `<path d="M${x - 14} ${y}H${x + 14}M${x} ${y - 14}V${y + 14}"/>`;
+  const [no] = c.label.split(' / ');
+  return `${c.types ? pieceName(c.concept, W) : `<g transform="translate(${(W - 720) / 2} 0)">${nameLines(c.concept)}</g>`}
+      <g class="ph-line">
+        <rect x="36" y="36" width="${W - 72}" height="888"/>
+        <circle cx="${W / 2}" cy="557" r="262"/>
+        <line class="ph-dash" x1="60" y1="557" x2="${R - 44}" y2="557"/>
+      </g>
+      <g class="ph-ink">${corner(36, 36)}${corner(R, 36)}${corner(36, 924)}${corner(R, 924)}${ticks}</g>
+      <g class="ph-text">
+        <text x="60" y="84">${c.types ? no.toUpperCase() : `${no} / ${c.concept.toUpperCase()}`}</text>
+        <text x="${R - 32}" y="84" text-anchor="end">${(c.coverKind || c.member.split(' that ')[0] || '').replace(/^an? /i, '').toUpperCase()}</text>
+        <text x="60" y="896">${(c.product?.facts?.[0]?.[1] || c.coverFact || '').toUpperCase()}</text>
+        ${c.coverEnd ? `<text x="${R - 32}" y="896" text-anchor="end">${c.coverEnd.toUpperCase()}</text>` : ''}
+        <g class="ph-status"><circle cx="${R - 152}" cy="889" r="7"/><text x="${R - 32}" y="896" text-anchor="end"><tspan class="ph-asleep">ASLEEP</tspan><tspan class="ph-awake">AWAKE</tspan></text></g>
+      </g>`;
+}
+let hudRO = null, hudMO = null;
+function fitHud(svg) {
+  const box = svg.parentElement, c = HUDS.get(svg.dataset.productHud);
+  if (!box || !c || !box.offsetWidth || !box.offsetHeight) return;
+  const W = Math.max(400, Math.round((960 * box.offsetWidth) / box.offsetHeight));
+  if (Number(svg.dataset.w) === W) return;
+  svg.dataset.w = String(W);
+  svg.setAttribute('viewBox', `0 0 ${W} 960`);
+  svg.innerHTML = hudBody(c, W);
+}
+function watchHuds() {
+  if (hudMO) return;
+  hudRO = new ResizeObserver((es) => es.forEach((e) => e.target.querySelectorAll(':scope > .product-hud').forEach(fitHud)));
+  const take = (root) => root.querySelectorAll?.('.product-hud:not([data-fit])').forEach((svg) => {
+    svg.dataset.fit = '';
+    if (svg.parentElement) { hudRO.observe(svg.parentElement); fitHud(svg); }
+  });
+  hudMO = new MutationObserver((ms) => ms.forEach((m) => m.addedNodes.forEach((n) => { if (n.nodeType === 1) { if (n.matches('.product-hud')) n.parentElement && take(n.parentElement); else take(n); } })));
+  hudMO.observe(document.body, { childList: true, subtree: true });
+  take(document);
+}
+
+export function hud(c) {
+  HUDS.set(c.id, c);
+  queueMicrotask(watchHuds);
   return `
     <svg class="product-hud" viewBox="0 0 720 960" preserveAspectRatio="xMidYMid meet" aria-hidden="true" data-product-hud="${c.id}">
-      ${nameLines(c.concept)}
-      <g class="ph-line">
-        <rect x="36" y="36" width="648" height="888"/>
-        <circle cx="360" cy="557" r="262"/>
-        <line class="ph-dash" x1="60" y1="557" x2="640" y2="557"/>
-      </g>
-      <g class="ph-ink">${corner(36, 36)}${corner(684, 36)}${corner(36, 924)}${corner(684, 924)}${ticks}</g>
-      <g class="ph-text">
-        <text x="60" y="84">${no} / ${c.concept.toUpperCase()}</text>
-        <text x="652" y="84" text-anchor="end">${(c.coverKind || c.member.split(' that ')[0] || '').replace(/^an? /i, '').toUpperCase()}</text>
-        <text x="60" y="896">${(c.product?.facts?.[0]?.[1] || c.coverFact || '').toUpperCase()}</text>
-        <g class="ph-status"><circle cx="532" cy="889" r="7"/><text x="652" y="896" text-anchor="end"><tspan class="ph-asleep">ASLEEP</tspan><tspan class="ph-awake">AWAKE</tspan></text></g>
-      </g>
+      ${hudBody(c, 720)}
     </svg>`;
 }
 

@@ -80,7 +80,7 @@
   --gutter: clamp(20px, 4vw, 48px);
   --section: clamp(88px, 11vw, 160px);
   --edge: 24px;         /* HUD corners sit this far from the viewport edges; an open portfolio item lines up with them */
-  --hud-row: 46px;      /* the top HUD row's height (the logo panel) */
+  --hud-row: 40px;      /* the top HUD row's height (the logo panel); every HUD panel is 40 px (JC 2026-10-22) */
   --nav-h: calc(var(--edge) + var(--hud-row) + 2px);   /* content starts just below the top HUD */
   --hit: 44px;          /* touch-target floor */
 

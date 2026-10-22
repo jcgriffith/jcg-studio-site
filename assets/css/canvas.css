@@ -1185,8 +1185,8 @@
   padding-bottom: 100px;
 }
 .folio-wrap { padding-top: 8px; }
-.folio-head { display: grid; gap: 16px; padding-bottom: 48px; max-width: 56ch; }
-.folio-head .h2 { margin-top: 8px; }
+/* JC 2026-10-22: no headline in Grid or List; the heading stays for screen readers (as .sr-only) */
+.folio-head { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
 /* Grid: 2×2 covers with clear horizontal + vertical gutters (~80–120px). */
 .folio-grid {
@@ -1421,8 +1421,250 @@
 /* The Etherea Loft's cover (2026-10-15): its 3D viewer in ?cover mode, transparent, in front of the HUD's name. */
 .cover-3d--embed iframe { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; border: 0; pointer-events: none; background: transparent; }
 .cover-3d--embed .ph-status { display: none; }
+/* Loft posters (JC 2026-10-22): one flat warm ivory for all three ("warm ivory, not glow"; no per-loft colour, no
+   circle behind the model) and one shared warm ink for the names and hairlines, so the three read as a deck.
+   The per-loft palettes stay in works.json for the saved poster art. */
+.cover-3d--warm { --ink: #2B2623; }
+.cover-3d--warm.belt3d-ready { background: #F5EFE4; }
+/* the loft names in Mak Bold, 719's display face (assets/fonts/mak-bold.woff2, from JC's installed MAK-bold.otf:
+   "Free for personal and commercial use") */
+@font-face { font-family: 'Mak'; src: url('../fonts/mak-bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+.cover-3d--warm .product-hud .ph-name { fill: var(--ink); opacity: 1; font-family: 'Mak', Georgia, serif; font-weight: 700; font-stretch: normal; letter-spacing: 0; font-size: 118px !important; }
+.cover-3d--warm .product-hud .ph-sub { fill: var(--ink); opacity: .7; }
+.cover-3d--warm .product-hud .ph-line { stroke: var(--ink); stroke-opacity: .14; }
+.cover-3d--warm .product-hud .ph-line circle, .cover-3d--warm .product-hud .ph-dash { display: none; }
+.cover-3d--warm .product-hud .ph-ink { stroke: var(--ink); stroke-opacity: .45; }
+.cover-3d--warm .product-hud .ph-text { fill: var(--ink); fill-opacity: .72; }
+.cover-3d--embed.belt3d-ready { pointer-events: auto; cursor: grab; touch-action: pan-y; }
+.cover-3d--embed.is-turning { cursor: grabbing; }
 .cover-3d.cover-3d--photo.belt3d-ready { background: linear-gradient(rgba(0,0,0,.42), rgba(0,0,0,0) 42%, rgba(0,0,0,0) 78%, rgba(0,0,0,.36)); }   /* Terra, Solaris: the HUD over a real photo stays legible */
 .cover-3d--photo .ph-status, .cover-3d--photo .ph-line circle, .cover-3d--photo .ph-dash { display: none; }
 .cover-3d--photo .product-hud .ph-text { fill: rgba(255, 255, 255, .88); }
 .cover-3d--photo .product-hud .ph-ink { stroke: rgba(255, 255, 255, .7); }
 .cover-3d--photo .product-hud .ph-line { stroke: rgba(255, 255, 255, .28); }
+
+/* ── The Work grid (2026-10-21): pieces, filters, the side card, the phone sheet ─────────────────────────
+   One cluster per highlight piece (works.json); the masonry is computed in canvas.js. Three text styles in
+   view: the HUD mono (filters, meta, facts, buttons), the display face (project title), the sans (summary). */
+.floor--pieces .cluster.is-filtered { display: none; }
+.world.is-relayout > .cluster { transition: left 560ms var(--ease-out), top 560ms var(--ease-out), opacity 300ms linear; }
+.world.is-relayout > .cluster:not(.is-filtered) { animation: piece-in 420ms var(--ease-out) both; }
+@keyframes piece-in { from { opacity: 0; } to { opacity: 1; } }
+.floor--pieces .world.has-open > .cluster:not(.is-open):not(.is-solo) { opacity: .14; }
+.floor--pieces .world.has-solo > .cluster.is-exiting { opacity: 0; }
+.floor--pieces .frame-caption-meta { gap: 1em; }
+/* JC 2026-10-22: "when the captions appear, the gaps between items vertically disappears". On the Work grid the gutter
+   is only layout.gap, so a caption keeping its on-screen size grows up into its own tile (the art crops a little)
+   instead of down into the gutter; the gap between tiles stays the same at every zoom. */
+.floor--pieces .world:not(.lod-poster) .frame--cover .frame-body { bottom: calc(var(--caption-h, 0px) * max(1, var(--inv, 1))); }
+.floor--pieces .frame-caption { top: calc(100% - var(--caption-h, 0px) * max(1, var(--inv, 1))); }
+.floor--pieces .frame-caption-meta > span:first-child { color: var(--chrome); }
+
+/* Staged (local only): a quiet outline badge, the same mono as the meta around it. */
+.chip--staged { color: var(--chrome-3); border: 1px dashed var(--line-strong); background: transparent; }
+.frame-caption-meta .chip--staged, .title-card-meta .chip--staged { padding: .35em .6em; }
+
+/* Side card: the 9/30 hairline → clip-path sheet, then a short glitch as it lands. */
+.floor--pieces .is-open > .cluster-band .band-sheet { animation: band-glitch 360ms steps(1, end) 260ms both; }
+@keyframes band-glitch {
+  0%   { transform: none; filter: none; }
+  18%  { transform: translateX(calc(-6px * var(--inv))); filter: drop-shadow(calc(3px * var(--inv)) 0 0 rgba(255, 60, 60, .5)) drop-shadow(calc(-3px * var(--inv)) 0 0 rgba(60, 200, 255, .5)); }
+  34%  { transform: translateX(calc(4px * var(--inv))) skewX(-2deg); }
+  52%  { transform: translateX(calc(-2px * var(--inv))); filter: drop-shadow(calc(2px * var(--inv)) 0 0 rgba(255, 60, 60, .35)); }
+  70%  { transform: none; filter: none; }
+}
+.piece-card { --name: 9cqi; --body: 3.4cqi; --meta: 2.3cqi; --gap: 3cqi; }
+.piece-card .title-card-meta { color: var(--chrome-3); }
+.piece-card .piece-card-name { color: var(--chrome); }
+.piece-card .title-card-desc { -webkit-line-clamp: 4; line-clamp: 4; max-width: none; }   /* the card's full width (JC 2026-10-22) */
+.piece-card .title-card-facts { margin-top: auto; }
+.piece-card .title-card-facts dd { font: 400 var(--meta)/1.3 var(--font-hud); letter-spacing: var(--track-hud); text-transform: uppercase; white-space: normal; }
+.piece-thumbs { display: flex; flex-wrap: wrap; gap: 1.4cqi; margin-top: 1cqi; }
+.piece-thumb {
+  all: unset; box-sizing: border-box; cursor: pointer;
+  width: 11.4cqi; aspect-ratio: 1; overflow: hidden;
+  border: 1px solid var(--line); background: var(--void-3);
+  opacity: .62; transition: opacity var(--dur-1) linear, border-color var(--dur-1) linear;
+}
+.piece-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.piece-thumb:hover, .piece-thumb:focus-visible { opacity: 1; border-color: var(--chrome-3); }
+.piece-thumb[aria-current="true"] { opacity: 1; border-color: var(--chrome); }
+.piece-card .title-card-open { display: inline-flex; align-items: center; gap: .8em; min-height: 6cqi; }
+@container band (max-height: 420px) { .piece-card .title-card-facts { display: grid; } }
+.lod-poster .piece-thumbs { display: none; }
+@media (max-width: 759px) { .floor--pieces .cluster-band { display: none; } }
+
+/* Phone: the same card as a bottom sheet in screen space (a hairline, the sheet opening from its centre line, the glitch). */
+.piece-sheet {
+  position: fixed; z-index: 26; left: var(--edge); right: var(--edge); bottom: var(--edge);
+  max-height: 64svh;
+  container: band / inline-size;
+  pointer-events: auto;
+}
+.piece-sheet .band-rule { left: 0; right: 0; top: 50%; height: 1px; transform-origin: 50% 50%; }
+.piece-sheet .band-sheet { box-shadow: inset 0 0 0 1px var(--line-strong); }
+.piece-sheet .band-sheet::before { --t: 10px; }
+.piece-sheet.is-open .band-rule { transform: scaleX(1); opacity: 0; transition: transform 240ms var(--ease-out), opacity 200ms linear 280ms; }
+.piece-sheet.is-open .band-sheet { clip-path: inset(0 0 0 0); transition: clip-path 360ms var(--ease-out) 180ms; animation: sheet-glitch 340ms steps(1, end) 240ms both; }
+.piece-sheet.is-open .title-card { opacity: 1; transform: none; pointer-events: auto; transition: opacity 260ms linear 300ms, transform 380ms var(--ease-out) 280ms; }
+@keyframes sheet-glitch {
+  0% { transform: none; filter: none; }
+  20% { transform: translateX(-5px); filter: drop-shadow(3px 0 0 rgba(255, 60, 60, .5)) drop-shadow(-3px 0 0 rgba(60, 200, 255, .5)); }
+  40% { transform: translateX(3px) skewX(-2deg); }
+  60% { transform: translateX(-1px); filter: none; }
+  80% { transform: none; }
+}
+.piece-sheet .band-sheet { position: relative; inset: auto; max-height: 64svh; overflow-y: auto; }
+.piece-sheet .piece-card { --pad: 20px; --gap: 12px; --meta: 11px; --body: 14px; --name: 40px; position: relative; inset: auto; }
+.piece-sheet .title-card-facts { margin-top: 4px; }
+.piece-sheet .piece-thumbs { gap: 6px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; flex: 0 0 auto; }
+.piece-sheet .piece-thumb { width: 44px; flex: 0 0 44px; }
+.piece-sheet .title-card-open { min-height: 44px; flex: 0 0 auto; }
+.piece-sheet .title-card-facts { padding-top: 10px; }
+.piece-sheet-x {
+  all: unset; position: absolute; top: 6px; right: 6px; z-index: 2;
+  width: 44px; height: 44px; display: grid; place-items: center; cursor: pointer;
+  font: 400 18px/1 var(--font-hud); color: var(--chrome-2);
+}
+.piece-sheet-open .hud-bottom, .piece-sheet-open .hud-filters { opacity: 0; pointer-events: none; }
+
+/* Filter bar: top centre between the logo and the menu on desktop; a scroll strip above the bottom HUD on a phone. */
+.hud-filters.hud-panel {
+  position: fixed; z-index: 30; top: var(--edge); left: 50%; transform: translateX(-50%);
+  display: inline-flex; align-items: stretch; max-width: calc(100vw - 2 * var(--edge) - 420px);
+  overflow-x: auto; scrollbar-width: none;
+  transition: opacity 200ms linear;
+}
+.hud-filters::-webkit-scrollbar { display: none; }
+.hud-filters .hud-btn { flex: 0 0 auto; height: 36px; padding: 0 12px; gap: 6px; display: inline-flex; align-items: center; color: var(--chrome-3); white-space: nowrap; }
+.hud-filters .hud-btn:hover { color: var(--chrome-2); }
+.hud-filters .hud-btn[aria-pressed="true"] { color: var(--chrome); background: var(--void-3); }
+.hud-count { color: var(--chrome-3); opacity: .7; font-variant-numeric: tabular-nums; }
+.hud-filters.hud-panel::before { inset: -5px; --t: 6px; }
+.solo-open .hud-filters, .page-work[data-view="index"] .hud-filters { opacity: 0; pointer-events: none; visibility: hidden; }
+/* Phones (JC 2026-10-22: the stacked controls took a fifth of the screen): one bottom row, filters scrolling on the left of
+   the view switcher; no zoom panel (pinch zooms) and no staged toggle (dev only). */
+@media (max-width: 759px) {
+  .hud-filters.hud-panel { top: auto; bottom: var(--edge); left: var(--edge); right: calc(var(--edge) + var(--views-w, 162px) + 12px); transform: none; max-width: none; }
+  .hud-bottom > .hud-panel:not(.hud-views), .hud-bottom > .hud-staged { display: none; }
+  .hud-filters .hud-btn { height: 40px; }
+}
+.page-work[data-view="grid"] .hud-filters, .page-work[data-view="list"] .hud-filters { position: fixed; }
+.hud-bottom > .hud-staged:not([hidden]) { margin-left: auto; padding: 0 12px; color: var(--chrome-3); }
+.hud-bottom > .hud-staged:not([hidden]) + .hud-views { margin-left: 0; }
+.hud-staged[aria-pressed="false"] { color: var(--chrome); }
+@media (prefers-reduced-motion: reduce) {
+  .world.is-relayout > .cluster, .world.is-relayout > .cluster:not(.is-filtered) { transition: none; animation: none; }
+  .floor--pieces .is-open > .cluster-band .band-sheet, .piece-sheet.is-open .band-sheet { animation: none; }
+}
+
+/* Hover focus (JC 2026-10-22: "when I hover on one item ... the others go a bit dark", about 20%): the board's hot
+   cluster stays bright and the rest dim; in Grid view the hovered card does the same. */
+.floor--pieces .cluster { transition: filter 220ms linear; }
+.floor--pieces .world:has(.cluster.is-hot) .cluster:not(.is-hot) { filter: brightness(.6); }
+.folio-card { transition: filter 220ms linear; }
+@media (hover: hover) { .folio-grid:has(.folio-card:hover) .folio-card:not(:hover) { filter: brightness(.6); } }
+
+/* the bottom HUD at the shared 40 px (38 inside the border), on every screen size */
+.hud-btn, .hud-readout { height: 38px; }
+.hud-filters .hud-btn { height: 38px; }
+@media (max-width: 759px) { .hud-btn, .hud-readout, .hud-filters .hud-btn { height: 38px; } }
+
+/* the project's handle under a caption (@719studios): its own lowercase spelling, clickable through the caption */
+.frame-caption-handle { text-transform: none; letter-spacing: .04em; color: var(--chrome-2); pointer-events: auto; cursor: pointer; text-decoration: none; }   /* the caption text's grey */
+.frame-caption-handle:hover, .frame-caption-handle:focus-visible { color: var(--chrome-2); text-decoration: underline; text-underline-offset: 3px; }
+
+/* A piece card's three ways in (JC 2026-10-22): Explore in 3D (filled), the case study and the story (outlined),
+   at the card's own scale. */
+.piece-ctas { display: flex; flex-wrap: wrap; gap: 1.2cqi; }
+.piece-ctas > .btn {
+  display: inline-flex; align-items: center; gap: .7em;
+  min-height: 5cqi; padding: 0 1.6em; border-radius: 0;
+  font: 400 var(--meta)/1 var(--font-hud); letter-spacing: var(--track-hud); text-transform: uppercase;
+}
+.piece-ctas > .btn--ghost { background: transparent; color: var(--chrome); border: 1px solid var(--line-strong); }
+.piece-ctas > .btn--ghost:hover, .piece-ctas > .btn--ghost:focus-visible { background: var(--void-3); border-color: var(--chrome-3); }
+.lod-poster .piece-ctas { display: none; }
+
+/* ── Type study: "notebook" (JC 2026-10-22, after mek.gallery: "more interesting font ... more branded/stylized").
+   Only with ?type=note. The small text becomes one voice: the brand's Departure Mono, bigger, lowercase, untracked;
+   captions are a note plus the @handle (underlined, like a footnote) instead of a title and a label. */
+.t-note .hud-btn, .t-note .hud-readout, .t-note .hud-actions .hud-subscribe { font-size: 14px; text-transform: lowercase; letter-spacing: 0; }
+.t-note .frame-caption { --k: max(1, var(--inv, 1)); }
+.t-note .frame-caption-text { font-family: var(--font-hud); font-size: calc(17px * var(--k)); line-height: 1.35; letter-spacing: 0; color: var(--chrome); -webkit-line-clamp: 3; line-clamp: 3; }
+.t-note .frame-caption-text b { display: none; }
+.t-note .frame-caption-meta { font-size: calc(15px * var(--k)); letter-spacing: 0; }
+.t-note .frame-caption-handle { text-decoration: underline; text-underline-offset: .25em; text-decoration-thickness: 1px; color: var(--chrome-3); }
+.t-note .product-hud .ph-text { text-transform: lowercase; letter-spacing: 0; font-size: 26px; }
+.t-note .product-hud .ph-sub { text-transform: lowercase; letter-spacing: .3em; }
+.t-note .title-card-meta, .t-note .title-card-facts, .t-note .piece-ctas > .btn { text-transform: lowercase; letter-spacing: 0; }
+
+/* A piece card's media reel (JC 2026-10-22): the highlights at one height, side by side, filling the room between the
+   description and the facts; swipe or scroll sideways, or the arrows. */
+.piece-reel { position: relative; flex: 1 1 0; min-height: 18cqi; margin-top: 1cqi; display: flex; flex-direction: column; gap: 1.2cqi; }
+.piece-reel-track { flex: 1 1 0; min-height: 0; display: flex; gap: 1.2cqi; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
+.piece-reel-track::-webkit-scrollbar { display: none; }
+.piece-reel-track > img, .piece-reel-track > video { flex: none; height: 100%; width: auto; max-width: none; display: block; object-fit: cover; scroll-snap-align: start; background: var(--void-3); }
+.piece-reel-nav { display: flex; justify-content: flex-end; gap: .6cqi; }
+.piece-reel-nav button { all: unset; cursor: pointer; display: inline-grid; place-items: center; min-width: 5cqi; height: 4.4cqi; border: 1px solid var(--line); font: 400 var(--meta)/1 var(--font-hud); color: var(--chrome-2); }
+.piece-reel-nav button:hover, .piece-reel-nav button:focus-visible { color: var(--chrome); border-color: var(--chrome-3); }
+.lod-poster .piece-reel { display: none; }
+/* the notebook voice through the top panels, the menu and the open card (JC 2026-10-22: "carry that voice through") */
+.t-note .site-menu-panel a, .t-note .site-menu-panel .hud, .t-note .piece-card .title-card-facts dt, .t-note .piece-card .title-card-facts dd,
+.t-note .frame-caption-open, .t-note .hud-filters .hud-btn, .t-note .piece-reel-nav button { text-transform: lowercase; letter-spacing: 0; }
+.t-note .site-menu-panel a { font-size: 15px; }
+.t-note .piece-card .title-card-facts dt, .t-note .piece-card .title-card-facts dd { font-size: calc(var(--meta) * 1.15); }
+/* the reel bleeds off the card's right edge, so the next item is visibly cut and the strip reads as scrollable
+   (JC 2026-10-22: "show the overflow ... just have them go off screen"); the arrows stay on the card's margin */
+.piece-card .piece-reel { margin-right: calc(var(--pad) * -1.1); }
+.piece-card .piece-reel-nav { padding-right: calc(var(--pad) * 1.1); }
+.piece-card .piece-reel-track { scroll-padding-left: 0; }
+.piece-card .piece-reel-track::after { content: ''; flex: none; width: calc(var(--pad) * 1.1 - 1.2cqi); }
+
+/* Open card: the corner brackets frame the poster and its info card as one piece (JC 2026-10-22: "the corner chevron
+   brackets should expand to the full card when the item is expanded"). */
+.floor--pieces .cluster::before { transition: inset 260ms var(--ease-out); }
+.floor--pieces .cluster.is-open[data-dir="right"]::before { inset: -28px calc(-28px - var(--band-w, 0px)) calc(-28px - var(--band-xh, 0px)) -28px; }
+.floor--pieces .cluster.is-open[data-dir="left"]::before { inset: -28px -28px calc(-28px - var(--band-xh, 0px)) calc(-28px - var(--band-w, 0px)); }
+
+/* The open card drops its headline: the poster beside it already says the name, big; the description names it
+   instead (JC 2026-10-22). The heading stays for screen readers. */
+.piece-card .title-card-name { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* One card when open (JC 2026-10-22: "the panel should wrap around the original poster a bit so when it's expanded it
+   looks like the portfolio and description stuff on the right are all on one big card"): a single sheet sits behind
+   the poster and the info panel, a margin proud of the poster; the poster loses its own outline and the panel its own
+   border, so the two read as one piece. */
+.floor--pieces .cluster { isolation: isolate; --wrap: 16px; }
+.floor--pieces .cluster::after {
+  content: ''; position: absolute; z-index: -1; pointer-events: none;
+  background: var(--void-2); box-shadow: inset 0 0 0 calc(1px * var(--inv, 1)) var(--line-strong);
+  opacity: 0; transition: opacity 200ms linear, inset 260ms var(--ease-out);
+  inset: calc(var(--wrap) * -1);
+}
+.floor--pieces .cluster.is-open::after { opacity: 1; }
+.floor--pieces .cluster.is-open[data-dir="right"]::after { inset: calc(var(--wrap) * -1) calc(var(--wrap) * -1 - var(--band-w, 0px)) calc(var(--wrap) * -1 - var(--band-xh, 0px)) calc(var(--wrap) * -1); }
+.floor--pieces .cluster.is-open[data-dir="left"]::after { inset: calc(var(--wrap) * -1) calc(var(--wrap) * -1) calc(var(--wrap) * -1 - var(--band-xh, 0px)) calc(var(--wrap) * -1 - var(--band-w, 0px)); }
+.floor--pieces .cluster.is-open > .frame--cover.is-selected { outline: none; }
+.floor--pieces .cluster.is-open .band-sheet { background: transparent; box-shadow: none; }
+.floor--pieces .cluster.is-open .band-sheet.ticks::before { content: none; }   /* the shared card has the only corners */
+/* A card opening left of its poster (JC 2026-10-22): the margin outside the content (card edge to text) equals the gap
+   between the content and the poster, and the reel, its arrows, the divider and the facts all end on that one edge. */
+.floor--pieces .cluster[data-dir="left"] .piece-card { padding-left: calc(var(--pad) * 1.1 - var(--wrap)); padding-right: calc(var(--pad) * 1.1); }
+.floor--pieces .cluster[data-dir="left"] .piece-card .piece-reel { margin-right: 0; }
+.floor--pieces .cluster[data-dir="left"] .piece-card .piece-reel-nav { padding-right: 0; }
+.floor--pieces .cluster[data-dir="left"] .piece-card .piece-reel-track::after { display: none; }
+/* the same for a card opening right of its poster (JC 2026-10-22: "fix the other ones too same way"): equal gaps both
+   sides of the content, and the reel ends on the content edge like everything else */
+/* JC 2026-10-22 ("i still would love to see the next item ... going all the way off screen"): the open panel reaches the
+   card's outer edge, the content keeps equal margins either side, and the reel runs to that edge, cut by the border;
+   the arrows, divider and facts stay on the content edge. */
+.floor--pieces .cluster.is-open[data-dir="right"] .band-sheet { right: calc(var(--wrap) * -1); }
+.floor--pieces .cluster[data-dir="right"] .piece-card { padding-left: calc(var(--pad) * 1.1); padding-right: calc(var(--pad) * 1.1); }
+.floor--pieces .cluster[data-dir="right"] .piece-card .piece-reel { margin-right: calc(var(--pad) * -1.1); }
+.floor--pieces .cluster[data-dir="right"] .piece-card .piece-reel-nav { padding-right: calc(var(--pad) * 1.1); }
+.floor--pieces .cluster[data-dir="right"] .piece-card .piece-reel-track::after { display: block; width: calc(var(--pad) * 1.1 - 1.2cqi); }
+/* the reel's row height comes from work.js (whole items fill the content width; the next one peeks into the margin) */
+.floor--pieces .piece-reel-track { align-items: flex-start; }
+.floor--pieces .piece-reel-track > img, .floor--pieces .piece-reel-track > video { height: var(--reel-h, 100%); }
+.floor--pieces .piece-reel-track { flex: none; }   /* sized by work.js; leftover room falls below the arrows */

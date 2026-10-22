@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { coverSun, coverTurn } from '../3d/cover-sun.js?v=20261022g';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -42,8 +43,10 @@ if (cover) { controls.enabled = false; controls.autoRotate = !reduce; controls.a
 // axis and the vanity mirror's light, unshadowed.
 const hemi = new THREE.HemisphereLight('#f4f1ec', '#6b5f55', 1.1); scene.add(hemi);
 const sun = new THREE.DirectionalLight('#ffd9b3', 2.6); sun.target.position.set(0, 0, 0); scene.add(sun, sun.target);
-sun.castShadow = true; sun.shadow.mapSize.set(phone ? 1024 : 2048, phone ? 1024 : 2048);
+sun.castShadow = true; sun.shadow.mapSize.set(phone || cover ? 1024 : 2048, phone || cover ? 1024 : 2048);   // a cover is small: half the shadow detail
 Object.assign(sun.shadow.camera, { left: -9, right: 9, top: 9, bottom: -9, near: 1, far: 40 }); sun.shadow.bias = -0.00025; sun.shadow.normalBias = 0.025;
+const sunSweep = cover && !reduce ? coverSun(sun, camera, controls.target, renderer) : null;
+if (cover) coverTurn(camera, controls, invalidate, { reduce });
 const lamps = new THREE.Group(); scene.add(lamps);
 for (const [x, y, z, power, night] of [[3.79, -0.03, 3.55, 2.4, 0], [0.21, -0.01, 3.55, 2.0, 0], [-3.32, -0.02, 3.55, 2.0, 0], [-5.32, -0.62, 2.15, 0.9, 1]]) {
   const l = new THREE.PointLight('#ffe2bf', power, 7, 2); l.position.copy(B(x, y, z)); l.userData.power = power; l.userData.nightOnly = !!night; lamps.add(l);
@@ -75,7 +78,7 @@ function fitDistance(dir, margin = phone ? 0.92 : 1.03) {
 }
 let home = null, intro = null;
 function setHome() {
-  const d = fitDistance(START_DIR) * (cover ? 1.25 : 1);
+  const d = fitDistance(START_DIR) * (cover ? (camera.aspect < 1 ? 1.11 : 1.25) : 1);   // a tall grid card: a little bigger
   home = TARGET.clone().addScaledVector(START_DIR, d);
   controls.maxDistance = Math.max(30, d * 1.2);
 }
@@ -109,6 +112,7 @@ function startLoad() {
     root.traverse((o) => {
       if (!o.isMesh) return;
       o.castShadow = true; o.receiveShadow = true;
+      [].concat(o.material || []).forEach((m) => { m.dithering = true; m.needsUpdate = true; });   // no banded rings where a lamp fades across the floor (JC 2026-10-22)
       box.setFromObject(o); const sz = box.getSize(new THREE.Vector3());
       if (Math.min(sz.x, sz.y, sz.z) < 0.03 || /^Furniture_i2k/.test(o.name) || o.material?.transparent) o.castShadow = false;   // thin strips, curtains and glass only made shadow acne
       // perimeter walls and what stands against them (curtains, the vanity, the slatted feature wall) hide with that side
@@ -118,6 +122,8 @@ function startLoad() {
       else if (Math.abs(c.z) > 2.75) walls.push({ o, n: new THREE.Vector3(0, 0, Math.sign(c.z)) });
     });
     load.style.opacity = 0; load.removeAttribute('aria-busy'); setTimeout(() => load.remove(), 600);
+    // in cover mode inside another page (the 719 hero), say when the model is on screen, so the still in front can fade
+    if (cover && window.parent !== window) setTimeout(() => window.parent.postMessage({ type: 'viewer:ready' }, location.origin), 400);
     document.getElementById('overview').disabled = false;
     setMode('golden', true); flyHome(!reduce && !cover); invalidate();
     draco.dispose();
@@ -185,7 +191,7 @@ function resize() {
   const w = innerWidth, h = innerHeight;
   if (!w || !h) return;
   renderer.setSize(w, h, false); camera.aspect = w / h; post?.setSize(w, h);
-  if (cover) camera.setViewOffset(w, h, 0, -h * 0.13, w, h);
+  if (cover && h > w) camera.setViewOffset(w, h, 0, -h * 0.06, w, h); else camera.clearViewOffset();   // raised a bit on the tall card (JC 2026-10-22)
   camera.updateProjectionMatrix();
   const wasHome = home && camera.position.distanceTo(home) < 0.01;
   setHome();
@@ -204,6 +210,7 @@ function frame(now) {
     if (w.o.visible !== visible) renderer.shadowMap.needsUpdate = true;
     w.o.visible = visible; w.o.castShadow = visible && w.castsShadow;
   });
+  if (sunSweep) sunSweep(now);   // covers: the sun turns with the camera (3d/cover-sun.js)
   if (post) post.render(); else renderer.render(scene, camera);
 }
 renderer.setAnimationLoop((now) => {

@@ -10,21 +10,23 @@
 <link rel="icon" href="assets/mark/jcg-favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/mark/jcg-touch-180.png">
 <meta name="view-transition" content="same-origin">
+<script>if (/[?&]type=note\b/.test(location.search)) document.documentElement.classList.add('t-note');</script>   
 <link rel="preload" href="assets/fonts/Archivo-VF.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/DepartureMono-Regular.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="assets/data/concepts.json" as="fetch" crossorigin>
+<link rel="preload" href="assets/data/works.json?v=20261023u" as="fetch" crossorigin>
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/base.css">
 <link rel="stylesheet" href="assets/css/mark-pixel.css">
 <link rel="stylesheet" href="assets/css/footer-game.css">
 <link rel="stylesheet" href="assets/css/feedback.css">
 <link rel="stylesheet" href="assets/css/play.css">
-<link rel="stylesheet" href="assets/css/canvas.css">
+<link rel="stylesheet" href="assets/css/canvas.css?v=20261023u">
 <link rel="stylesheet" href="assets/css/product.css">
+<link rel="preload" href="assets/fonts/mak-bold.woff2" as="font" type="font/woff2" crossorigin>
 
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/" } }</script>
 <script>document.documentElement.classList.replace('no-js', 'js'); try { if (!sessionStorage.getItem('jcg-intro')) document.documentElement.classList.add('mark-intro'); } catch (e) {}</script>
-<script type="module" src="assets/js/work.js" onerror="document.documentElement.classList.replace('js','no-js')"></script>
+<script type="module" src="assets/js/work.js?v=20261023u" onerror="document.documentElement.classList.replace('js','no-js')"></script>
 <script type="module" src="assets/js/site-menu.js"></script>
 </head>
 <body>
@@ -48,6 +50,8 @@
     </nav>
   </details>
 </div>
+
+<nav class="hud-filters hud-panel ticks" data-filters aria-label="Filter work" hidden></nav>
 <main id="main">
   
   <div id="floor" class="floor floor--full" role="region" aria-label="Studio floor: a pannable, zoomable canvas of Studio Concepts. Tab moves between frames, arrow keys pan, plus and minus zoom, Escape closes details." aria-describedby="floor-help"></div>
@@ -68,9 +72,9 @@
 
       <article class="idx-concept" id="719-studios" aria-labelledby="idx-719-studios">
         <div>
-          <p class="idx-meta hud"><span>719 STUDIOS</span><span class="chip chip--tag">BUILT</span><span>Photo studios</span></p>
+          <p class="idx-meta hud"><span>719 STUDIOS</span><span class="chip chip--tag">BUILT</span><span>Production studios</span></p>
           <h2 id="idx-719-studios"><a href="work/719-studios/">719 Studios</a></h2>
-          <p class="member">Three photo and production lofts in downtown Los Angeles</p>
+          <p class="member">Three production studios in downtown Los Angeles</p>
         </div>
         <div><p class="blurb">The brand and the three lofts behind it, Etherea, Terra and Solaris: designed in 3D, built, booked from the start, and sold in 2026.</p></div>
       </article>
@@ -104,6 +108,7 @@
       <svg viewBox="0 0 12 12" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1" shape-rendering="crispEdges"><path d="M.5 4V.5H4M8 .5h3.5V4M11.5 8v3.5H8M4 11.5H.5V8"/></svg>
     </button>
   </div>
+  <button class="hud-panel ticks hud-btn hud-staged" type="button" data-staged-toggle aria-pressed="true" hidden><span data-label>Staged on</span></button>
   <div class="hud-panel ticks hud-views" role="group" aria-label="View">
     <button class="hud-btn" type="button" data-view="grid" aria-pressed="false">Grid</button>
     <button class="hud-btn" type="button" data-view="list" aria-pressed="false">List</button>

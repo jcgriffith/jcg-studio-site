@@ -3,6 +3,7 @@
 // finishing effects (?post). Shares Etherea's modules from ../3d/ instead of copying them; only Terra-specific parts
 // (window cards, practical lights, plaster/floor tuning) live here and in terra-finishes.js.
 import * as THREE from 'three';
+import { coverSun, coverTurn } from '../3d/cover-sun.js?v=20261022g';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -50,9 +51,11 @@ if (cover) {
 const hemi = new THREE.HemisphereLight('#f4f1ec', '#6b5f55', 1.1); scene.add(hemi);
 const sun = new THREE.DirectionalLight('#ffd9b3', 2.6);
 sun.position.copy(B(10, -3, 6)); sun.target.position.set(0, 0, 0); scene.add(sun, sun.target);
-sun.castShadow = true; sun.shadow.mapSize.set(phone ? 1024 : 2048, phone ? 1024 : 2048);
+sun.castShadow = true; sun.shadow.mapSize.set(phone || cover ? 1024 : 2048, phone || cover ? 1024 : 2048);   // a cover is small: half the shadow detail
 Object.assign(sun.shadow.camera, { left: -9, right: 9, top: 9, bottom: -9, near: 1, far: 40 });
 sun.shadow.bias = -0.00025; sun.shadow.normalBias = 0.025;
+const sunSweep = cover && !reduce ? coverSun(sun, camera, controls.target, renderer) : null;
+if (cover) coverTurn(camera, controls, invalidate, { reduce });
 const lamps = new THREE.Group(); scene.add(lamps);
 const glowMats = [];
 window.__v = { hemi, sun, lamps, scene, renderer, camera, controls, get glow() { return glowMats; } };   // debug hook
@@ -91,6 +94,7 @@ loader.load(MODEL, (gltf) => {
   root.traverse((o) => {
     if (!o.isMesh) return;
     o.castShadow = true; o.receiveShadow = true;
+    [].concat(o.material || []).forEach((m) => { m.dithering = true; m.needsUpdate = true; });   // no banded rings where a lamp fades across the floor (JC 2026-10-22)
     box.setFromObject(o); const sz = box.getSize(new THREE.Vector3());
     if (Math.min(sz.x, sz.y, sz.z) < 0.05 || /curtain/i.test(o.name)) { o.castShadow = false; o.receiveShadow = /curtain/i.test(o.name) ? false : o.receiveShadow; }
     if (/^Concrete Slab/.test(o.name)) { o.castShadow = false; return; }
@@ -104,6 +108,8 @@ loader.load(MODEL, (gltf) => {
   });
   HOME.target.copy(mid).setY(0.6); controls.target.copy(HOME.target); fitted = false; resize();
   loadEl.style.opacity = 0; setTimeout(() => loadEl.remove(), 600);
+  // in cover mode inside another page (the 719 hero), say when the model is on screen, so the still in front can fade
+  if (cover && window.parent !== window) setTimeout(() => window.parent.postMessage({ type: 'viewer:ready' }, location.origin), 400);
   setMode('golden', true); document.getElementById('overview').disabled = false; invalidate();
   draco.dispose();
   window.__v.ready = true;
@@ -187,13 +193,13 @@ function resize() {
   const w = innerWidth, h = innerHeight;
   if (!w || !h) return;
   renderer.setSize(w, h, false); camera.aspect = w / h; post?.setSize(w, h);
-  if (cover) camera.setViewOffset(w, h, 0, -h * 0.13, w, h);
+  if (cover && h > w) camera.setViewOffset(w, h, 0, -h * 0.06, w, h); else camera.clearViewOffset();   // raised a bit on the tall card (JC 2026-10-22)
   camera.updateProjectionMatrix();
   if (!fitted && room) {   // far enough back that the whole loft fits the screen (its footprint's half-diagonal)
     fitted = true;
     const size = room.getSize(new THREE.Vector3()), r = 0.5 * Math.hypot(size.x, size.z) + (phone ? 0.2 : 1.0);
     const hfov = 2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2) * camera.aspect), vfov = THREE.MathUtils.degToRad(camera.fov);
-    const need = r / Math.tan(Math.min(hfov, vfov * 1.25) / 2) * (cover ? 1.28 : 1);   // cover: about as big in its card as Etherea
+    const need = r / Math.tan(Math.min(hfov, vfov * 1.25) / 2) * (cover ? (camera.aspect < 1 ? 1.14 : 1.28) : 1);   // cover: about as big in its card as Etherea (a tall grid card: a little bigger)
     HOME.dist = need; controls.maxDistance = Math.max(controls.maxDistance, need * 1.2);
     camera.position.copy(controls.target).addScaledVector(HOME.dir, need);
   }
@@ -211,6 +217,7 @@ function frame(now) {
     w.o.visible = visible; w.o.castShadow = visible && w.castsShadow;
   });
   lamps.children.forEach((light) => { let visible = true; for (let o = light.userData.fixture; o; o = o.parent) if (!o.visible) { visible = false; break; } light.visible = visible; });
+  if (sunSweep) sunSweep(now);   // covers: the sun turns with the camera (3d/cover-sun.js)
   if (post) post.render(); else renderer.render(scene, camera);
 }
 renderer.setAnimationLoop((now) => {

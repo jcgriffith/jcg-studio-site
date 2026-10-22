@@ -57,6 +57,7 @@
   font-family: var(--font-display); font-weight: 800; font-stretch: 125%; font-size: 236px; letter-spacing: -.02em;
   fill: #fff; opacity: .92;
 }
+.product-hud .ph-sub { font-family: var(--font-hud); font-size: 30px; letter-spacing: .6em; fill: #fff; opacity: .85; }
 .product-hud .ph-line { fill: none; stroke: rgba(11, 12, 14, .16); stroke-width: 1.5; }
 .product-hud .ph-dash { stroke-dasharray: 4 8; }
 .product-hud .ph-ink { fill: none; stroke: rgba(11, 12, 14, .55); stroke-width: 2; }

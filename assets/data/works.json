@@ -1,0 +1,362 @@
+{
+  "version": 1,
+  "note": "The Work grid. One entry per highlight piece; projects hold the shared info. Layout is computed (canvas.js layoutPieces), never hand-placed. status: live ships with scripts/build-ship.sh, staged shows only locally. Add a piece: append to pieces[] with id, project, title, types (from types[]), media {src, poster?, w, h}; optional link (#section on the project page).",
+  "types": [
+    "Product",
+    "Brand"
+  ],
+  "layout": {
+    "col": 480,
+    "gap": 48,
+    "grid": 24,
+    "caption": 96,
+    "margin": 96,
+    "bandW": 576,
+    "across": 3,
+    "captionNote": 144
+  },
+  "projects": [
+    {
+      "id": "719-studios",
+      "status": "live",
+      "title": "719 Studios",
+      "summary": "Three production studios Kristi and I designed in 3D and built in downtown LA. Kristi ran them day to day. Booked from day one.",
+      "year": "2021–2026",
+      "role": "Concept, 3D design, build",
+      "page": "work/719-studios/",
+      "embed": "work/719-studios/?embed",
+      "journal": "journal/719-studios/",
+      "assets": [
+        "assets/img/work/719",
+        "assets/video/719",
+        "assets/concepts/719-studios-cover.jpg"
+      ],
+      "handle": {
+        "text": "@719studios",
+        "url": "https://www.instagram.com/719studios/"
+      }
+    }
+  ],
+  "pieces": [
+    {
+      "id": "719-etherea",
+      "project": "719-studios",
+      "status": "live",
+      "title": "Etherea Loft",
+      "types": [
+        "Product"
+      ],
+      "line": "Desert and forest sets, a pool and a lounge.",
+      "media": {
+        "src": "assets/concepts/etherea-cover.jpg?v=20261022",
+        "w": 720,
+        "h": 960
+      },
+      "embed3d": "work/719-studios/3d/?cover",
+      "coverKind": "Production studio",
+      "coverFact": "Built 2021",
+      "palette": {
+        "ground": "#FBE6D8",
+        "mid": "#E9BFA3",
+        "accent": "#E7774A"
+      },
+      "coverEnd": "Sold 2026",
+      "loft": "etherea",
+      "year": "2021–2026",
+      "cardLine": "Etherea was the first of three studios my wife Kristi and I designed and built together, and our flagship. Desert and forest sets, and yes, a pool.",
+      "note": "our first studio. desert, forest, pool. we got carried away.",
+      "highlights": [
+        {
+          "src": "assets/video/719/03-etherea-build-timelapse.mp4",
+          "poster": "assets/video/719/03-etherea-build-timelapse.jpg",
+          "w": 540,
+          "h": 960
+        },
+        {
+          "src": "assets/video/719/01-etherea-empty-studio.mp4",
+          "poster": "assets/video/719/01-etherea-empty-studio.jpg",
+          "w": 540,
+          "h": 960
+        },
+        {
+          "src": "assets/img/work/719/eth-stage-built-800.webp",
+          "w": 800,
+          "h": 534
+        },
+        {
+          "src": "assets/img/work/719/eth-pool-built-800.webp",
+          "w": 800,
+          "h": 534
+        },
+        {
+          "src": "assets/img/work/719/sets/stage/m01-800.webp",
+          "w": 800,
+          "h": 534
+        },
+        {
+          "src": "assets/img/work/719/sets/pool/m03-800.webp",
+          "w": 533,
+          "h": 800
+        },
+        {
+          "src": "assets/img/work/719/sets/green-wall/m03-800.webp",
+          "w": 640,
+          "h": 800
+        },
+        {
+          "src": "assets/img/work/719/sets/photo-corner/m04-800.webp",
+          "w": 640,
+          "h": 800
+        }
+      ]
+    },
+    {
+      "id": "719-terra",
+      "project": "719-studios",
+      "status": "live",
+      "title": "Terra Loft",
+      "types": [
+        "Product"
+      ],
+      "line": "Earth tones, a circle, a U-shaped cut-out and semi-circles.",
+      "media": {
+        "src": "assets/concepts/terra-cover.jpg",
+        "w": 720,
+        "h": 960
+      },
+      "embed3d": "work/719-studios/terra-3d/?cover",
+      "coverKind": "Production studio",
+      "coverFact": "Built 2023",
+      "link": "&loft=terra",
+      "palette": {
+        "ground": "#EFE6D6",
+        "mid": "#D8C3A3",
+        "accent": "#B9805A"
+      },
+      "coverEnd": "Sold 2026",
+      "loft": "terra",
+      "year": "2023–2026",
+      "cardLine": "For Terra, our second studio, Kristi and I went with earth tones and curves, from circles to a U-shaped cut-out.",
+      "note": "earth tones and a few ways to draw half a circle.",
+      "highlights": [
+        {
+          "src": "assets/video/719/04-terra-build-timelapse.mp4",
+          "poster": "assets/video/719/04-terra-build-timelapse.jpg",
+          "w": 540,
+          "h": 960
+        },
+        {
+          "src": "assets/img/work/719/terra-04-800.webp",
+          "w": 800,
+          "h": 534
+        },
+        {
+          "src": "assets/img/work/719/terra-01-800.webp",
+          "w": 800,
+          "h": 534
+        },
+        {
+          "src": "assets/img/work/719/terra-02-800.webp",
+          "w": 800,
+          "h": 534
+        },
+        {
+          "src": "assets/img/work/719/terra-03-800.webp",
+          "w": 800,
+          "h": 534
+        },
+        {
+          "src": "assets/img/work/719/terra-05-800.webp",
+          "w": 800,
+          "h": 534
+        },
+        {
+          "src": "assets/img/work/719/terra-arches-built-800.webp",
+          "w": 800,
+          "h": 534
+        },
+        {
+          "src": "assets/img/work/719/terra-steps-built-800.webp",
+          "w": 800,
+          "h": 534
+        }
+      ]
+    },
+    {
+      "id": "719-solaris",
+      "project": "719-studios",
+      "status": "live",
+      "title": "Solaris Loft",
+      "types": [
+        "Product"
+      ],
+      "line": "A bright corner studio with tall windows on two walls.",
+      "media": {
+        "src": "assets/concepts/solaris-cover.jpg",
+        "w": 720,
+        "h": 960
+      },
+      "embed3d": "work/719-studios/solaris-3d/?cover",
+      "coverKind": "Production studio",
+      "coverFact": "Built 2023",
+      "link": "&loft=solaris",
+      "palette": {
+        "ground": "#F7F5F0",
+        "mid": "#E6DDD0",
+        "accent": "#DDA7A1"
+      },
+      "coverEnd": "Sold 2026",
+      "loft": "solaris",
+      "year": "2023–2026",
+      "cardLine": "For Solaris, our third studio, Kristi and I kept things simple. The tall loft windows on two walls were the draw.",
+      "note": "windows on two walls. we mostly stayed out of their way.",
+      "highlights": [
+        {
+          "src": "assets/img/work/719/solaris-01-800.webp",
+          "w": 800,
+          "h": 534
+        },
+        {
+          "src": "assets/img/work/719/solaris-02-800.webp",
+          "w": 800,
+          "h": 534
+        },
+        {
+          "src": "assets/img/work/719/solaris-03-800.webp",
+          "w": 800,
+          "h": 534
+        },
+        {
+          "src": "assets/img/work/719/solaris-04-800.webp",
+          "w": 800,
+          "h": 534
+        },
+        {
+          "src": "assets/img/work/719/solaris-05-800.webp",
+          "w": 534,
+          "h": 800
+        },
+        {
+          "src": "assets/img/work/719/solaris-06-800.webp",
+          "w": 800,
+          "h": 534
+        }
+      ]
+    }
+  ],
+  "parked": [
+    {
+      "id": "719-render-to-room",
+      "project": "719-studios",
+      "status": "live",
+      "title": "From render to room",
+      "types": [
+        "Product"
+      ],
+      "line": "Every set was designed in 3D first.",
+      "media": {
+        "src": "assets/video/719/02-etherea-render-to-real.mp4",
+        "poster": "assets/video/719/02-etherea-render-to-real.jpg",
+        "w": 540,
+        "h": 960
+      },
+      "link": "#process"
+    },
+    {
+      "id": "719-identity",
+      "project": "719-studios",
+      "status": "live",
+      "title": "Identity",
+      "types": [
+        "Brand"
+      ],
+      "line": "The 719 logo and the colours of the lofts.",
+      "media": {
+        "src": "assets/img/work/719/brand/identity-tile.webp?v=2",
+        "w": 1600,
+        "h": 900
+      },
+      "link": "#identity"
+    },
+    {
+      "id": "719-peerspace",
+      "project": "719-studios",
+      "status": "live",
+      "title": "Peerspace covers",
+      "types": [
+        "Brand"
+      ],
+      "line": "Listing covers for each loft on Peerspace.",
+      "media": {
+        "src": "assets/img/work/719/brand/peerspace/cover-etherea-2025.webp",
+        "w": 1600,
+        "h": 950
+      },
+      "link": "#applications"
+    },
+    {
+      "id": "719-ad-15s",
+      "project": "719-studios",
+      "status": "live",
+      "title": "Studio ad · 15s",
+      "types": [
+        "Brand"
+      ],
+      "line": "A 15-second vertical ad for the lofts.",
+      "media": {
+        "src": "assets/img/work/719/brand/ads/ad-elevate-your-brand-15s.mp4",
+        "poster": "assets/img/work/719/brand/ads/ad-elevate-your-brand-15s-poster.webp",
+        "w": 900,
+        "h": 1600
+      },
+      "link": "#applications"
+    },
+    {
+      "id": "719-terra-timelapse",
+      "project": "719-studios",
+      "status": "live",
+      "title": "Terra build timelapse",
+      "types": [
+        "Brand"
+      ],
+      "line": "The Terra build, sped up. 3.2M views on Instagram.",
+      "media": {
+        "src": "assets/video/719/04-terra-build-timelapse.mp4",
+        "poster": "assets/video/719/04-terra-build-timelapse.jpg",
+        "w": 540,
+        "h": 960
+      },
+      "link": "#proof"
+    },
+    {
+      "id": "719-hoodie",
+      "project": "719-studios",
+      "status": "live",
+      "title": "Studio hoodie",
+      "types": [
+        "Brand"
+      ],
+      "line": "A merch mockup with the 719 logo.",
+      "media": {
+        "src": "assets/img/work/719/brand/merch/merch-earth-back.webp",
+        "w": 1600,
+        "h": 1600
+      },
+      "link": "#applications"
+    },
+    {
+      "id": "719-reviews",
+      "project": "719-studios",
+      "status": "live",
+      "title": "Reviews",
+      "types": [],
+      "line": "1,000+ reviews · 5.0 average.",
+      "media": {
+        "src": "assets/img/work/719/brand/reviews/review-terra.webp",
+        "w": 1600,
+        "h": 900
+      },
+      "link": "#proof"
+    }
+  ]
+}

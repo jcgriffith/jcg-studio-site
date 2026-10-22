@@ -13,7 +13,7 @@ import { initSplitFlap } from './splitflap.js';
 
 const MIN_S = 0.08;
 // what a cover is, for screen readers: a built project says what it was (719: "Photo studios"), not "Studio concept"
-const kindOf = (c) => (c.product ? 'Product' : c.tag === 'BUILT' ? (c.coverKind || 'Case study') : 'Studio concept');
+const kindOf = (c) => (c.types ? c.workType : c.product ? 'Product' : c.tag === 'BUILT' ? (c.coverKind || 'Case study') : 'Studio concept');
 const MAX_S = 3;
 const FLY_MS = 450;
 const DIVE_MS = 700;     // opening / closing an item: the morph + camera dive
@@ -220,19 +220,55 @@ function resolvePaths(data, jsonUrl) {
 }
 
 // A live 3D cover (belt-3d.js card mode) under the product HUD (product-3d.js hud()), on the floor and in the Grid.
+// Drag to turn a live 3D cover (JC 2026-10-22). A drag that starts on the cover turns the loft instead of panning the
+// floor (data-floor-ui keeps canvas.js's pan out of it); a sideways drag only, so on a phone an up-down swipe still
+// scrolls the Grid (touch-action: pan-y). The viewer inside (work/719-studios/3d/cover-sun.js, coverTurn) gets how far,
+// as a fraction of the cover's width. A tap or click without a drag still opens the item.
+function turnable(host, frame) {
+  host.dataset.floorUi = '';
+  let p = null, moved = false;
+  const send = (m) => frame.contentWindow?.postMessage(m, location.origin);
+  host.addEventListener('dragstart', (e) => e.preventDefault());
+  host.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    p = { id: e.pointerId, x: e.clientX, y: e.clientY, w: host.getBoundingClientRect().width || 1 }; moved = false;
+  });
+  host.addEventListener('pointermove', (e) => {
+    if (!p || e.pointerId !== p.id) return;
+    const dx = e.clientX - p.x;
+    if (!moved) {
+      if (Math.abs(dx) < 6 || Math.abs(dx) < Math.abs(e.clientY - p.y)) { if (Math.abs(e.clientY - p.y) > 10) p = null; return; }
+      moved = true; host.classList.add('is-turning');
+      try { host.setPointerCapture(e.pointerId); } catch (_) { /* pointer gone */ }
+    }
+    send({ type: 'cover:turn', dx: dx / p.w }); p.x = e.clientX;
+  });
+  const end = (e) => {
+    if (!p || e.pointerId !== p.id) return;
+    p = null;
+    if (moved) { host.classList.remove('is-turning'); send({ type: 'cover:release' }); }
+  };
+  host.addEventListener('pointerup', end);
+  host.addEventListener('pointercancel', end);
+  // after a turn, the click that ends it doesn't open the item
+  host.addEventListener('click', (e) => { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
+}
+
 export function mountCover3d(into, c, fallback = null) {
   const host = document.createElement('div');
   host.className = 'cover-3d';
   into.append(host);
   if (c.embed3d) {                       // a live scene that is its own page (the Etherea Loft): its viewer, in cover mode, behind the same HUD
-    import('./product-3d.js').then(({ hud }) => {
+    import('./product-3d.js?v=20261022s').then(({ hud }) => {
       host.classList.add('cover-3d--embed');
+      if (c.palette) { host.classList.add('cover-3d--warm'); for (const k of ['ground', 'mid', 'accent']) host.style.setProperty(`--${k}`, c.palette[k]); }   // the loft's palette (works.json)
       host.innerHTML = `${hud(c)}<iframe src="${esc(new URL(c.embed3d, document.baseURI).href)}" title="" tabindex="-1" aria-hidden="true" loading="lazy"></iframe>`;
       host.querySelector('iframe').addEventListener('load', () => { host.classList.add('belt3d-ready'); fallback?.classList.add('belt3d-hidden'); }, { once: true });
+      turnable(host, host.querySelector('iframe'));
     }).catch(() => host.remove());
     return;
   }
-  Promise.all([import('./product-3d.js'), import('./belt-3d.js')]).then(([{ hud }, { mount }]) => {
+  Promise.all([import('./product-3d.js?v=20261022s'), import('./belt-3d.js')]).then(([{ hud }, { mount }]) => {
     host.innerHTML = hud(c);
     mount(host, { model: new URL(c.model3d, document.baseURI).href, mode: 'card', fallback });
   }).catch(() => host.remove());
@@ -241,8 +277,11 @@ export function mountCover3d(into, c, fallback = null) {
 export function createFloor(root, data, opts = {}) {
   const o = { mode: 'full', home: 'membership/', work: '', focus: null, hud: {}, ...opts };
   const preview = o.mode === 'preview';
-  const W = data.world.w;
-  const H = data.world.h;
+  let W = data.world.w;
+  let H = data.world.h;
+  // The Work grid (works.json via works.js, 2026-10-21): one cluster per piece, laid out by layoutPieces() below.
+  const AUTO = !!data.auto;
+  let pieceFilter = 'all';
   const cam = { x: 0, y: 0, s: 1 };
   let raw = { ...cam };
   let vw = root.clientWidth || 1;
@@ -267,6 +306,7 @@ export function createFloor(root, data, opts = {}) {
 
   /* ── Build the world ─────────────────────────────────────────── */
   root.classList.add('floor', preview ? 'floor--preview' : 'floor--full');
+  if (AUTO) root.classList.add('floor--pieces');
   const grid = make('div', 'floor-grid');
   grid.setAttribute('aria-hidden', 'true');
   const world = make('div', 'world');
@@ -325,7 +365,8 @@ export function createFloor(root, data, opts = {}) {
     const bandEl = make('div', 'cluster-band');
     bandEl.setAttribute('aria-hidden', 'true');
     Object.assign(bandEl.style, { left: `${band.x}px`, top: `${band.y}px`, width: `${band.w}px`, height: `${band.h}px` });
-    bandEl.innerHTML = `
+    if (AUTO) bandEl.innerHTML = pieceCard(c);
+    else bandEl.innerHTML = `
       <i class="band-rule"></i>
       <div class="band-sheet ticks">
         <article class="title-card title-card--${esc(motif)}" data-motif="${esc(motif)}">
@@ -387,10 +428,11 @@ export function createFloor(root, data, opts = {}) {
     cov.el.insertAdjacentHTML('beforeend', `
       <div class="frame-caption" aria-hidden="true">
         <p class="frame-caption-text"><b>${esc(c.concept)}.</b> ${esc(c.description || c.blurb || '')}</p>
-        <p class="frame-caption-meta hud"><span class="chip chip--tag">${esc(c.tag)}</span><span>${esc(data.kinds[c.kind])}</span><span class="frame-caption-open" data-flap><span class="flap">Open</span><span class="arr">→</span></span></p>
+        <p class="frame-caption-meta hud">${AUTO ? `${c.handle ? `<a class="frame-caption-handle" href="${esc(c.handle.url)}" target="_blank" rel="noopener" data-world-link data-floor-ui>${esc(c.handle.text)}</a>` : `<span>${esc(c.tag)}</span>`}${c.staged ? '<span class="chip chip--staged">Staged</span>' : ''}` : `<span class="chip chip--tag">${esc(c.tag)}</span><span>${esc(data.kinds[c.kind])}</span>`}<span class="frame-caption-open" data-flap><span class="flap">Open</span><span class="arr">→</span></span></p>
       </div>`);
     // Target acquired (play layer): while the cover is locked on, mono tags show real facts from concepts.json.
     // (2026-10-08: the lock-on chips removed; JC: "please remove the chips that appear when I hover on a portfolio item")
+    if (AUTO && c.staged) sec.dataset.staged = '';
     cov.el.href = c.openPage && c.page ? new URL(c.page, document.baseURI).href : `${o.work}#${c.id}`;
     cov.el.setAttribute('aria-label', `${c.concept}: ${kindOf(c)}`);
     cov.el.setAttribute('aria-expanded', 'false');
@@ -400,7 +442,7 @@ export function createFloor(root, data, opts = {}) {
     // asleep at rest, awake on hover). The poster stays underneath until the model has loaded.
     if (c.model3d || c.embed3d) mountCover3d(cov.body, c, cov.body.querySelector('.frame-poster'));
     // A photo cover in the same HUD as the live ones (concepts.json `coverHud`: Terra and Solaris beside Etherea, JC 2026-10-19).
-    else if (c.coverHud) import('./product-3d.js').then(({ hud }) => {
+    else if (c.coverHud) import('./product-3d.js?v=20261022s').then(({ hud }) => {
       const h = make('div', 'cover-3d cover-3d--photo belt3d-ready'); h.innerHTML = hud(c); cov.body.append(h);
     }).catch(() => {});
     // Cover media: manual carousel or one static/looping asset inside the cover frame.
@@ -434,6 +476,7 @@ export function createFloor(root, data, opts = {}) {
     bandEl.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
+      if (AUTO) { pieceCardClick(e, c.id); return; }
       if (preview && !c.openPage) {
         window.location.href = `${o.work}#${c.id}`;
         return;
@@ -447,11 +490,135 @@ export function createFloor(root, data, opts = {}) {
 
   root.append(grid, world);
 
+  /* ── The Work grid: computed masonry (2026-10-21) ─────────────────
+     Equal columns of layout.col, snapped to the floor grid; the count follows the number of pieces, so hundreds of
+     pieces need no coordinates. Each piece's title card opens toward the floor centre. Filtering re-runs it with
+     only the matches; the clusters glide to their new places (CSS on .is-relayout). */
+  function pieceCard(c) {
+    const p = data.projects[c.project] || {};
+    const sibs = (p.pieces || []).map((id) => data.concepts.find((x) => x.id === id)).filter(Boolean);
+    return `
+      <i class="band-rule"></i>
+      <div class="band-sheet ticks">
+        <article class="title-card piece-card">
+          <p class="title-card-meta hud"><span class="piece-card-name">${esc(p.title)}</span>${c.staged ? '<span class="chip chip--staged">Staged</span>' : ''}</p>
+          <h3 class="title-card-name" style="--chars:${Math.max(1, ...String(c.concept).split(/\s+/).map((w) => w.length))}">${esc(c.concept)}</h3>
+          <p class="title-card-desc">${esc(c.cardLine || p.summary)}</p>
+          ${c.highlights?.length ? `<div class="piece-reel" data-floor-ui role="group" aria-label="${esc(c.concept)}: highlights">
+            <div class="piece-reel-track">${c.highlights.map((h) => /\.(mp4|webm)(\?|$)/i.test(h.src)
+              ? `<video src="${esc(h.src)}" poster="${esc(h.poster || '')}" width="${h.w}" height="${h.h}" muted loop playsinline preload="none" aria-label="${esc(c.concept)} video"></video>`
+              : `<img src="${esc(h.src)}" width="${h.w}" height="${h.h}" alt="" loading="lazy" decoding="async">`).join('')}</div>
+            <div class="piece-reel-nav"><button type="button" data-reel="-1" aria-label="Previous">←</button><button type="button" data-reel="1" aria-label="Next">→</button></div>
+          </div>` : sibs.length > 1 ? `<div class="piece-thumbs" role="group" aria-label="More from ${esc(p.title)}">${sibs.map((x) => `
+            <button type="button" class="piece-thumb" data-piece="${esc(x.id)}" aria-label="${esc(x.concept)}"${x.id === c.id ? ' aria-current="true"' : ''}><img src="${esc(x.thumb)}" alt="" loading="lazy" decoding="async"></button>`).join('')}
+          </div>` : ''}
+          <dl class="title-card-facts hud">
+            <div><dt>Year</dt><dd>${esc(c.year || p.year || '—')}</dd></div>
+            <div><dt>Role</dt><dd>${esc(p.role || '—')}</dd></div>
+          </dl>
+          ${c.loft ? `<div class="piece-ctas">
+            <button type="button" class="btn title-card-open" data-open-stage data-jump="explore-${esc(c.loft)}" data-floor-ui>Explore in 3D <span aria-hidden="true">↗</span></button>
+            <button type="button" class="btn btn--ghost" data-open-stage data-jump="snapshot" data-floor-ui>Read the case study <span aria-hidden="true">→</span></button>
+            ${p.journal ? `<a class="btn btn--ghost" href="${esc(new URL(p.journal, document.baseURI).href)}" data-world-link data-floor-ui>Read the story <span aria-hidden="true">→</span></a>` : ''}
+          </div>` : `<button type="button" class="btn title-card-open" data-open-stage data-floor-ui>View full project <span aria-hidden="true">→</span></button>`}
+        </article>
+      </div>`;
+  }
+  function pieceCardClick(e, id) {
+    const r = e.target.closest('[data-reel]');
+    if (r) { const t = r.closest('.piece-reel').querySelector('.piece-reel-track'); t.scrollBy({ left: Number(r.dataset.reel) * t.clientWidth * 0.8, behavior: reduced() ? 'auto' : 'smooth' }); return; }
+    const t = e.target.closest('[data-piece]');
+    if (t) { if (t.dataset.piece !== id) go(`#${t.dataset.piece}`); return; }
+    const b = e.target.closest('[data-open-stage]');
+    if (b) { stageJump = b.dataset.jump || ''; openStage(id); }   // Explore in 3D / Read the case study: the page opens at that place
+  }
+  let stageJump = '';
+  const pieceOn = (c) => pieceFilter === 'all' || c.types.includes(pieceFilter);
+  function layoutPieces(animate = false) {
+    const L = data.layout;
+    const on = data.concepts.filter(pieceOn);
+    const n = Math.max(1, on.length);
+    const cols = isSheet() ? Math.min(2, n) : L.across ? Math.min(n, L.across) : clamp(Math.round(Math.sqrt(n * 1.6)), 1, 12);   // a phone reads two columns
+    layoutPieces.phone = isSheet();
+    const M = snapCoord(L.margin || 96), GAP = snapCoord(L.gap || 48);
+    const heights = Array(cols).fill(M);
+    for (const c of data.concepts) {
+      const cl = clusters.get(c.id);
+      const show = pieceOn(c);
+      cl.el.classList.toggle('is-filtered', !show);
+      cl.cover.hidden = !show;
+      if (!show) continue;
+      const k = heights.indexOf(Math.min(...heights));
+      c.x = snapCoord(M + k * (cl.cw + GAP));
+      c.y = snapCoord(heights[k]);
+      heights[k] += cl.ch + GAP;
+      cl.dir = 1;   // every card opens to the right of its poster (JC 2026-10-22), so its media reel never meets the poster
+      cl.el.dataset.dir = cl.dir > 0 ? 'right' : 'left';
+      cl.el.style.left = `${c.x}px`;
+      cl.el.style.top = `${c.y}px`;
+      cl.cover.x = c.x; cl.cover.y = c.y + HEAD;
+      setBand(cl);
+    }
+    W = M * 2 + cols * (L.col || CV.w) + (cols - 1) * GAP;
+    H = Math.max(...heights) - GAP + M;
+    world.style.width = `${W}px`;
+    world.style.height = `${H}px`;
+    if (animate && !reduced()) {
+      world.classList.add('is-relayout');
+      clearTimeout(layoutPieces.t);
+      layoutPieces.t = setTimeout(() => world.classList.remove('is-relayout'), 700);
+    }
+    schedule();
+  }
+  // Desktop: the card opens beside the cover, toward the floor centre. Phone: it is a screen-space bottom sheet instead.
+  function setBand(cl) {
+    const bw = snapCoord(Math.max(cl.cw * 1.2, data.layout.bandW || 576));
+    const bh = Math.max(cl.ch, snapCoord(bw * 0.84));
+    cl.band = { x: cl.dir > 0 ? cl.cw : -bw, y: HEAD, w: bw, h: bh };
+    Object.assign(cl.bandEl.style, { left: `${cl.band.x}px`, top: `${cl.band.y}px`, width: `${cl.band.w}px`, height: `${cl.band.h}px` });
+    // the corner brackets take in the open card too (CSS .cluster.is-open::before)
+    cl.el.style.setProperty('--band-w', `${bw}px`); cl.el.style.setProperty('--band-xh', `${Math.max(0, bh - cl.ch)}px`);
+  }
+  // Phone sheet: the same card (hairline, then the clip-path sheet) in screen space, so its type stays readable.
+  const pSheet = AUTO && !preview ? make('aside', 'piece-sheet') : null;
+  if (pSheet) {
+    pSheet.setAttribute('data-floor-ui', '');
+    pSheet.setAttribute('aria-label', 'Piece details');
+    pSheet.hidden = true;
+    document.body.append(pSheet);
+    pSheet.addEventListener('click', (e) => {
+      if (e.target.closest('[data-sheet-close]')) { collapse(true); return; }
+      if (open) pieceCardClick(e, open);
+    });
+  }
+  const sheetOn = () => !!(pSheet && open && !pSheet.hidden && isSheet());
+  function showSheet(cl) {
+    if (!pSheet) return;
+    if (!cl || !isSheet()) { pSheet.classList.remove('is-open'); pSheet.hidden = true; document.documentElement.classList.remove('piece-sheet-open'); return; }
+    pSheet.innerHTML = pieceCard(cl.c) + '<button type="button" class="piece-sheet-x" data-sheet-close aria-label="Close">×</button>';
+    pSheet.hidden = false;
+    pSheet.classList.remove('is-open');
+    void pSheet.offsetWidth;
+    pSheet.classList.add('is-open');
+    document.documentElement.classList.add('piece-sheet-open');
+  }
+  function focusPiece(id, fly = true) {
+    const cl = clusters.get(id);
+    if (!cl) return;
+    if (!pieceOn(cl.c)) filter('all', { fly: false });
+    expand(id);
+    scan(cl.cover.el);
+    showSheet(cl);
+    const target = isSheet() ? fitCam(conceptRect(cl.c), 12, 2) : titleFitCam(cl.c);
+    flyTo(target, fly && !reduced() ? FLY_MS : 0);
+  }
+
   /* ── Geometry ────────────────────────────────────────────────── */
   const isSheet = () => window.matchMedia('(max-width: 759px)').matches;
 
   function insets() {
     const base = typeof o.insets === 'function' ? o.insets() : { t: 16, r: 16, b: 16, l: 16, ...o.insets };
+    if (sheetOn()) base.b = Math.max(base.b, pSheet.offsetHeight + 12);
     if (drawerOpen && o.drawer) {
       if (isSheet()) base.b = Math.max(base.b, o.drawer.offsetHeight + 12);
       else base.r = Math.max(base.r, o.drawer.offsetWidth + 24);
@@ -477,6 +644,7 @@ export function createFloor(root, data, opts = {}) {
     return { x: c.x - GRID, y: c.y - GRID, w: w + GRID * 2, h: HEAD + h + GRID * 2 };
   };
   function openRect(c) {
+    if (AUTO && isSheet()) return conceptRect(c);
     const { band } = clusters.get(c.id);
     return boundsOf([conceptRect(c), { x: c.x + band.x - GRID, y: c.y + band.y - 8, w: band.w + GRID * 2, h: band.h + 32 }]);
   }
@@ -485,7 +653,7 @@ export function createFloor(root, data, opts = {}) {
     for (const r of list) { x0 = Math.min(x0, r.x); y0 = Math.min(y0, r.y); x1 = Math.max(x1, r.x + r.w); y1 = Math.max(y1, r.y + r.h); }
     return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
   }
-  const allRect = () => boundsOf(data.concepts.map(conceptRect));
+  const allRect = () => boundsOf((AUTO ? data.concepts.filter(pieceOn) : data.concepts).map(conceptRect));
 
   // Keep the view centre inside the world; s inside [MIN_S, MAX_S].
   function clampCam(c) {
@@ -563,7 +731,11 @@ export function createFloor(root, data, opts = {}) {
       const sw = r.w * p.s;
       const sh = r.h * p.s;
       const vis = sx < vw + CULL && sy < vh + CULL && sx + sw > -CULL && sy + sh > -CULL;
-      if (vis !== r.vis) { r.vis = vis; if (!r.plan) r.el.classList.toggle('is-off', !vis); }
+      if (vis !== r.vis) {
+        r.vis = vis;
+        if (!r.plan) r.el.classList.toggle('is-off', !vis);
+        if (AUTO && r.cover && r.c.video) clusters.get(r.c.id)?.carousel?.[vis && !r.hidden ? 'start' : 'stop']?.();   // only on-screen loops play
+      }
       const tiny = Math.min(sw, sh) < HIT;
       if (tiny !== r.tiny) { r.tiny = tiny; r.el.classList.toggle('is-tiny', tiny); }
       if (vis && lodFull && !r.mounted) mount(r);
@@ -716,7 +888,7 @@ export function createFloor(root, data, opts = {}) {
 
   function stageMarkup(c, focusKey, motif) {
     // A live page shown inside the panel (the Etherea Loft's 3D story, JC 2026-10-19: open like every item, under the nav)
-    if (c.stageEmbed) return `<iframe class="folio-stage-embed" src="${esc(new URL(c.stageEmbed, document.baseURI).href)}" title="${c.group === '719' ? '719 Studios: Etherea, Terra and Solaris' : `${esc(c.concept)}: interactive 3D model and story`}" allow="fullscreen"></iframe>`;
+    if (c.stageEmbed) { const jump = stageJump; stageJump = ''; return `<iframe class="folio-stage-embed" src="${esc(new URL(c.stageEmbed + (jump ? `#${jump}` : ''), document.baseURI).href)}" title="${c.group === '719' ? '719 Studios: Etherea, Terra and Solaris' : `${esc(c.concept)}: interactive 3D model and story`}" allow="fullscreen"></iframe>`; }
     if (c.product) return productMarkup(c, focusKey);
     const arts = c.frames.filter((f) => f.kind !== 'plan');
     return `
@@ -961,8 +1133,9 @@ export function createFloor(root, data, opts = {}) {
       try { stageBody.querySelector('.folio-stage-embed')?.contentWindow?.dispatchEvent(new Event('resize')); } catch (e) {}
     }, DIVE_MS + 200);
     stageOpen = true;
+    showSheet(null);
     if (hash) {
-      const h = focusKey ? `#${focusKey}` : `#${id}`;
+      const h = AUTO ? `#${id}/project` : focusKey ? `#${focusKey}` : `#${id}`;
       if (location.hash !== h) history.pushState(null, '', h);
     }
     if (o.hud.live) o.hud.live.textContent = `Opened ${cl.c.concept} on the canvas.`;
@@ -977,9 +1150,10 @@ export function createFloor(root, data, opts = {}) {
     stageOpen = false;
     const id = stageId;
     const cl = id ? clusters.get(id) : null;
-    // The morph runs backwards and flies the camera home itself.
-    const home = savedCam;
-    savedCam = null;
+    // The morph runs backwards and flies the camera home itself. The Work grid goes back to the piece's title card.
+    const mid = AUTO && cl && open === id;
+    const home = mid ? (isSheet() ? fitCam(conceptRect(cl.c), 12, 2) : titleFitCam(cl.c)) : savedCam;
+    if (!mid) savedCam = null;
     panel.classList.remove('is-open');
     world.classList.remove('has-solo');
     document.documentElement.classList.remove('solo-open');
@@ -1001,6 +1175,11 @@ export function createFloor(root, data, opts = {}) {
     if (cl && !reduced()) morph(cl, home || cam, false, hidePanel);
     else { hidePanel(); if (home) setCam(home); }
     // Collapse clears the hash and returns key focus (the morph owns the camera).
+    if (mid) {
+      setTimeout(() => { if (!stageOpen && open === id) showSheet(cl); }, reduced() ? 0 : DIVE_MS);
+      if (user && location.hash !== `#${id}`) history.replaceState(null, '', `#${id}`);
+      return;
+    }
     if (user && id) collapse(true);
   }
 
@@ -1049,6 +1228,7 @@ export function createFloor(root, data, opts = {}) {
     if (stageOpen) closeStage(false);
     if (selected && selected.c.id === open) closeDrawer(false);
     open = null;
+    showSheet(null);
     cl.el.classList.remove('is-open');
     world.classList.remove('has-open');
     cl.cover.el.setAttribute('aria-expanded', 'false');
@@ -1171,11 +1351,12 @@ export function createFloor(root, data, opts = {}) {
   // covers sit across the screen). Covers land about 27% of the width on desktop, 42% on a tablet, 78% on a phone; the
   // start concept (layout.start, else the first) sits top left with a gutter, or centred across on a phone.
   const startCam = () => {
-    const id = clusters.has(data.layout.start) ? data.layout.start : clusters.keys().next().value;
+    const id = AUTO ? (data.concepts.find(pieceOn) || data.concepts[0]).id : clusters.has(data.layout.start) ? data.layout.start : clusters.keys().next().value;
     const c = clusters.get(id).c;
     const I = insets();
-    const frac = vw >= 900 ? 0.27 : vw >= 600 ? 0.42 : 0.78;
-    const s = clamp((vw * frac) / coverOf(c).w, MIN_S, 1);
+    const frac = AUTO ? (vw >= 900 ? 0.2 : vw >= 600 ? 0.3 : 0.44) : vw >= 900 ? 0.27 : vw >= 600 ? 0.42 : 0.78;
+    let s = clamp((vw * frac) / coverOf(c).w, MIN_S, 1);
+    if (AUTO && vw < 600) s = clamp((vw - I.l - I.r) / allRect().w, MIN_S, 1);   // the phone's two columns fill the width
     // When every cover fits across the screen (one item on the public site, 2026-10-19: "center the 719 cover"), the
     // whole set sits centred instead of top left.
     const all = allRect(), aw = vw - I.l - I.r, ah = vh - I.t - I.b;
@@ -1350,6 +1531,12 @@ export function createFloor(root, data, opts = {}) {
     }
     // Cover: click/tap/Enter opens the full-screen item; with one open, closes it. On a touch screen the first tap locks
     // on (brackets, a scan, the facts) and the second opens: a phone has no hover to say "this opens" first.
+    if (r.cover && AUTO) {
+      if (stageOpen) closeStage(true);
+      else if (open === r.c.id) openStage(r.c.id);          // second click: the full project
+      else go(`#${r.c.id}`, { kb: e.detail === 0 });        // first: the title card opens to one side
+      return;
+    }
     if (r.cover) {
       const cl = clusters.get(r.c.id);
       if (stageOpen) closeStage(true);
@@ -1406,7 +1593,7 @@ export function createFloor(root, data, opts = {}) {
     root.addEventListener('wheel', (e) => {
       if (view !== 'canvas') return;
       // Native scroll inside the open item; the floor stays put around it.
-      if (e.target.closest('[data-stage-body], .folio-panel-scroll')) return;
+      if (e.target.closest('[data-stage-body], .folio-panel-scroll, .piece-reel')) return;   // a card's media reel scrolls itself
       e.preventDefault();
       if (stageOpen) return;
       stopMotion();
@@ -1491,6 +1678,7 @@ export function createFloor(root, data, opts = {}) {
     if (h === 'index') { setView('index', fly); return; }
     if (view !== 'canvas') setView('canvas', false);
     const [cid, fid] = h.split('/');
+    if (AUTO) { routePiece(h, cid, fid, fly); return; }
     const r = byKey.get(h);
     if (r && !r.plan) {
       if (!stageOpen) flyTo(itemCam(r.c.id), 0);
@@ -1515,6 +1703,30 @@ export function createFloor(root, data, opts = {}) {
       if (stageOpen) closeStage(false);
       collapse();
       if (!back) flyTo(startCam(), fly ? FLY_MS : 0);
+    }
+  }
+
+  // Work grid routes: #piece → its title card · #piece/project → the full project · #project → its lead piece's project.
+  function routePiece(h, cid, fid, fly) {
+    closeDrawer(false);
+    const proj = !clusters.has(cid) && data.projects?.[cid];
+    if (proj && proj.pieces?.length) { cid = proj.pieces[0]; fid = 'project'; }
+    if (clusters.has(cid)) {
+      if (fid === 'project') {
+        if (stageOpen && stageId === cid) return;
+        if (stageOpen) closeStage(false);
+        if (open !== cid) focusPiece(cid, false);
+        openStage(cid, null, { hash: false });
+        return;
+      }
+      if (stageOpen && stageId === cid) { closeStage(false); return; }
+      if (stageOpen) closeStage(false);
+      focusPiece(cid, fly);
+    } else if (!h) {
+      const back = savedCam;
+      if (stageOpen) closeStage(false);
+      if (open) collapse(false);
+      else if (!back) flyTo(startCam(), fly ? FLY_MS : 0);
     }
   }
 
@@ -1613,7 +1825,28 @@ export function createFloor(root, data, opts = {}) {
 
   /* ── Filter rail (applies to canvas clusters + Grid/List cards) ─ */
   let filterKind = 'all';
-  function filter(kind) {
+  function filter(kind, { fly = true, url = true } = {}) {
+    if (AUTO) {
+      if (kind !== 'all' && !data.types.some((t) => t.id === kind)) kind = 'all';
+      if (stageOpen) closeStage(false);
+      if (open) collapse(false, { restore: false });
+      savedCam = null;
+      pieceFilter = filterKind = kind;
+      layoutPieces(fly);
+      document.querySelectorAll('.folio-item').forEach((el) => {
+        el.hidden = !(kind === 'all' || (el.dataset.types || '').split(' ').includes(kind));
+      });
+      (o.hud.filters || []).forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.filter === kind)));
+      if (url) {
+        const q = new URLSearchParams(location.search);
+        if (kind === 'all') q.delete('f'); else q.set('f', kind);
+        const qs = q.toString();
+        history.replaceState(history.state, '', location.pathname + (qs ? `?${qs}` : '') + location.hash);
+      }
+      if (view === 'canvas') flyTo(startCam(), fly && !reduced() ? FLY_MS + 150 : 0);
+      if (o.hud.live) o.hud.live.textContent = kind === 'all' ? `Showing all ${data.concepts.length} pieces` : `Showing ${data.concepts.filter(pieceOn).length} ${data.kinds[kind]} pieces`;
+      return;
+    }
     filterKind = kind;
     closeDrawer(false);
     collapse();
@@ -1633,6 +1866,13 @@ export function createFloor(root, data, opts = {}) {
     if (o.hud.live) o.hud.live.textContent = kind === 'all' ? 'Showing all concepts' : `Showing ${data.kinds[kind]} concepts`;
   }
   (o.hud.filters || []).forEach((b) => b.addEventListener('click', () => filter(b.dataset.filter)));
+  if (AUTO) {
+    const f0 = new URLSearchParams(location.search).get('f');
+    pieceFilter = filterKind = f0 && data.types.some((t) => t.id === f0) ? f0 : 'all';
+    layoutPieces(false);
+    (o.hud.filters || []).forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.filter === pieceFilter)));
+    document.querySelectorAll('.folio-item').forEach((el) => { el.hidden = !(pieceFilter === 'all' || (el.dataset.types || '').split(' ').includes(pieceFilter)); });
+  }
 
   /* ── Grid | List | Canvas (+ Index keep for #index / no-JS) ──── */
   const VIEWS = new Set(['canvas', 'grid', 'list', 'index']);
@@ -1679,6 +1919,7 @@ export function createFloor(root, data, opts = {}) {
 
   /* ── Resize: keep the view centre fixed ──────────────────────── */
   function resize() {
+    if (AUTO && layoutPieces.phone !== isSheet()) { if (open) collapse(false, { restore: false }); savedCam = null; layoutPieces(false); setCam(startCam()); }
     const cx = (vw / 2 - cam.x) / cam.s;
     const cy = (vh / 2 - cam.y) / cam.s;
     vw = root.clientWidth || vw;
@@ -1738,6 +1979,8 @@ export function createFloor(root, data, opts = {}) {
       try {
         const saved = sessionStorage.getItem(VIEW_KEY);
         if (saved && saved !== 'canvas' && VIEWS.has(saved)) setView(saved, false);
+        // on a phone the canvas is too small to read captions, so it opens on the Grid (JC 2026-10-22); Canvas stays a tap away
+        else if (!saved && isSheet() && o.grid) setView('grid', false);
         else document.documentElement.dataset.view = 'canvas';
       } catch (_) {
         document.documentElement.dataset.view = 'canvas';
@@ -1755,6 +1998,6 @@ export function createFloor(root, data, opts = {}) {
     onCamera: (fn) => { listeners.add(fn); fn(cam); return () => listeners.delete(fn); },
     flyTo, fitAll, fitConcept, zoomBy, filter, setView, route,
     select: (key) => byKey.has(key) && select(byKey.get(key)),
-    expand, collapse, openStage, closeStage,
+    expand, collapse, openStage, closeStage, focusPiece: (id) => go(`#${id}`),
   };
 }
