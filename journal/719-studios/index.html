@@ -10,31 +10,186 @@
 <link rel="stylesheet" href="../../assets/css/tokens.css">
 <link rel="stylesheet" href="../../assets/css/base.css">
 <link rel="stylesheet" href="../../assets/css/dawn.css?v=20261020c">
-<link rel="stylesheet" href="../../assets/css/story.css?v=20261022-credits">
 <script>document.documentElement.classList.add('js');</script>
-<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js" } }</script>
 
+<style>
+  :root { color-scheme: dark; --edge-x: 16px; --wide: 1120px; --col: 34em; }
+  html { scroll-behavior: smooth; overflow-anchor: none; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body { margin: 0; background: var(--void); color: var(--chrome-2); }
+  body::after { content: none; }
+  img, video { display: block; max-width: 100%; height: auto; }
+  a { color: inherit; }
+  .lab { font: 400 11px/1.5 var(--font-hud); letter-spacing: var(--track-hud); text-transform: uppercase; color: var(--chrome-3); margin: 0; }
+  .back { position: fixed; z-index: 6; top: calc(env(safe-area-inset-top) + 12px); left: 12px; width: 44px; height: 44px; display: grid; place-items: center;
+          border: 1px solid var(--line-strong); background: rgba(11,12,14,.72); color: var(--chrome-2); text-decoration: none; }
+  .back:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
+
+  .j-head { max-width: var(--wide); margin: 0 auto; padding: clamp(96px, 14vw, 168px) var(--edge-x) 0; }
+  h1 { margin: 14px 0 0; max-width: 11em; font: 540 clamp(44px, 9vw, 104px)/.98 var(--font-display); font-stretch: var(--wdth-display); letter-spacing: var(--track-display); color: var(--chrome); text-wrap: balance; }
+  .lede { margin: 28px 0 0; max-width: 22em; font: 400 clamp(22px, 3.6vw, 30px)/1.32 var(--font-display); font-stretch: var(--wdth-display); color: var(--chrome); }
+
+  figure { margin: 0; }
+  figcaption { margin-top: 10px; }
+  .cover { margin: clamp(40px, 6vw, 72px) 0 0; }
+  .cover img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
+  @media (min-width: 900px) { .cover img { aspect-ratio: auto; height: min(80svh, 900px); } }
+  .cover figcaption { max-width: var(--wide); margin: 10px auto 0; padding: 0 var(--edge-x); }
+  .photo { all: unset; box-sizing: border-box; display: block; width: 100%; cursor: zoom-in; overflow: hidden; background: #15171a; }
+  .photo:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
+
+  .col, .wide { max-width: var(--wide); margin: 0 auto; padding: 0 var(--edge-x); }
+  .col > * { max-width: var(--col); }
+  @media (min-width: 900px) { .col > * { margin-left: 28%; } .col > .wide-in { margin-left: 0; max-width: none; } }
+  .col p { margin: 0 0 1.1em; font-size: 17px; line-height: 1.6; color: #d0d4da; }
+  @media (min-width: 900px) { .col p { font-size: 18px; line-height: 1.62; } }
+  .col p a { text-decoration-color: var(--chrome-3); text-underline-offset: .2em; }
+  .col p a:hover { text-decoration-color: var(--chrome); }
+  .date { margin-top: 72px !important; margin-bottom: 20px !important; }
+  @media (min-width: 900px) { .date { margin-top: 96px !important; margin-bottom: 24px !important; } }
+  .col > p + figure, .wide { margin-top: 36px; }
+  @media (min-width: 900px) { .col > p + figure, .wide { margin-top: 48px; } }
+  .after { margin-bottom: 40px; } @media (min-width: 900px) { .after { margin-bottom: 56px; } }
+
+  .pair { display: grid; gap: 6px; }
+  .pair .p-tall img { aspect-ratio: 4 / 5; object-fit: cover; width: 100%; }
+  .pair img { width: 100%; }
+  @media (min-width: 900px) { .pair.sets { grid-template-columns: 2.25fr 1fr; } .pair.two { grid-template-columns: 1fr 1fr; } .pair .p-tall img { aspect-ratio: auto; } }
+  .bleed { margin-top: 48px; } .bleed img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
+  @media (min-width: 900px) { .bleed img { aspect-ratio: 2 / 1; object-position: 50% 55%; } }
+  .center { display: grid; justify-items: center; text-align: center; }
+  .vid video { width: min(340px, 86vw); aspect-ratio: 9 / 16; background: #15171a; }
+  .family img { width: min(340px, 80vw); height: auto; }
+
+  .pins { display: flex; gap: 6px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-bottom: 2px; }
+  .pins::-webkit-scrollbar { display: none; }
+  .pin { position: relative; flex: 0 0 62%; scroll-snap-align: start; aspect-ratio: 3 / 4; overflow: hidden; background: #15171a; }
+  @media (min-width: 900px) { .pins { overflow: visible; } .pin { flex: 1 1 0; } }
+  .pin-img { display: block; width: 100%; height: 100%; } .pin-img img { width: 100%; height: 100%; object-fit: cover; }
+  .pin-credit { position: absolute; left: 8px; bottom: 8px; max-width: calc(100% - 44px); padding: 4px 6px; background: rgba(11,12,14,.62); color: rgba(230,233,237,.9); font: 400 11px/1 var(--font-hud); letter-spacing: .02em; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pin-credit:hover { text-decoration: underline; }
+  .pin-pi { position: absolute; right: 8px; bottom: 8px; width: 20px; height: 20px; display: block; } .pin-pi svg { width: 100%; height: 100%; display: block; }
+
+  .j-next { display: grid; gap: 0; max-width: var(--wide); margin: clamp(72px, 9vw, 104px) auto 0; padding: 0 var(--edge-x) clamp(64px, 9vw, 104px); }
+  .j-next a { display: flex; align-items: center; justify-content: space-between; min-height: 56px; border-bottom: 1px solid var(--line-strong); color: var(--chrome); text-decoration: none; font: 400 12px/1 var(--font-hud); letter-spacing: var(--track-hud); text-transform: uppercase; }
+  .j-next a:first-child { border-top: 1px solid var(--line-strong); }
+  .j-next a span { color: var(--signal); } .j-next a:hover, .j-next a:focus-visible { border-bottom-color: var(--chrome); }
+  @media (min-width: 900px) { .j-next { grid-template-columns: repeat(3, 1fr); column-gap: 32px; } .j-next a, .j-next a:first-child { border-top: 1px solid var(--line-strong); } }
+  .j-dawn { display: block; width: 100%; max-width: none; margin: 0; background: transparent; }
+
+  .rv { transition: opacity 420ms ease-out, transform 420ms ease-out; }
+  .js .rv:not(.in) { opacity: 0; transform: translateY(8px); }
+  @media (prefers-reduced-motion: reduce) { .js .rv:not(.in) { opacity: 1; transform: none; } .rv { transition: none; } }
+
+  dialog.lightbox { border: 0; padding: 0; background: transparent; max-width: 100vw; max-height: 100vh; width: 100vw; height: 100vh; }
+  dialog.lightbox::backdrop { background: rgba(5,6,8,.94); }
+  .lb-in { width: 100%; height: 100%; display: grid; place-items: center; padding: 56px 16px 24px; box-sizing: border-box; }
+  .lb-in img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .lb-x { position: fixed; top: 12px; right: 12px; width: 44px; height: 44px; border: 1px solid var(--line-strong); background: rgba(11,12,14,.72); color: var(--chrome); font: 400 18px/1 var(--font-hud); cursor: pointer; }
+</style>
 </head>
 <body>
-<a class="back hud" href="../../work/719-studios/" aria-label="Back to the 719 Studios case study">←</a>
-<main class="story" id="story" aria-labelledby="j-title">
-  <div id="chapters"><noscript><div class="wrap ch"><p>This story needs JavaScript. <a href="../../work/719-studios/">See the 719 Studios case study</a>.</p></div></noscript></div>
+<a class="back" href="../../work/719-studios/" aria-label="Back to the 719 Studios case study">←</a>
+<main id="story" aria-labelledby="j-title">
+  <header class="j-head">
+    <p class="lab">Journal 01 · By JC Griffith · 3 min read</p>
+    <h1 id="j-title">Two photographers, three dream spaces</h1>
+    <p class="lede">My wife Kristi and I co-founded three production studios in downtown Los Angeles under the name 719 Studios. Etherea was the first loft we designed in Blender and built together.</p>
+  </header>
+
+  <figure class="cover">
+    <button type="button" class="photo" data-lb><img src="../../assets/img/work/719/jc-and-kristi-etherea-1200.webp" srcset="../../assets/img/work/719/jc-and-kristi-etherea-1200.webp 1200w, ../../assets/img/work/719/jc-and-kristi.webp 1281w, ../../assets/img/work/719/jc-and-kristi-etherea-2400.webp 2400w" sizes="100vw" width="2400" height="1600" alt="JC and Kristi Griffith inside Etherea, standing in front of the circle window and an arched curtain." fetchpriority="high"></button>
+    <figcaption class="lab">Together in Etherea</figcaption>
+  </figure>
+
+  <div class="col" style="margin-top: clamp(48px, 7vw, 88px)">
+    <p class="rv">Before the studios, we were photographers shooting all over downtown LA. Kristi came from dance, so her portraits move. I came from marketing and graphic design, so mine look like movie stills. Friends with thriving studios on Peerspace kept telling us to build one of our own.</p>
+
+    <p class="lab date rv">2021</p>
+    <p class="rv">Etherea combined units 902 and 903 into one space on the 9th floor of a 1927 building in the Fashion District. The address was 719, the area code of Colorado Springs, where Kristi grew up, and still the area code of her phone number. We took it as a sign.</p>
+    <p class="rv">The idea for Etherea came from surreal dreamscapes made in Blender that were turning up on Pinterest. We decided to build one for real. I grew up around renovation and construction, so that felt possible. Most of the rooms on my Etherea board were made on a computer, but they became the starting point for a place we could photograph in.</p>
+  </div>
+
+  <figure class="wide rv" id="pins">
+    <div class="pins">
+      <div class="pin"><a class="pin-img" href="https://us.gestalten.com/blogs/journal/reverie-in-charlotte-taylor-serene-digital-worlds" target="_blank" rel="noopener"><img src="https://i.pinimg.com/736x/35/b9/5a/35b95aa0eca3305c939b57377b755758.jpg" alt="Pink arches and stairs with two white spheres, by Charlotte Taylor" loading="lazy" referrerpolicy="no-referrer"></a><a class="pin-credit" href="https://us.gestalten.com/blogs/journal/reverie-in-charlotte-taylor-serene-digital-worlds" target="_blank" rel="noopener">Charlotte Taylor</a><a class="pin-pi" href="https://www.pinterest.com/pin/387591111696360805/" target="_blank" rel="noopener" aria-label="Pink arches and stairs on Pinterest"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#E60023"/><path fill="#fff" d="M12.3 5.2c-3.9 0-5.9 2.8-5.9 5.1 0 1.4.5 2.7 1.7 3.1.2.1.4 0 .4-.2l.2-.7c.1-.2 0-.3-.1-.5-.3-.4-.6-1-.6-1.8 0-2.3 1.7-4.4 4.5-4.4 2.4 0 3.8 1.5 3.8 3.5 0 2.6-1.2 4.9-2.9 4.9-1 0-1.7-.8-1.4-1.7.3-1.1.8-2.4.8-3.2 0-.7-.4-1.3-1.2-1.3-1 0-1.7 1-1.7 2.3 0 .8.3 1.4.3 1.4l-1.1 4.6c-.3 1.4 0 3.1 0 3.3 0 .1.2.1.2 0 .1-.1 1.2-1.5 1.6-2.9l.6-2.4c.3.6 1.2 1.1 2.2 1.1 2.9 0 4.8-2.6 4.8-6.1 0-2.6-2.3-5.1-5.7-5.1z"/></svg></a></div>
+      <div class="pin"><a class="pin-img" href="https://www.reddit.com/r/Art/comments/kw5g4o/stairway_to_relaxation_james_tralie_me_3d_2021/" target="_blank" rel="noopener"><img src="https://i.pinimg.com/736x/67/2d/b2/672db23ee2005d9ac53910b405e5d864.jpg" alt="Curtains framing a path to a tree, by James Tralie" loading="lazy" referrerpolicy="no-referrer"></a><a class="pin-credit" href="https://www.reddit.com/r/Art/comments/kw5g4o/stairway_to_relaxation_james_tralie_me_3d_2021/" target="_blank" rel="noopener">James Tralie</a><a class="pin-pi" href="https://www.pinterest.com/pin/387591111692866683/" target="_blank" rel="noopener" aria-label="Curtains framing a path on Pinterest"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#E60023"/><path fill="#fff" d="M12.3 5.2c-3.9 0-5.9 2.8-5.9 5.1 0 1.4.5 2.7 1.7 3.1.2.1.4 0 .4-.2l.2-.7c.1-.2 0-.3-.1-.5-.3-.4-.6-1-.6-1.8 0-2.3 1.7-4.4 4.5-4.4 2.4 0 3.8 1.5 3.8 3.5 0 2.6-1.2 4.9-2.9 4.9-1 0-1.7-.8-1.4-1.7.3-1.1.8-2.4.8-3.2 0-.7-.4-1.3-1.2-1.3-1 0-1.7 1-1.7 2.3 0 .8.3 1.4.3 1.4l-1.1 4.6c-.3 1.4 0 3.1 0 3.3 0 .1.2.1.2 0 .1-.1 1.2-1.5 1.6-2.9l.6-2.4c.3.6 1.2 1.1 2.2 1.1 2.9 0 4.8-2.6 4.8-6.1 0-2.6-2.3-5.1-5.7-5.1z"/></svg></a></div>
+      <div class="pin"><a class="pin-img" href="https://www.behance.net/rafaeleifler" target="_blank" rel="noopener"><img src="https://i.pinimg.com/736x/17/58/ee/1758ee0c934910d91c24a290ce4b9857.jpg" alt="Arches and a lounge in green light, by Rafael Eifler" loading="lazy" referrerpolicy="no-referrer"></a><a class="pin-credit" href="https://www.behance.net/rafaeleifler" target="_blank" rel="noopener">Rafael Eifler</a><a class="pin-pi" href="https://www.pinterest.com/pin/387591111691101016/" target="_blank" rel="noopener" aria-label="Arches and a lounge on Pinterest"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#E60023"/><path fill="#fff" d="M12.3 5.2c-3.9 0-5.9 2.8-5.9 5.1 0 1.4.5 2.7 1.7 3.1.2.1.4 0 .4-.2l.2-.7c.1-.2 0-.3-.1-.5-.3-.4-.6-1-.6-1.8 0-2.3 1.7-4.4 4.5-4.4 2.4 0 3.8 1.5 3.8 3.5 0 2.6-1.2 4.9-2.9 4.9-1 0-1.7-.8-1.4-1.7.3-1.1.8-2.4.8-3.2 0-.7-.4-1.3-1.2-1.3-1 0-1.7 1-1.7 2.3 0 .8.3 1.4.3 1.4l-1.1 4.6c-.3 1.4 0 3.1 0 3.3 0 .1.2.1.2 0 .1-.1 1.2-1.5 1.6-2.9l.6-2.4c.3.6 1.2 1.1 2.2 1.1 2.9 0 4.8-2.6 4.8-6.1 0-2.6-2.3-5.1-5.7-5.1z"/></svg></a></div>
+      <div class="pin"><a class="pin-img" href="https://www.behance.net/indiagorokhova" target="_blank" rel="noopener"><img src="https://i.pinimg.com/736x/16/9e/d1/169ed1c01d32eeb2d41c3fdd0137eeb3.jpg" alt="A figure in front of a red sun, by India Gorokhova" loading="lazy" referrerpolicy="no-referrer"></a><a class="pin-credit" href="https://www.behance.net/indiagorokhova" target="_blank" rel="noopener">India Gorokhova</a><a class="pin-pi" href="https://www.pinterest.com/pin/387591111691867326/" target="_blank" rel="noopener" aria-label="A figure in front of a red sun on Pinterest"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#E60023"/><path fill="#fff" d="M12.3 5.2c-3.9 0-5.9 2.8-5.9 5.1 0 1.4.5 2.7 1.7 3.1.2.1.4 0 .4-.2l.2-.7c.1-.2 0-.3-.1-.5-.3-.4-.6-1-.6-1.8 0-2.3 1.7-4.4 4.5-4.4 2.4 0 3.8 1.5 3.8 3.5 0 2.6-1.2 4.9-2.9 4.9-1 0-1.7-.8-1.4-1.7.3-1.1.8-2.4.8-3.2 0-.7-.4-1.3-1.2-1.3-1 0-1.7 1-1.7 2.3 0 .8.3 1.4.3 1.4l-1.1 4.6c-.3 1.4 0 3.1 0 3.3 0 .1.2.1.2 0 .1-.1 1.2-1.5 1.6-2.9l.6-2.4c.3.6 1.2 1.1 2.2 1.1 2.9 0 4.8-2.6 4.8-6.1 0-2.6-2.3-5.1-5.7-5.1z"/></svg></a></div>
+      <div class="pin"><a class="pin-img" href="https://www.behance.net/timurmitin" target="_blank" rel="noopener"><img src="https://i.pinimg.com/736x/b6/1a/2c/b61a2c42cdc8b8224363c6a9f6ad05bf.jpg" alt="A red room with a white moon, by Timur Mitin" loading="lazy" referrerpolicy="no-referrer"></a><a class="pin-credit" href="https://www.behance.net/timurmitin" target="_blank" rel="noopener">Timur Mitin</a><a class="pin-pi" href="https://www.pinterest.com/pin/387591111691044527/" target="_blank" rel="noopener" aria-label="A red room with a white moon on Pinterest"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#E60023"/><path fill="#fff" d="M12.3 5.2c-3.9 0-5.9 2.8-5.9 5.1 0 1.4.5 2.7 1.7 3.1.2.1.4 0 .4-.2l.2-.7c.1-.2 0-.3-.1-.5-.3-.4-.6-1-.6-1.8 0-2.3 1.7-4.4 4.5-4.4 2.4 0 3.8 1.5 3.8 3.5 0 2.6-1.2 4.9-2.9 4.9-1 0-1.7-.8-1.4-1.7.3-1.1.8-2.4.8-3.2 0-.7-.4-1.3-1.2-1.3-1 0-1.7 1-1.7 2.3 0 .8.3 1.4.3 1.4l-1.1 4.6c-.3 1.4 0 3.1 0 3.3 0 .1.2.1.2 0 .1-.1 1.2-1.5 1.6-2.9l.6-2.4c.3.6 1.2 1.1 2.2 1.1 2.9 0 4.8-2.6 4.8-6.1 0-2.6-2.3-5.1-5.7-5.1z"/></svg></a></div>
+    </div>
+    <figcaption class="lab">From my Etherea board on Pinterest · each piece links to its maker</figcaption>
+  </figure>
+
+  <div class="col" style="margin-top: 48px">
+    <p class="rv">We worked with natural tones and bright white subway tile, moving from those references toward a room we could build. We designed every set in 3D first, using Blender, and the concepts kept changing right up to the build.</p>
+  </div>
+  <figure class="wide rv">
+    <button type="button" class="photo" data-lb><img src="../../assets/img/work/719/eth-plan.webp" width="1600" height="1067" alt="An early 3D layout of the Etherea loft, seen from above." loading="lazy"></button>
+    <figcaption class="lab">An early layout for the loft</figcaption>
+  </figure>
+
+  <div class="col" style="margin-top: 48px">
+    <p class="rv">The fire code shaped the room too. We used steel studs instead of wood, along with fire-treated lumber, and installed new sprinklers. The set walls had to stay low enough for water to reach over them, which is why the pink wall stops short of the ceiling. Then we built what we had been moving around on screen.</p>
+    <figure class="center vid wide-in rv" style="margin-top: 36px; max-width: none">
+      <video src="../../assets/video/719/02-etherea-render-to-real.mp4" poster="../../assets/video/719/02-etherea-render-to-real.jpg" muted loop playsinline controls preload="none" aria-label="From the 3D render to the real room"></video>
+      <figcaption class="lab">The render becomes the room</figcaption>
+    </figure>
+    <p class="rv" style="margin-top: 48px">The best studios we knew gave photographers several looks in one booking. Beside our sets, we kept a seamless paper corner with nothing in the way. The desert set had arches, warm plaster and sculptural steps. In the forest set, we worked with greenery, water and layered platforms. Etherea brought the two sets into the same loft, with a lounge between them.</p>
+  </div>
+  <figure class="wide rv">
+    <div class="pair sets">
+      <button type="button" class="photo" data-lb><img src="../../assets/img/work/719/sets/stage/m05.webp" width="1125" height="750" alt="A dancer posed in the circle of the desert set." loading="lazy"></button>
+      <button type="button" class="photo p-tall" data-lb><img src="../../assets/img/work/719/sets/pool/m01.webp" width="1068" height="1600" alt="The forest set: a sunken pool under a green arched curtain." loading="lazy"></button>
+    </div>
+    <figcaption class="lab">The desert and forest sets</figcaption>
+  </figure>
+  <figure class="bleed rv">
+    <button type="button" class="photo" data-lb><img src="../../assets/img/work/719/hero.webp" width="1600" height="1068" alt="The Etherea lounge between the desert and forest sets, with a fluted column and a green wall." loading="lazy"></button>
+    <figcaption class="lab wide" style="margin-top:10px">Etherea, with the lounge between the sets</figcaption>
+  </figure>
+
+  <div class="col">
+    <p class="lab date rv">2023</p>
+    <p class="rv">Terra and Solaris both followed in 2023, each designed in Blender before we built it. For Terra, we used an earth-tone palette and sets based on a circle, a U-shaped cut-out and semi-circles, with southeast-facing windows. Solaris was a bright corner studio and needed far less build-out. Its tall windows on two walls were the draw, so we kept the room simple, with limewash walls and archways.</p>
+  </div>
+  <figure class="wide rv">
+    <div class="pair two">
+      <button type="button" class="photo" data-lb><img src="../../assets/img/work/719/terra-01.webp" width="1600" height="1068" alt="A round plaster niche above a curved platform in morning sun, in Terra." loading="lazy"></button>
+      <button type="button" class="photo" data-lb><img src="../../assets/img/work/719/solaris-02.webp" width="1600" height="1068" alt="Blush armchairs and an arched mirror by the tall windows in Solaris." loading="lazy"></button>
+    </div>
+    <figcaption class="lab">Terra and Solaris</figcaption>
+  </figure>
+
+  <div class="col" style="margin-top: 48px">
+    <p class="rv">Kristi ran the lofts day to day. Etherea was booked from day one and ranked No. 9 among the top 10 Los Angeles production spaces in the <a href="https://web.archive.org/web/20230929030652/https://madein.peerspace.com/awards/los-angeles/production" target="_blank" rel="noopener">Peerspace Open Door Awards 2023</a>. The Terra build timelapse reached 3.2 million views on Instagram. Across all three lofts, there were more than 1,000 reviews with a 5.0 average.</p>
+
+    <p class="lab date rv">2025</p>
+    <p class="rv">In January, we moved home to Colorado to start our family. Kristi continued running the lofts from there. We sold 719 Studios on June 15, 2026.</p>
+    <figure class="center family wide-in rv" style="margin-top: 40px; max-width: none">
+      <button type="button" class="photo" data-lb style="width:auto"><img src="../../assets/img/work/719/colorado-family.webp" width="480" height="640" alt="JC, Kristi and their baby by a mountain lake in Colorado." loading="lazy"></button>
+      <figcaption class="lab">Home in Colorado</figcaption>
+    </figure>
+  </div>
+
   <nav class="j-next" aria-label="Next">
-    <a class="cta primary" href="mailto:hello@jcg.studio">Email me <span aria-hidden="true">→</span></a>
-    <a class="cta" href="../../work/719-studios/">The case study <span aria-hidden="true">→</span></a>
-    <a class="cta" href="../../about/">About me <span aria-hidden="true">→</span></a>
+    <a href="mailto:hello@jcg.studio">Email me <span aria-hidden="true">→</span></a>
+    <a href="../../work/719-studios/">The case study <span aria-hidden="true">→</span></a>
+    <a href="../../about/">About me <span aria-hidden="true">→</span></a>
   </nav>
   <footer class="dawn dawn-foot j-dawn" data-dawn data-rise="scroll" data-x=".5" aria-hidden="true"></footer>
 </main>
+
+<dialog class="lightbox" id="lb" aria-label="Photo"><div class="lb-in"><img id="lb-img" alt=""></div><button type="button" class="lb-x" id="lb-x" aria-label="Close">×</button></dialog>
 <script type="module" src="../../assets/js/dawn.js?v=20261020c"></script>
-<script type="module">
-import { stops, INSPO as MOOD } from '../../work/719-studios/3d/experience.js?v=20261022-inspo';   // the verified, credited pins
-import { mountStory } from '../../assets/js/story.js?v=20261022-credits';
-const IMG = '../../assets/img/work/719/';
-const sets = await fetch(`${IMG}sets/manifest.json`).then((r) => r.json());
-mountStory({ stops, MOOD, sets, IMG, root: document.getElementById('chapters'),
-  hero: { label: 'Journal · 01', title: 'Two photographers, three dream spaces', byline: 'By JC Griffith · 3 min read' },
-  exploreHref: (loft) => `../../work/719-studios/#explore-${loft}` });
+<script>
+  // one fade-in as each paragraph and picture arrives; photos open full screen
+  const rv = [...document.querySelectorAll('.rv')];
+  if ('IntersectionObserver' in window) { const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' }); rv.forEach((el) => io.observe(el)); } else rv.forEach((el) => el.classList.add('in'));
+  const lb = document.getElementById('lb'), img = document.getElementById('lb-img');
+  document.addEventListener('click', (e) => { const b = e.target.closest('[data-lb]'); if (!b) return; const i = b.querySelector('img'); img.src = i.currentSrc || i.src; img.alt = i.alt; lb.showModal(); });
+  document.getElementById('lb-x').onclick = () => lb.close();
+  lb.addEventListener('click', (e) => { if (e.target === lb || e.target.classList.contains('lb-in')) lb.close(); });
 </script>
 </body>
 </html>
