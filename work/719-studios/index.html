@@ -329,30 +329,65 @@ document.documentElement.classList.add('js'); if (/[?&]embed\b/.test(location.se
   .cs-films figcaption { margin-top: 8px; }
   .cs-stats b { font: 540 clamp(30px, 5vw, 48px)/1 var(--font-display); font-stretch: var(--wdth-display); color: var(--chrome); }
   .cs-proof { display: grid; gap: 12px; }
+  /* the Peerspace award is the headline proof: a full-width feature, not a small card */
+  #results .cs-proof .card { width: 100%; max-width: none; display: flex; align-items: center; gap: clamp(20px, 3vw, 40px); padding: clamp(20px, 3vw, 36px) clamp(22px, 3.4vw, 48px); }
+  #results .cs-proof .card img { height: clamp(96px, 11vw, 160px); width: auto; flex: none; }
+  #results .cs-proof .card span { display: grid; gap: 8px; font-size: clamp(16px, 1.6vw, 21px); line-height: 1.35; }
+  #results .cs-proof .card b { font-size: clamp(22px, 2.8vw, 38px); line-height: 1.08; letter-spacing: -.01em; }
+  #results .cs-proof .card i { font-size: 12px; margin-top: 6px; }
+  /* Hero in the 719 brand: blush ground, Bricolage small caps for the corner labels, no crosshair frame */
+  .poster::after, .pc { display: none; }
+  .hero--poster .pl { font: 500 clamp(11px, 1vw, 14px)/1 'Bricolage Grotesque', sans-serif; letter-spacing: .17em; text-transform: uppercase; color: rgba(53,33,45,.85); }
+  .poster-name img { filter: none; }
+  /* no stranded last words: balance the intro paragraphs */
+  .cs-brief, .s-head p, .bx-h p, .bx-edition-copy p { text-wrap: balance; }
+  /* Launch: the timelapse leads, with its number beside it */
+  .tlx { display: grid; gap: clamp(24px, 5vw, 72px); grid-template-columns: minmax(0, 340px) minmax(0, 1fr); align-items: center; }
+  .tlx .vidfig { margin: 0; } .tl-stat { display: grid; gap: 10px; align-content: center; }
+  .tl-stat b { color: var(--chrome, #E6E9ED); font: 700 clamp(56px, 9vw, 128px)/.9 var(--font-display, 'Archivo', sans-serif); letter-spacing: -.02em; }
+  .tl-stat p { margin: 8px 0 0; max-width: 24em; opacity: .8; text-wrap: balance; }
+  @media (max-width: 599px) { .tlx { grid-template-columns: 1fr; } .tlx .vidfig { max-width: 300px; } }
+  /* Brand: identity system + applied graphics from the brand guidelines deck (v2, 2026-10-27) */
+  .bx-type { display: grid; gap: clamp(20px, 4vw, 56px); grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); align-items: end; padding: clamp(24px, 5vw, 56px); background: #35212D; color: #F7F4EE; }
+  .bx-type .hud { color: rgba(247,244,238,.62); margin-bottom: 10px; }
+  .bx-tag { margin: 0; font: 800 clamp(44px, 9vw, 104px)/.95 'Bricolage Grotesque', var(--font-display), sans-serif; letter-spacing: -.02em; color: #F7F4EE; text-wrap: balance; }
+  .bx-face b { display: block; font: 800 clamp(22px, 3vw, 32px)/1.1 'Bricolage Grotesque', var(--font-display), sans-serif; color: #F7F4EE; margin-bottom: 10px; }
+  .bx-face p { margin: 0; max-width: 26em; line-height: 1.55; color: rgba(247,244,238,.82); }
+  .bx-row { display: grid; gap: 10px; margin: 0 0 10px; } .bx-row .f { margin: 0; }
+  @media (min-width: 700px) { .bx-row--2 { display: flex; } .bx-row--2 .f { flex: var(--g) 1 0; min-width: 0; } }
+  @media (max-width: 699px) { .bx-type { grid-template-columns: 1fr; align-items: start; } }
+  /* Next: a closing band, set apart from the case study and sitting close to the sun */
+  #next { margin-top: clamp(72px, 9vw, 128px); padding-top: clamp(56px, 7vw, 96px); border-top: 1px solid rgba(255,255,255,.14); }
+  #next .s-head { display: grid; justify-items: center; text-align: center; margin-inline: auto; }
+  #next .s-head p:not(.hud) { max-width: 34em; }
+  #next .next { padding-bottom: 0; margin-top: 4px; }
+  #next .story-dawn { margin-top: clamp(-150px, -10vw, -56px); position: relative; z-index: 0; pointer-events: none; }
+  #next .wrap { position: relative; z-index: 1; }
   .cs-next { padding-bottom: 0; }
   /* Hero B: the poster */
   @font-face { font-family: 'Mak'; src: url('../../assets/fonts/mak-bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
   .hero.hero--poster { display: block; min-height: 0; height: auto; padding: 0; background: var(--void); }
-  .poster { position: relative; height: min(86svh, 920px); min-height: 520px; background: #F5EFE4; color: #2B2623; overflow: hidden; }
-  .poster::after { content: ''; position: absolute; inset: clamp(14px, 2.2vw, 28px); border: 1px solid rgba(43,38,35,.16); pointer-events: none; }
-  .poster-name { position: absolute; left: 0; right: 0; top: clamp(56px, 9vh, 110px); margin: 0; z-index: 0; display: grid; justify-items: center; gap: .1em; text-align: center; color: #2B2623; }
+  .poster { position: relative; height: min(86svh, 920px); min-height: 520px; background: #CCA18F; color: #35212D; overflow: hidden; }
+  .poster::after { content: ''; position: absolute; inset: clamp(14px, 2.2vw, 28px); border: 1px solid rgba(53,33,45,.16); pointer-events: none; }
+  .poster-name { position: absolute; left: 0; right: 0; top: clamp(48px, 7vh, 80px); margin: 0; z-index: 0; display: grid; justify-items: center; gap: .1em; text-align: center; color: #35212D; }
+  .poster-name img { display: block; width: clamp(230px, 28vw, 400px); height: auto; }
   .poster-name .pn-big { font: 700 clamp(100px, 17vw, 250px)/.8 'Mak', Georgia, serif; letter-spacing: 0; }
   .poster-name .pn-sub { font: 400 clamp(14px, 1.6vw, 22px)/1 var(--font-hud); letter-spacing: .6em; text-transform: lowercase; padding-left: .6em; opacity: .7; }
   .hero--poster .hero-3d { position: absolute; inset: 0; z-index: 1; }
-  .pl { position: absolute; z-index: 2; font: 400 clamp(11px, 1vw, 14px)/1 var(--font-hud); letter-spacing: .04em; color: rgba(43,38,35,.72); }
+  .pl { position: absolute; z-index: 2; font: 400 clamp(11px, 1vw, 14px)/1 var(--font-hud); letter-spacing: .04em; color: rgba(53,33,45,.72); }
   .pl.tl { top: calc(clamp(14px, 2.2vw, 28px) + 18px); left: calc(clamp(14px, 2.2vw, 28px) + 22px); } .pl.tr { top: calc(clamp(14px, 2.2vw, 28px) + 18px); right: calc(clamp(14px, 2.2vw, 28px) + 22px); }
   .pl.bl { bottom: calc(clamp(14px, 2.2vw, 28px) + 18px); left: calc(clamp(14px, 2.2vw, 28px) + 22px); } .pl.br { bottom: calc(clamp(14px, 2.2vw, 28px) + 18px); right: calc(clamp(14px, 2.2vw, 28px) + 22px); }
   .pc { position: absolute; z-index: 2; width: 22px; height: 22px; --e: clamp(14px, 2.2vw, 28px); }
-  .pc::before, .pc::after { content: ''; position: absolute; background: rgba(43,38,35,.5); }
+  .pc::before, .pc::after { content: ''; position: absolute; background: rgba(53,33,45,.5); }
   .pc::before { left: 0; right: 0; top: 50%; height: 1px; } .pc::after { top: 0; bottom: 0; left: 50%; width: 1px; }
   .pc.c1 { top: calc(var(--e) - 11px); left: calc(var(--e) - 11px); } .pc.c2 { top: calc(var(--e) - 11px); right: calc(var(--e) - 11px); }
   .pc.c3 { bottom: calc(var(--e) - 11px); left: calc(var(--e) - 11px); } .pc.c4 { bottom: calc(var(--e) - 11px); right: calc(var(--e) - 11px); }
-  .hero.hero--poster .poster-name, .hero.hero--poster .poster-name span { color: #2B2623; }
+  .hero.hero--poster .poster-name, .hero.hero--poster .poster-name span { color: #35212D; }
   .hero--poster .hero-3d { inset: 30% 0 0 0; }   /* the 3D's box runs to the poster's edges, so only the ivory frame ever cuts the model */   /* the model sits under the name, inside the frame */
   .pl.tl { left: calc(clamp(14px, 2.2vw, 28px) + 64px); }   /* clear of the back button */
   .hero-band { padding: 40px 0 8px; }
   .hero-band .cs-brief { margin: 10px 0 22px; }
-  @media (max-width: 899px) { .poster { height: auto; aspect-ratio: 4 / 5; min-height: 0; } .poster-name { top: 64px; } .hero--poster .hero-3d { inset: 30% 0 4% 0; } }
+  @media (max-width: 899px) { .poster { height: auto; aspect-ratio: 4 / 5; min-height: 0; } .poster-name { top: 64px; } .poster-name img { width: clamp(240px, 46vw, 400px); } .hero--poster .hero-3d { inset: 30% 0 4% 0; } }
   @media (max-width: 599px) { .pl.tr { display: none; } }   /* a phone has room for one top label */
   @media (min-width: 900px) {
     .lofts3 { grid-template-columns: repeat(3, 1fr); }
@@ -361,10 +396,77 @@ document.documentElement.classList.add('js'); if (/[?&]embed\b/.test(location.se
     /* Brand: logo, colour and type side by side in one row, not stacked */
     #brand .skin { grid-template-columns: 1.1fr 1fr 1fr; align-items: stretch; }
   }
+  .lc--wide .lc-slide img, .lc--wide .dz-soon { aspect-ratio: 800 / 560; object-fit: cover; }
+  .lc--wide .lc-slide .dz-soon { width: 100%; }
+  /* Design: credited pins and the 3D mockups */
+  .dz-bleed { position: relative; margin-inline: calc(50% - 50vw); }
+  .dz-pins { list-style: none; margin: 0; padding: 0; display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; overscroll-behavior-x: contain; }
+  .dz-pins::-webkit-scrollbar { display: none; }
+  .dz-pin { flex: 0 0 clamp(170px, 19vw, 280px); scroll-snap-align: center; }
+  .dz-pin a { position: relative; display: block; overflow: hidden; background: #15171a; } .dz-pin img { display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; }
+  .dz-pin span { position: absolute; left: 6px; bottom: 6px; max-width: calc(100% - 12px); padding: 4px 6px; background: rgba(11,12,14,.66); color: rgba(230,233,237,.92); font: 400 11px/1 var(--font-hud); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dz-bleed .lc-prev { left: 16px; } .dz-bleed .lc-next { right: 16px; } .dz-bleed:hover .lc-arrow { opacity: 1; }
+  .dz-row { display: grid; gap: 8px; margin-top: 18px; } .dz-name { margin: 0; font-size: clamp(16px, 1.5vw, 20px); font-weight: 600; }
+  .dz-imgs { display: grid; gap: 8px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .dz-imgs button { all: unset; display: block; cursor: zoom-in; background: #15171a; } .dz-imgs img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
+  .dz-soon { aspect-ratio: 3 / 2; display: grid; place-items: center; background: #EDE6D8; border: 1px dashed rgba(53,33,45,.35); color: #35212D; overflow: hidden; } .dz-soon img { width: 100%; height: 100%; object-fit: contain; } .dz-soon .hud { opacity: .6; }
+  @media (max-width: 599px) { .dz-imgs { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; } .dz-imgs > * { flex: 0 0 78%; scroll-snap-align: start; } .dz-imgs::-webkit-scrollbar { display: none; } }
+  /* Product: a photo carousel per studio */
+  .lc { display: grid; gap: 10px; min-width: 0; }
+  .lc-view { position: relative; background: #15171a; }
+  .lc-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
+  .lc-track::-webkit-scrollbar { display: none; }
+  .lc-slide { flex: 0 0 100%; scroll-snap-align: start; }
+  .lc-slide button { all: unset; display: block; width: 100%; cursor: zoom-in; }
+  .lc-slide img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+  .lc-arrow { position: absolute; top: 50%; translate: 0 -50%; width: 40px; height: 40px; display: grid; place-items: center; border: 0; border-radius: 50%; background: rgba(247,244,238,.88); color: #35212D; cursor: pointer; opacity: 0; transition: opacity .2s; }
+  .lc-arrow svg { width: 18px; height: 18px; } .lc-prev { left: 10px; } .lc-next { right: 10px; }
+  .lc-view:hover .lc-arrow, .lc-arrow:focus-visible { opacity: 1; } @media (hover: none) { .lc-arrow { opacity: .9; } }
+  .lc-dots { position: absolute; left: 0; right: 0; bottom: 12px; display: flex; justify-content: center; gap: 6px; pointer-events: none; }
+  .lc-dots i { width: 6px; height: 6px; border-radius: 50%; background: rgba(247,244,238,.5); } .lc-dots i.on { background: #F7F4EE; }
+  .lc-cap { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .lc-name { display: flex; align-items: baseline; gap: 12px; } .lc-name b { font-size: clamp(18px, 1.8vw, 24px); font-weight: 600; }
+  .lc-3d { all: unset; cursor: pointer; font: 400 12px/1 var(--font-hud); letter-spacing: .08em; text-transform: uppercase; padding: 10px 12px; border: 1px solid var(--line-strong, rgba(255,255,255,.3)); } .lc-3d:hover, .lc-3d:focus-visible { background: rgba(255,255,255,.08); }
+  /* Brand: campaign, palette, green edition, logo and architectural shapes. */
+  .bx-part { margin-top: clamp(44px, 6vw, 84px); }
+  .bx-h { display: grid; gap: 6px; max-width: 46em; margin-bottom: 22px; } .bx-h h3 { margin: 0; font-size: clamp(22px, 2.4vw, 32px); line-height: 1.1; } .bx-h p:last-child { margin: 0; opacity: .8; }
+  .bx-sig { display: grid; gap: 10px; grid-template-columns: 1fr 1fr; }
+  .bx-logo { display: grid; place-items: center; padding: clamp(24px, 5vw, 64px); min-height: 220px; } .bx-logo img { width: 100%; max-width: 440px; height: auto; display: block; }
+  .bx-logo--blush { background: #CCA18F; grid-column: 1 / -1; } .bx-logo--ink { background: #35212D; } .bx-logo--ivory { background: #F7F4EE; } .bx-logo--ivory img { max-width: 360px; }
+  .bx-sw { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; }
+  .bx-sw li { display: grid; gap: 2px; } .bx-sw i { height: 44px; border-radius: 2px; box-shadow: inset 0 0 0 1px rgba(128,128,128,.25); } .bx-sw b { font-weight: 600; font-size: 13px; margin-top: 6px; }
+  .bx-sizes { grid-column: 1 / -1; display: flex; align-items: flex-end; gap: 28px; padding: 22px 26px; background: #F7F4EE; } .bx-sizes img { display: block; height: auto; } .bx-sizes .hud { margin-left: auto; color: #35212D; opacity: .7; text-align: right; }
+  .bx-pal { display: grid; gap: 22px; } .bx-prow { display: grid; gap: 8px; } .bx-prow .hud { opacity: .7; }
+  .bx-shapes figure { margin: 0; } .bx-shapes img { display: block; width: 100%; height: auto; } .bx-shapes figcaption { margin-top: 8px; }
+  /* Reviews: real text on studio-coloured cards, real star rows */
+  .rv-row { display: grid; gap: 12px; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: stretch; }
+  .rv { display: flex; flex-direction: column; gap: 18px; padding: clamp(20px, 2.4vw, 30px); border-radius: 4px; font-family: 'Bricolage Grotesque', var(--font-body, sans-serif); color: #35212D; }
+  .rv--etherea { background: #CCA18F; } .rv--terra { background: #D2C2A2; } .rv--solaris { background: #F7F4EE; }
+  .rv-stars { display: flex; gap: 4px; } .rv-stars svg { width: 20px; height: 20px; fill: #35212D; }
+  .rv blockquote { margin: 0; font-size: clamp(16px, 1.35vw, 19px); line-height: 1.45; font-weight: 400; flex: 1; }
+  .rv figcaption { display: grid; gap: 2px; font-size: 14px; } .rv figcaption b { font-weight: 700; font-size: 15px; } .rv figcaption span { opacity: .7; letter-spacing: .12em; text-transform: uppercase; font-size: 11px; }
+  @media (min-width: 900px) { .cs-proof { grid-template-columns: 1fr; } }
+  @media (max-width: 899px) { .rv-row { grid-template-columns: 1fr; } }
+  .bx-3 { display: grid; gap: 10px; grid-template-columns: repeat(3, 1fr); }
+  .bx-edition { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 5vw, 64px); align-items: center; }
+  .bx-edition > .f { margin: 0; }
+  .bx-edition-copy { display: grid; gap: 18px; max-width: 28em; }
+  .bx-edition-copy h4 { margin: 0; font-size: clamp(26px, 3vw, 40px); line-height: 1.12; color: var(--chrome); }
+  .bx-edition-copy p { margin: 0; line-height: 1.6; }
+  .bx-edition-colors { display: flex; gap: 10px; }
+  .bx-edition-colors i { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line-strong); }
+  .bx-sw small { font-size: 12px; line-height: 1.4; color: var(--chrome-3); }
+  .bx-posters .f img { object-fit: contain; }
+  .bx-posters button:focus-visible, .bx-edition button:focus-visible { outline: 2px solid var(--chrome); outline-offset: 4px; }
+  @media (max-width: 599px) { .bx-edition { grid-template-columns: 1fr; } .bx-edition-copy { padding-top: 8px; } }
+  .bx-use { display: grid; gap: 10px; } .bx-use2 { display: grid; gap: 10px; grid-template-columns: 1.418fr .667fr; align-items: start; }
+  .cs-shipped { margin: 36px 0 10px; } #launch .cs-apps { align-items: flex-start; }
+  @media (max-width: 599px) { .bx-sizes { flex-wrap: wrap; } .bx-sizes .hud { flex-basis: 100%; margin-left: 0; text-align: left; } .bx-3 { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; } .bx-3::-webkit-scrollbar { display: none; } .bx-3 > * { flex: 0 0 72%; scroll-snap-align: start; } .bx-sig { grid-template-columns: 1fr; } .bx-sw { grid-template-columns: repeat(2, 1fr); } .bx-use2 { grid-template-columns: 1fr; } }
   #brand .skin .b-logos { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   #brand .skin .b-logo { min-height: 0; padding: 14px; } #brand .skin .b-logo img { max-height: 110px; width: 100%; object-fit: contain; }
   #brand .skin .b-type img { max-height: 40px; }
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&display=swap" rel="stylesheet">
 </head>
 <body>
 <a class="back hud" href="../../" aria-label="Back to the work">←</a>
@@ -372,28 +474,29 @@ document.documentElement.classList.add('js'); if (/[?&]embed\b/.test(location.se
   
   <section class="hero hero--poster" id="top" aria-labelledby="h-719">
     <div class="poster">
-      <h1 id="h-719" class="poster-name"><span class="pn-big">719</span><span class="pn-sub">studios</span></h1>
+      <h1 id="h-719" class="poster-name"><img src="../../assets/img/work/719/brand/v6/hero-logo.svg" alt="719 Studios" width="855" height="455" decoding="async"></h1>
       <div class="hero-3d" inert><picture class="hero-still"><source media="(max-width: 899px)" srcset="../../assets/img/work/719/hero-3d-phone.webp"><img src="../../assets/img/work/719/hero-3d-desktop.webp" alt="" fetchpriority="high" decoding="async"></picture><iframe data-src="3d/?cover" title="" tabindex="-1" aria-hidden="true"></iframe></div>   
       <span class="pl tl">s-01 · los angeles</span><span class="pl tr">production studios</span>
       <span class="pl bl">built 2021–2023</span><span class="pl br">sold 2026</span>
       <i class="pc c1"></i><i class="pc c2"></i><i class="pc c3"></i><i class="pc c4"></i>
     </div>
     <div class="hero-band"><div class="wrap">
-      <p class="hud">The brief</p>
-      <p class="cs-brief" id="brief">Kristi and I designed three production studios in downtown LA in 3D first, then built them together. We launched them with a brand, website, Peerspace listing copy and covers, and social assets so people would love the spaces, book them and come back.</p>
-      <div class="ctas"><button type="button" class="cta primary" data-explore="etherea">Explore in 3D <span aria-hidden="true">↗</span></button><a class="cta" href="#snapshot">Read the case study <span aria-hidden="true">↓</span></a><a class="cta" href="../../journal/719-studios/" target="_top">Read the story <span aria-hidden="true">→</span></a></div>
+      <p class="hud">The Brief</p>
+      <p class="cs-brief" id="brief">To design, build and launch a successful production studio rental business. That meant designing and building the spaces, and designing the brand and marketing collateral: the website, Peerspace listings, initial launch graphics and a viral build timelapse.</p>
+      <div class="ctas"><button type="button" class="cta primary" data-explore="etherea">Explore the 3D <span aria-hidden="true">↗</span></button><a class="cta" href="../../journal/719-studios/" target="_top">Read the story <span aria-hidden="true">→</span></a></div>
     </div></div>
   </section>
 
   <section class="sec cs-snap" id="snapshot" aria-label="Snapshot">
     <div class="wrap"><dl class="snap" data-reveal>
       <div><dt>Project</dt><dd>719 Studios</dd></div>
-      <div><dt>Role</dt><dd>Concept, 3D design, build</dd></div>
+      <div><dt>Role</dt><dd>Product and brand design, build-out, launch</dd></div>
       <div><dt>Services</dt><dd>Product · Brand</dd></div>
       <div><dt>Years</dt><dd>2021–2026</dd></div>
       <div><dt>Outcome</dt><dd>1,000+ reviews · 5.0 · sold</dd></div>
     </dl></div>
   </section>
+  <section class="sec cs" id="design" aria-labelledby="h-design"><div class="wrap" id="design-body"></div></section>
   <section class="sec cs" id="product" aria-labelledby="h-product"><div class="wrap" id="product-body"></div></section>
   <section class="sec cs" id="brand" aria-labelledby="h-brand"><div class="wrap" id="brand-body"></div></section>
   <section class="sec cs" id="launch" aria-labelledby="h-launch"><div class="wrap" id="launch-body"></div></section>
@@ -481,13 +584,25 @@ const film = (base, label, badge = '', cap = '') => `<figure class="f vidfig" da
 const VID = '../../assets/video/719/';
 
 const COPY = {
- "brief": "Kristi and I designed three production studios in downtown LA in 3D first, then built them together. We launched them with a brand, website, Peerspace listing copy and covers, and social assets so people would love the spaces, book them and come back.",
- "product-title": "From 3D to built sets",
- "product": "Kristi and I designed every loft in 3D first, then built them together. We refined the concepts until the build and kept set walls below the ceiling so sprinklers could reach over.",
- "brand-title": "An identity drawn from the sets",
- "brand": "I paired an arch-in-a-circle identity with a distinct palette for each loft. The identity echoed the arches in the spaces and carried through to Peerspace listing covers, merch and social.",
- "launch-title": "Showing the build in motion",
- "launch": "I created a Terra build timelapse and a 15-second vertical ad for the launch. The timelapse reel reached 3.2M views on Instagram.",
+ "brief": "To design, build and launch a successful production studio rental business. That meant designing and building the spaces, and designing the brand and marketing collateral: the website, Peerspace listings, initial launch graphics and a viral build timelapse.",
+ "design-title": "Inspired by Blender dreamscapes, mocked up in 3D",
+ "design": "As photographers, we were drawn to the surreal Blender dreamscapes filling Pinterest: pink arches, stairs into pools, giant suns. With my construction and design background, I thought we could bring them to life. The goal was studios photographers would love to shoot in, designed in 3D first.",
+ "product-title": "Three studios, built from the mockups",
+ "product": "Each mockup became a real room with its own colour, shape and set. Swipe through the photos.",
+ "brand-title": "One identity for three studios",
+ "brand": "719 began as a place: it is the area code of Colorado Springs, where Kristi grew up. When Terra and Solaris joined Etherea in 2023, the name went plural and the brand became a family, with one logo, one type system and three shapes. Below: the identity system, and where it was used.",
+ "sig-title": "719 Studios",
+ "sig": "Etherea opened in 2021 as The 719 Studio. In 2023, when Terra and Solaris joined it, the name became 719 Studios, with a custom 719 logo whose rounded numerals give the identity its geometry.",
+ "fam-title": "One family, three studios",
+ "fam": "Blush and a circle for Etherea, sand and an upside-down arch for Terra, ivory and alternating arches for Solaris. Rounded campaign lettering echoes the logo, while thin orbit lines connect the three posters.",
+ "cam-title": "A campaign worth stopping for",
+ "cam": "The campaign pairs rounded display lettering with simple supporting type, architectural photo windows and thin orbit lines.",
+ "phys-title": "The physical experience",
+ "phys": "I applied the logo, colours and studio shapes to signage, a hoodie and stationery.",
+ "dig-title": "The digital experience",
+ "dig": "I kept room photos prominent on the Peerspace listing covers, using each studio's name and colour to identify the space.",
+ "launch-title": "Launched with a viral build timelapse",
+ "launch": "The Terra build timelapse introduced the studio and reached 3.2M views on Instagram.",
  "results-title": "Booked from day one",
  "results": "We booked from day one and received 1,000+ reviews across the three studios, with a 5.0 average.",
  "next-title": "Have something new to launch?",
@@ -498,53 +613,123 @@ const COPY = {
 const C = (k) => esc(COPY[k] || '');
 
 
-// Product: the three lofts (each opens in 3D), then one early concept beside the room it became
+const part = (n, title, line, body) => `<div class="bx-part" data-reveal><div class="bx-h"><p class="hud">${n}</p>${title ? `<h3>${title}</h3>` : ''}${line ? `<p>${line}</p>` : ''}</div>${body}</div>`;
+// Design: the inspiration (credited Pinterest pins), the goal, and the first mockups (3D renders) of each studio
 {
-  const LOFTS = [['etherea', 'Etherea', '2021', `${IMG}eth-pool-built-800.webp`], ['terra', 'Terra', '2023', `${IMG}terra-04-800.webp`], ['solaris', 'Solaris', '2023', `${IMG}solaris-01-800.webp`]];
-  const pair = [[`${IMG}eth-stage-render.webp`, 'The desert set, an early 3D concept.', 1600, 1067], [`${IMG}eth-stage-built.webp`, 'The desert set, as built.', 1600, 1067]], l = reg(pair.map(([p, a]) => [p, a]));
-  document.getElementById('product-body').innerHTML = head('product', 'Product', C('product-title'), C('product')) +
-    `<div class="lofts3">${LOFTS.map(([id, name, yr, img]) => `<button type="button" class="loft3" data-explore="${id}" data-reveal><img src="${img}" alt="" loading="lazy" decoding="async"><span class="loft3-cap"><b>${name}</b><span class="hud">${yr} · Explore in 3D ↗</span></span></button>`).join('')}</div>
-    <div class="pair r2r-pair" data-reveal>${fig(l, 0, pair[0], 'Early 3D concept')}${fig(l, 1, pair[1], 'As built')}</div>`;
+  const PINS = [
+    ['35/b9/5a/35b95aa0eca3305c939b57377b755758.jpg', 'Pink arches and stairs with two white spheres', 'Charlotte Taylor', 'https://us.gestalten.com/blogs/journal/reverie-in-charlotte-taylor-serene-digital-worlds'],
+    ['67/2d/b2/672db23ee2005d9ac53910b405e5d864.jpg', 'Curtains framing a path to a tree', 'James Tralie', 'https://www.reddit.com/r/Art/comments/kw5g4o/stairway_to_relaxation_james_tralie_me_3d_2021/'],
+    ['17/58/ee/1758ee0c934910d91c24a290ce4b9857.jpg', 'Arches and a lounge in green light', 'Rafael Eifler', 'https://www.behance.net/rafaeleifler'],
+    ['16/9e/d1/169ed1c01d32eeb2d41c3fdd0137eeb3.jpg', 'A figure in front of a red sun', 'India Gorokhova', 'https://www.behance.net/indiagorokhova'],
+    ['b6/1a/2c/b61a2c42cdc8b8224363c6a9f6ad05bf.jpg', 'A red room with a white moon', 'Timur Mitin', 'https://www.behance.net/timurmitin'],
+    ['3f/0d/7f/3f0d7fb55e9ff67039d05fbcfcb14674.jpg', 'A pink tunnel of arches', 'Simon Kämpfer', 'https://holmandhimmel.com/products/simon-kaempfer-opportunities-2019'],
+    ['f0/d2/1f/f0d21fa9e58edbe14b437e30a2fe923f.jpg', 'Arches over a pool', 'Peter Tarka', 'https://twitter.com/PeterTarka/status/1423383395191730178'],
+    ['56/8a/ac/568aac707b4970815d53a5e60d6813ef.jpg', 'A round mirror in a dark plaster room', 'Liam Pitchford', 'https://www.behance.net/LiamPitchford'],
+    ['91/80/87/9180870e928a627f4e2992386019a67b.jpg', 'A pink tree on a pink island', 'mbsjq', 'https://www.behance.net/JonathanQuintin'],
+    ['70/a2/04/70a20454155d9819a525cdf130c8f2c2.jpg', 'A lounge under arched palm windows', 'Peter Tarka', 'https://www.behance.net/trk'],
+    ['f1/a8/60/f1a8607cf4ff6938f653d31ed9700320.jpg', 'Flowers hanging from a mossy ceiling', 'PicturesSG', 'https://www.flickr.com/photos/snapsg/'],
+    ['98/99/de/9899de3315a8698e8a0e7a108c7322be.jpg', 'A woman on a swing above the clouds', 'Vladimir Zotov', 'https://500px.com/VladimirZotov']];
+  const B = (k, n, a) => [`${IMG}blender/${k}-${n}-800.webp`, a, 800, 560, `${IMG}blender/${k}-${n}.webp`];
+  const ROWS = [
+    ['Etherea', 'etherea', [1, 2, 3, 4].map((n) => B('etherea', n, `Etherea in Blender, view ${n}`))],
+    ['Terra', 'terra', [1, 2, 3, 4].map((n) => B('terra', n, `Terra in Blender, view ${n}`))],
+    ['Solaris', 'solaris', [1, 2, 3, 4].map((n) => B('solaris', n, `Solaris in Blender, view ${n}`))]];
+  const ARR = (d) => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const pins = `<div class="dz-bleed" data-pinstrip><ul class="dz-pins" tabindex="0" aria-label="Pinterest inspiration">${PINS.map(([p, alt, who, href]) => `<li class="dz-pin"><a href="${href}" target="_blank" rel="noopener" aria-label="${esc(alt)}, by ${esc(who)}"><img src="https://i.pinimg.com/736x/${p}" alt="${esc(alt)}" loading="lazy" decoding="async"><span>${esc(who)}</span></a></li>`).join('')}</ul><button type="button" class="lc-arrow lc-prev" aria-label="Scroll left">${ARR('M15 5l-7 7 7 7')}</button><button type="button" class="lc-arrow lc-next" aria-label="Scroll right">${ARR('M9 5l7 7-7 7')}</button></div>`;
+  const soon = (i) => `<div class="lc-slide"><div class="dz-soon" aria-label="Solaris render coming">${i === 0 ? `<img src="${IMG}hero-3d-solaris-desktop.webp" alt="Solaris in 3D" loading="lazy" decoding="async">` : '<span class="hud">Render coming</span>'}</div></div>`;
+  const rcard = ([name, id, imgs]) => {
+    const l = reg(imgs.map((p) => [p[4], p[1]])), n = imgs.length;
+    return `<div class="lc lc--wide" data-reveal data-carousel>
+      <div class="lc-view"><div class="lc-track" tabindex="0" aria-label="${name} 3D renders">${imgs.map((p, i) => `<div class="lc-slide">${tile(l, i, p[0], p[1], p[2], p[3])}</div>`).join('')}</div>
+        <button type="button" class="lc-arrow lc-prev" aria-label="Previous render">${ARR('M15 5l-7 7 7 7')}</button><button type="button" class="lc-arrow lc-next" aria-label="Next render">${ARR('M9 5l7 7-7 7')}</button>
+        <div class="lc-dots" aria-hidden="true">${Array.from({ length: n }, (_, i) => `<i${i ? '' : ' class="on"'}></i>`).join('')}</div></div>
+      <div class="lc-cap"><span class="lc-name"><b>${name}</b><span class="hud">In Blender</span></span><button type="button" class="lc-3d" data-explore="${id}">Explore in 3D <span aria-hidden="true">↗</span></button></div></div>`;
+  };
+  const rows = `<div class="lofts3">${ROWS.map(rcard).join('')}</div>`;
+  setTimeout(() => {}, 0);
+  document.getElementById('design-body').innerHTML = head('design', 'Design', C('design-title'), C('design')) +
+    part('01 · Inspiration', 'The dreamscapes on my board', '', pins) +
+    part('02 · First mockups', 'Designed in 3D first', 'Each studio modelled in Blender before anything was built. Swipe through the views.', rows);
+  { const strip = document.querySelector('[data-pinstrip]'); if (strip) { const ul = strip.querySelector('.dz-pins');
+    const center = () => { ul.scrollLeft = (ul.scrollWidth - ul.clientWidth) / 2; }; center(); addEventListener('load', center, { once: true });
+    const go = (d) => ul.scrollBy({ left: d * ul.clientWidth * .6, behavior: reduce ? 'auto' : 'smooth' });
+    strip.querySelector('.lc-prev').onclick = () => go(-1); strip.querySelector('.lc-next').onclick = () => go(1);
+    ul.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') go(1); if (e.key === 'ArrowLeft') go(-1); }); } }
 }
 
-// Brand: the identity, then where it showed up
-let IDENTITY = '';
-// identity
+// Product: the three studios, each a photo carousel (swipe, arrows or dots; a photo opens full screen) with its own way into the 3D
 {
-  const logos = (brand.logos || []).filter((x) => /^(Primary|Black logo, stacked)/.test(x.label)), wordmark = (brand.logos || []).find((x) => /black.*horizontal/i.test(x.label));
-  const groups = [...new Set((brand.palette || []).map((c) => c.group))];
-  IDENTITY = `
-  <div class="skin">
-    <div class="b-card"><p class="b-label">Logo</p>
-      <div class="b-logos">${logos.map((l) => `<div class="b-logo"><img src="${src(l.file)}" alt="${esc(l.label)}" loading="lazy"></div>`).join('')}</div></div>
-    <div class="b-card"><p class="b-label">Colour, by loft</p>
-      ${groups.map((g) => `<div class="b-group"><p class="b-label b-sub">${esc(g)}</p><div class="b-swatches">${brand.palette.filter((c) => c.group === g).map((c) => `<div class="b-sw"><i style="background:${c.hex}"></i><b>${esc(c.name)}</b></div>`).join('')}</div></div>`).join('')}</div>
-    <div class="b-card"><p class="b-label">Type</p><p class="b-line">Mak for the big moments. DM Sans for everything else.</p>
-      <div class="b-type">${wordmark ? `<div><img src="${src(wordmark.svg || wordmark.file)}" alt="719 Studios, set in Mak" loading="lazy"></div>` : ''}${(brand.type || []).filter((t) => !/mak/i.test(t.family)).map((t) => `<div><span class="aa" style="font-weight:${t.weight}">Aa</span></div>`).join('')}</div></div>
-  </div>`;
-}
-{
-  const covers = coll('Peerspace').filter((c) => !/halloween/i.test(c.file)), hoodie = coll('Merch').find((c) => /earth-back/.test(c.file));
-  const lc = reg([...covers, ...(hoodie ? [hoodie] : [])].map((c) => [src(c.file), c.label]));
-  document.getElementById('brand-body').innerHTML = head('brand', 'Brand', C('brand-title'), C('brand')) + IDENTITY +
-    `<div class="strip strip--wide cs-apps">${[...covers, ...(hoodie ? [hoodie] : [])].map((c, k) => tile(lc, k, small(c.file), c.label, c.w, c.h)).join('')}</div>`;
+  const SHOTS = {
+    etherea: [['eth-pool-built-800', 800, 534, 'The forest set and pool'], ['eth-stage-built-800', 800, 534, 'The desert set'], ['eth-lounge-built', 1600, 1067, 'The lounge between the sets']],
+    terra: [['terra-04-800', 800, 534, 'Terra'], ['terra-01-800', 800, 534, 'Terra'], ['terra-02-800', 800, 534, 'Terra'], ['terra-03-800', 800, 534, 'Terra'], ['terra-05-800', 800, 534, 'Terra']],
+    solaris: [['solaris-01-800', 800, 534, 'Solaris'], ['solaris-02-800', 800, 534, 'Solaris'], ['solaris-03-800', 800, 534, 'Solaris'], ['solaris-04-800', 800, 534, 'Solaris'], ['solaris-06-800', 800, 534, 'Solaris']]};
+  const LOFTS = [['etherea', 'Etherea', '2021'], ['terra', 'Terra', '2023'], ['solaris', 'Solaris', '2023']];
+  const ARROW = (d) => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const card = ([id, name, yr]) => {
+    const shots = SHOTS[id], l = reg(shots.map(([f, , , a]) => [`${IMG}${f.replace(/-800$/, '')}.webp`, `${a}, ${name} Loft`]));
+    return `<div class="lc" data-reveal data-carousel>
+      <div class="lc-view"><div class="lc-track" tabindex="0" aria-label="${name} Loft photos">${shots.map(([f, w, h, a], i) => `<div class="lc-slide">${tile(l, i, `${IMG}${f}.webp`, `${a}, ${name} Loft`, w, h)}</div>`).join('')}</div>
+        <button type="button" class="lc-arrow lc-prev" aria-label="Previous photo">${ARROW('M15 5l-7 7 7 7')}</button><button type="button" class="lc-arrow lc-next" aria-label="Next photo">${ARROW('M9 5l7 7-7 7')}</button>
+        <div class="lc-dots" aria-hidden="true">${shots.map((_, i) => `<i${i ? '' : ' class="on"'}></i>`).join('')}</div></div>
+      <div class="lc-cap"><span class="lc-name"><b>${name}</b><span class="hud">${yr}</span></span></div></div>`;
+  };
+  document.getElementById('product-body').innerHTML = head('product', 'Build', C('product-title'), C('product')) + `<div class="lofts3">${LOFTS.map(card).join('')}</div>`;
+  document.querySelectorAll('[data-carousel]').forEach((root) => {
+    const track = root.querySelector('.lc-track'), dots = [...root.querySelectorAll('.lc-dots i')], n = dots.length;
+    const go = (d) => track.scrollBy({ left: d * track.clientWidth, behavior: reduce ? 'auto' : 'smooth' });
+    root.querySelector('.lc-prev').onclick = () => go(-1); root.querySelector('.lc-next').onclick = () => go(1);
+    track.addEventListener('scroll', () => { const i = Math.round(track.scrollLeft / track.clientWidth); dots.forEach((d, k) => d.classList.toggle('on', k === Math.min(i, n - 1))); }, { passive: true });
+    track.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') go(1); if (e.key === 'ArrowLeft') go(-1); });
+  });
 }
 
-// Launch: the build timelapse that went viral, and the ad
+// Brand (JC 2026-10-27, brand guidelines deck v2): the identity system (logo, colour, type), then the deck's applied graphics.
+// These are the deck's approved mockups; no PDF link until an up-to-date deck PDF exists. Slide-by-slide version: index.html.pre-deck2.
+const V2 = `${BRAND}v2/`, D2 = `${BRAND}deck-v2/`;
 {
-  const ad = coll('Ads')[0];
+  const PAL = [
+    ['Core colours', [['Aubergine', '#35212D', 'Shared ink'], ['Ivory', '#F7F4EE', 'Shared light · Solaris'], ['Blush', '#CCA18F', 'Etherea'], ['Sand', '#D2C2A2', 'Terra']]],
+    ['Supporting colours', [['Sage', '#86A08F', 'Etherea · green set'], ['Forest', '#2F4A3C', 'Etherea · depth'], ['Terracotta', '#B8694A', 'Etherea · warm accent'], ['Clay', '#B08F6A', 'Terra · accent']]]];
+  const sw = (n, h, role) => `<li><i style="background:${h}" aria-hidden="true"></i><b>${n}</b><span class="hud">${h}</span><small>${role}</small></li>`;
+  const AP = (f, alt, w, h, cap) => ({ src: `${D2}${f}.webp`, alt, w, h, cap });
+  const A = {
+    web: AP('website', 'Website mockup: the Room to make hero with the three studios, on a laptop and a phone', 1694, 928, 'Website'),
+    wear: AP('apparel', 'Apparel: aubergine hoodie, forest cap, sage tote and ivory tee carrying the 719 logo, tagline and shapes', 1464, 1075, 'Apparel'),
+    cards: AP('welcome-cards', 'Welcome cards and a forest stationery folder, with a card for each studio', 1311, 834, 'Welcome cards'),
+    book: AP('notebook', 'Studio guide notebook in sage with a circular photo window and the Room to make tagline', 2000, 1111, 'Studio guide'),
+    sign: AP('sign', 'Dimensional 719 Studios lettering on a wall beside the Etherea door sign', 1666, 944, 'Signage'),
+    posters: AP('posters', 'Three studio posters: Etherea, Terra and Solaris', 1770, 834, 'Posters')};
+  const all = Object.values(A), l = reg(all.map((p) => [p.src, p.alt]));
+  const fg = (p) => `<figure class="f" data-reveal style="--ar:${p.w} / ${p.h}; --g:${(p.w / p.h).toFixed(3)}">${tile(l, all.indexOf(p), p.src, p.alt, p.w, p.h)}<figcaption class="hud">${p.cap}</figcaption></figure>`;
+  const row = (...xs) => `<div class="bx-row${xs.length > 1 ? ' bx-row--2' : ''}">${xs.map(fg).join('')}</div>`;
+  document.getElementById('brand-body').innerHTML = head('brand', 'Brand', C('brand-title'), C('brand')) +
+    part('01 · Logo', C('sig-title'), C('sig'), `<div class="bx-sig">
+      <div class="bx-logo bx-logo--blush"><img src="${V2}719-stacked-aubergine.svg" alt="719 Studios logo, stacked" loading="lazy"></div>
+      <div class="bx-logo bx-logo--ink"><img src="${V2}719-stacked-ivory.svg" alt="719 Studios logo, reversed" loading="lazy"></div>
+      <div class="bx-logo bx-logo--ivory"><img src="${V2}719-horizontal-aubergine.svg" alt="719 Studios logo, horizontal" loading="lazy"></div>
+      <div class="bx-sizes" aria-label="Numerals at small sizes">${[96, 64, 32].map((w) => `<img src="${V2}719-mark-aubergine.svg" width="${w}" alt="">`).join('')}<span class="hud">Numerals alone below 120 px</span></div></div>`) +
+    part('02 · Colour', 'Eight colours, drawn from the rooms', 'Aubergine and ivory hold the family together. Blush and sand identify the studios; sage, forest, terracotta and clay bring in the sets’ other materials and moods.', `<div class="bx-pal">
+      ${PAL.map(([n, cs]) => `<div class="bx-prow"><p class="hud">${n}</p><ul class="bx-sw">${cs.map(([a, h, role]) => sw(a, h, role)).join('')}</ul></div>`).join('')}</div>`) +
+    part('03 · Type', 'Room to make.', '', `<div class="bx-type"><div><p class="hud">Tagline</p><p class="bx-tag">Room to make.</p></div><div class="bx-face"><p class="hud">Typeface</p><b>Bricolage Grotesque</b><p>Drawn lettering for the three studio names, plain Bricolage for everything else.</p></div></div>`) +
+    part('04 · In use', 'The identity at work', 'Mockups from the brand guidelines: the website, apparel, stationery, signage and posters.', row(A.web) + row(A.wear, A.cards) + row(A.book, A.sign) + row(A.posters));
+}
+{
   document.getElementById('launch-body').innerHTML = head('launch', 'Launch', C('launch-title'), C('launch')) +
-    `<div class="cs-films">${film('04-terra-build-timelapse', 'The Terra build, sped up', '3.2M views on Instagram', 'The Terra build timelapse')}
-      ${ad ? `<figure class="f vidfig" data-reveal><video src="${src(ad.video)}" poster="${src(ad.file)}" muted loop playsinline controls preload="none" aria-label="Studio ad, 15 seconds"></video><figcaption class="hud">Studio ad · 15 seconds</figcaption></figure>` : ''}</div>`;
+    part('01 · Build timelapse', '', '', `<div class="tlx"><div class="tl-video">${film('04-terra-build-timelapse', 'The Terra build, sped up', '', 'The Terra build, sped up')}</div><div class="tl-stat"><b>3.2M</b><span class="hud">views on Instagram</span><p>I shot the Terra build as a timelapse and used it to launch the studio.</p></div></div>`);
 }
 
 // Results: what people did with it
 {
   const AWARD = `<a class="card" href="https://web.archive.org/web/20230929030652/https://madein.peerspace.com/awards/los-angeles/production" target="_blank" rel="noopener"><img src="${IMG}peerspace-open-door-2023.webp" width="285" height="400" alt="Peerspace Open Door Awards 2023 winner badge"><span><b>Open Door Awards 2023</b>No. 9 of the top 10 production spaces in Los Angeles<i>See the winners ↗</i></span></a>`;
-  const rev = coll('Reviews'), l = reg(rev.map((c) => [src(c.file), c.label]));
+  const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.8l3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.5 5.7 21.2l1.5-7.1L1.8 9.2 9 8.4z"/></svg>';
+  const REVIEWS = [
+    ['etherea', 'Etherea', 'Jessica D.', '\u201cOH MY GOODNESS!!!! THIS SPACE WAS FAR BEYOND MY EXPECTATIONS!!! It was Pristine and GORGEOUS! The energy in the space was impeccable. You can tell that Kristi cares about her space and her clients. I walked in and it took my breath away! Thank you so very much!\u201d'],
+    ['terra', 'Terra', 'Tearra H.', '\u201cI had such a beautiful experience from the beginning to the end. Kristi was an amazing host very communicative and timely. Very detailed and informative on how to fully maximize my experience. I will certainly be booking again very soon! The space is so beautiful!\u201d'],
+    ['solaris', 'Solaris', 'Tamala C.', 'The hostess are so friendly and amazing! The space is so aesthetically pleasing with the soft tones and neutrals. This studio made my photoshoot go viral! Will definitely be booking again!']];
+  const rvCards = `<div class="rv-row">${REVIEWS.map(([k, studio, who, q]) => `<figure class="rv rv--${k}" data-reveal style="margin:0"><div class="rv-stars" role="img" aria-label="5 out of 5 stars">${STAR.repeat(5)}</div><blockquote>${esc(q)}</blockquote><figcaption><b>${who}</b><span>${studio} Loft · Peerspace</span></figcaption></figure>`).join('')}</div>`;
   document.getElementById('results-body').innerHTML = head('results', 'Results', C('results-title'), C('results')) +
     `<ul class="stats cs-stats"><li><b>1,000+</b><span class="hud">Reviews across the three lofts</span></li><li><b>5.0</b><span class="hud">Average rating</span></li><li><b>No. 9</b><span class="hud">Top 10 production spaces, LA · Peerspace 2023</span></li><li><b>2026</b><span class="hud">Sold</span></li></ul>
-    <div class="cs-proof">${AWARD}<div class="strip strip--wide">${rev.map((c, k) => tile(l, k, small(c.file), c.label, c.w, c.h)).join('')}</div></div>`;
+    <div class="cs-proof">${AWARD}${rvCards}</div>`;
 }
 
 // Next

@@ -1,0 +1,15 @@
+{
+  "core": {
+    "aubergine": { "hex": "#35212D", "role": "Shared ink: logo, lettering, seals and linework" },
+    "ivory": { "hex": "#F7F4EE", "role": "Shared light and Solaris primary" },
+    "blush": { "hex": "#CCA18F", "role": "Etherea primary" },
+    "sand": { "hex": "#D2C2A2", "role": "Terra primary" }
+  },
+  "supporting": {
+    "sage": { "hex": "#86A08F", "role": "Etherea green-set applications" },
+    "forest": { "hex": "#2F4A3C", "role": "Etherea deeper green accents" },
+    "terracotta": { "hex": "#B8694A", "role": "Etherea warm accents" },
+    "clay": { "hex": "#B08F6A", "role": "Terra accents" }
+  },
+  "guidance": "Use sage tints instead of a separate Mist token. Additional room neutrals remain in photography rather than becoming named brand colors. Approved poster images remain unaltered image-model outputs."
+}
