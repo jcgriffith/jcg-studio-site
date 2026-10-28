@@ -27,15 +27,15 @@ export function reelGo(t, i, smooth = !reduced()) {
   t.scrollTo({ left: to * (t.clientWidth + trackGap(t)), behavior: smooth && Math.abs(to - reelIndex(t)) <= 1 ? 'smooth' : 'auto' });
 }
 export function reelStep(button) {
-  const t = button.closest('.piece-reel')?.querySelector('.piece-reel-track');
+  const t = button.closest('.piece-reel, .fx-reel')?.querySelector('.piece-reel-track, .fx-track');
   if (t) reelGo(t, reelIndex(t) + Number(button.dataset.reel));
 }
 /* keeps each card's "n / total" honest while its row scrolls (scroll doesn't bubble, so listen in capture) */
 export function wireReel(host) {
   host.addEventListener('scroll', (e) => {
     const t = e.target;
-    if (!t.classList?.contains('piece-reel-track')) return;
-    const c = t.closest('.piece-reel')?.querySelector('[data-reel-count]');
+    if (!t.classList?.contains('piece-reel-track') && !t.classList?.contains('fx-track')) return;
+    const c = t.closest('.piece-reel, .fx-reel')?.querySelector('[data-reel-count]');
     if (c) c.textContent = `${reelIndex(t) + 1} / ${t.children.length}`;
   }, { capture: true, passive: true });
 }

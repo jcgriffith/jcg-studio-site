@@ -10,7 +10,7 @@ import { renderFrame } from './frames.js';
 import { shimmer, loadImage } from './shimmer.js';
 import { scan } from './scanline.js';
 import { initSplitFlap } from './splitflap.js';
-import { openLightbox, fullOf, reelStep, reelGo, reelIndex, wireReel } from './lightbox.js?v=20261027q';
+import { openLightbox, fullOf, reelStep, reelGo, reelIndex, wireReel } from './lightbox.js?v=20261027w';
 
 const MIN_S = 0.08;
 // what a cover is, for screen readers: a built project says what it was (719: "Photo studios"), not "Studio concept"
@@ -681,7 +681,7 @@ export function createFloor(root, data, opts = {}) {
   }
 
   /* ── Geometry ────────────────────────────────────────────────── */
-  const isSheet = () => window.matchMedia('(max-width: 759px)').matches;
+  const isSheet = () => window.matchMedia(PHONE_Q).matches;   // phone portrait AND a phone on its side (Task O): the full-height panel
 
   function insets() {
     const base = typeof o.insets === 'function' ? o.insets() : { t: 16, r: 16, b: 16, l: 16, ...o.insets };
@@ -1190,7 +1190,7 @@ export function createFloor(root, data, opts = {}) {
     thumb.hidden = true;
     // Morph the tile into the page; the cover hides once the page covers it.
     const hideCover = () => cl.cover.el.classList.add('is-under-solo');
-    if (reduced()) hideCover();
+    if (quick()) hideCover();
     else morph(cl, diveCam(cl), true, hideCover);
     void panel.offsetWidth;
     panel.classList.add('is-open');
@@ -1240,19 +1240,57 @@ export function createFloor(root, data, opts = {}) {
       setStageMotif(null);
       if (panel.parentElement) panel.remove();
     };
-    if (cl && !reduced()) morph(cl, home || cam, false, hidePanel);
+    if (cl && !quick()) morph(cl, home || cam, false, hidePanel);
     else { hidePanel(); if (home) setCam(home); }
     // Collapse clears the hash and returns key focus (the morph owns the camera).
     if (mid) {
-      setTimeout(() => { if (!stageOpen && open === id) showSheet(cl); }, reduced() ? 0 : DIVE_MS);
+      setTimeout(() => { if (!stageOpen && open === id) showSheet(cl); }, quick() ? 0 : DIVE_MS);
       if (user && location.hash !== `#${id}`) history.replaceState(null, '', `#${id}`);
       return;
     }
     if (user && id) collapse(true);
   }
 
+  /* Task P (2026-10-28): the project stage opened FROM the Grid or List (Explore 3D / Case study / View project). The visitor
+     stays in their view: the floor is un-hidden only as a backdrop for the stage panel (no camera dive, no switch to Canvas),
+     and closing it puts them back on the open card they came from. */
+  let stageOver = false;
+  const quick = () => reduced() || stageOver;
+  function openStageOver(id, jump = '') {
+    const cl = clusters.get(id);
+    if (!cl || stageOver || view === 'canvas') return false;
+    if (cl.c.openPage && cl.c.page) { location.href = new URL(cl.c.page, document.baseURI).href; return true; }
+    stageOver = true;
+    stageJump = jump || '';
+    root.hidden = false;
+    root.classList.add('floor--over');
+    document.documentElement.classList.add('stage-over');
+    resize();
+    const before = location.hash;
+    openStage(id, null, { hash: true });
+    if (location.hash !== before) history.replaceState({ fxStage: 1 }, '', location.href);
+    // the embedded 3D scene grabs keyboard focus on load, which would swallow Esc: hand focus back to the panel's close button
+    for (const t of [500, 1400, 2800]) setTimeout(() => { if (stageOver && document.activeElement?.tagName === 'IFRAME') document.querySelector('.folio-panel-x')?.focus({ preventScroll: true }); }, t);   // we pushed #id/project: closing steps Back over it
+    return true;
+  }
+  const closeStageUser = () => (stageOver ? closeStageOver(true) : closeStage(true));
+  function closeStageOver(user = false) {
+    if (!stageOver) return;
+    if (user && history.state?.fxStage) { history.back(); return; }   // popstate → folio-views calls this again with user=false
+    const id = stageId || open;
+    if (stageOpen) closeStage(false);
+    collapse(false, { restore: false });
+    savedCam = null;
+    stageOver = false;
+    root.classList.remove('floor--over');
+    document.documentElement.classList.remove('stage-over');
+    if (view !== 'canvas') root.hidden = true;
+    if (user && id && /\/project$/.test(location.hash)) history.replaceState(history.state, '', `#${id}`);
+    o.onStageOver?.(false, id);
+  }
+
   panel.addEventListener('click', (e) => {
-    if (e.target.closest('[data-stage-close]')) { closeStage(true); return; }
+    if (e.target.closest('[data-stage-close]')) { if (stageOver) closeStageOver(true); else closeStage(true); return; }
     const asset = e.target.closest('[data-asset-key]');
     if (asset) {
       e.preventDefault();
@@ -1556,7 +1594,7 @@ export function createFloor(root, data, opts = {}) {
       if (d.moved) { suppress = true; release(e.type === 'pointerup', d.samples, e.timeStamp); return; }
       // Tap / click on empty floor: close solo panel first, else collapse title card.
       if (!preview && open && e.type === 'pointerup' && !e.target.closest('.cluster, [data-floor-ui]')) {
-        if (stageOpen) closeStage(true);
+        if (stageOpen) closeStageUser();
         else collapse(true);
       }
       // Double-tap on empty floor zooms in at the tap (touch only; mouse uses dblclick).
@@ -1602,14 +1640,14 @@ export function createFloor(root, data, opts = {}) {
     // Cover: click/tap/Enter opens the full-screen item; with one open, closes it. On a touch screen the first tap locks
     // on (brackets, a scan, the facts) and the second opens: a phone has no hover to say "this opens" first.
     if (r.cover && AUTO) {
-      if (stageOpen) closeStage(true);
+      if (stageOpen) closeStageUser();
       else if (open === r.c.id) openStage(r.c.id);          // second click: the full project
       else go(`#${r.c.id}`, { kb: e.detail === 0 });        // first: the title card opens to one side
       return;
     }
     if (r.cover) {
       const cl = clusters.get(r.c.id);
-      if (stageOpen) closeStage(true);
+      if (stageOpen) closeStageUser();
       else if ((coverPointer === 'touch' || coverPointer === 'pen') && e.detail > 0 && cl && !cl.el.classList.contains('is-hot')) {
         clusters.forEach((other) => { if (other !== cl) lockOn(other, false); });
         lockOn(cl, true, coverPointer);
@@ -1746,6 +1784,8 @@ export function createFloor(root, data, opts = {}) {
   function route(hash, { fly = true, kb = false } = {}) {
     const h = decodeURIComponent((hash || '').replace(/^#/, ''));
     if (h === 'index') { setView('index', fly); return; }
+    // Task P: Grid and List open a piece in place (folio-views.js listens to the hash itself); only Index hops to Canvas.
+    if (view === 'grid' || view === 'list') return;
     if (view !== 'canvas') setView('canvas', false, !isPhoneClass());
     const [cid, fid] = h.split('/');
     if (AUTO) { routePiece(h, cid, fid, fly); return; }
@@ -1948,12 +1988,14 @@ export function createFloor(root, data, opts = {}) {
   const VIEWS = new Set(['canvas', 'grid', 'list', 'index']);
   const VIEW_KEY = 'jcg-work-view';
   const VIEW_REV = 'jcg-work-view-rev';   // 's' = the saved view was written by a build that knows implicit vs chosen Canvas
-  function setView(v, animate = true, persist = true) {
+  function setView(v, animate = true, persist = true, { keepHash = false } = {}) {
     if (!VIEWS.has(v) || v === view) return;
     if (v === 'index' && !o.index) return;
     if (v === 'grid' && !o.grid) return;
     if (v === 'list' && !o.list) return;
     const swap = () => {
+      if (stageOver) closeStageOver(false);
+      o.onView?.(v, view);
       view = v;
       closeDrawer(false);
       if (v !== 'canvas') collapse();
@@ -1978,7 +2020,7 @@ export function createFloor(root, data, opts = {}) {
     if (v === 'index' && location.hash !== '#index') history.replaceState(null, '', '#index');
     // Grid/List (and Canvas with no pin) drop concept hashes so reload restores the view.
     if (v === 'grid' || v === 'list') {
-      if (location.hash && location.hash !== '#index') history.replaceState(null, '', location.pathname + location.search);
+      if (!keepHash && location.hash && location.hash !== '#index') history.replaceState(null, '', location.pathname + location.search);
     } else if (v === 'canvas' && location.hash === '#index') {
       history.replaceState(null, '', location.pathname + location.search);
     }
@@ -2046,24 +2088,24 @@ export function createFloor(root, data, opts = {}) {
     });
     window.addEventListener('popstate', () => route(location.hash));
     window.addEventListener('hashchange', () => route(location.hash));
-    route(location.hash, { fly: false });
-    // Restore Grid/List when the URL isn't pinning Index or a concept.
-    if (!location.hash) {
-      try {
-        let saved = sessionStorage.getItem(VIEW_KEY);
-        // a 'canvas' saved by an older build was often an implicit hop (opening a piece), not a choice: on a phone it
-        // would land a reload on the non-scrolling Canvas, so only a Canvas saved by this build counts there
-        if (saved === 'canvas' && isPhoneClass() && sessionStorage.getItem(VIEW_REV) !== 's') saved = null;
-        if (saved && saved !== 'canvas' && VIEWS.has(saved)) setView(saved, false);
-        // on a phone the canvas is too small to read captions, so it opens on the Grid (JC 2026-10-22); Canvas stays a tap away
-        else if (!saved && (isSheet() || isPhoneClass()) && o.grid) setView('grid', false);   // incl. a phone turned on its side (844 px wide, 390 tall): Canvas doesn't scroll
-        else document.documentElement.dataset.view = 'canvas';
-      } catch (_) {
-        document.documentElement.dataset.view = 'canvas';
-      }
-    } else if (view === 'canvas') {
-      document.documentElement.dataset.view = 'canvas';
-    }
+    // Task P: the saved view decides first. A piece link in Grid or List opens in place (folio-views.js reads the hash); only an
+    // unsaved desktop visit with a piece link lands on Canvas, as before.
+    let saved = null;
+    try {
+      saved = sessionStorage.getItem(VIEW_KEY);
+      // a 'canvas' saved by an older build was often an implicit hop (opening a piece), not a choice: on a phone it
+      // would land a reload on the non-scrolling Canvas, so only a Canvas saved by this build counts there
+      if (saved === 'canvas' && isPhoneClass() && sessionStorage.getItem(VIEW_REV) !== 's') saved = null;
+    } catch (_) { saved = null; }
+    const pinned = location.hash && location.hash !== '#index';
+    const phoneLike = isSheet() || isPhoneClass();
+    let want = saved && saved !== 'canvas' && VIEWS.has(saved) && saved !== 'index' ? saved : null;
+    // on a phone the canvas is too small to read captions, so it opens on the Grid (JC 2026-10-22); Canvas stays a tap away
+    if (!want && !saved && phoneLike && o.grid) want = 'grid';
+    if (location.hash === '#index') route(location.hash, { fly: false });
+    else if (want && (o.grid || o.list)) setView(want, false, true, { keepHash: !!pinned });
+    else route(location.hash, { fly: false });
+    if (view === 'canvas') document.documentElement.dataset.view = 'canvas';
   }
 
   root.classList.add('is-ready');
@@ -2075,5 +2117,6 @@ export function createFloor(root, data, opts = {}) {
     flyTo, fitAll, fitConcept, zoomBy, filter, setView, route,
     select: (key) => byKey.has(key) && select(byKey.get(key)),
     expand, collapse, openStage, closeStage, focusPiece: (id) => go(`#${id}`),
+    openStageOver, closeStageOver, stageOver: () => stageOver, pieceHtml: pieceCard, lightboxItems,
   };
 }

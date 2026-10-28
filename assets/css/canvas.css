@@ -1869,3 +1869,282 @@ video.lb-media { background: #000; touch-action: manipulation; }
   .folio-name { font-size: clamp(20px, 6vw, 26px); }
   .folio-wrap { padding-left: max(var(--gutter), env(safe-area-inset-left)); padding-right: max(var(--gutter), env(safe-area-inset-right)); }
 }
+
+
+/* ═══ Task O (2026-10-28, JC: "it gets covered up by the info panel ... fill the full available space with that panel so
+   I don't have to scroll"): on a phone the item sheet is a FULL-HEIGHT panel. Its top edge sits just under the fixed top
+   bar (logo + menu), its bottom edge at the safe-area bottom, so nothing half-covered shows behind it. Its height is
+   100dvh-based, so Safari's collapsing toolbar can't cut it off. Title, description, media, Year/Role and the buttons all
+   fit on normal phones: the media slide flexes (min 160px, max 45vh) and the facts + buttons are pinned to the bottom. If
+   the screen is too short (iPhone SE) the panel's own content scrolls; the close button stays put. ═══ */
+@media (max-width: 759px), (pointer: coarse) and (max-height: 500px) {
+  .piece-sheet {
+    --sheet-top: calc(var(--edge) + var(--hud-row) + 8px);
+    top: var(--sheet-top); left: max(var(--edge), env(safe-area-inset-left)); right: max(var(--edge), env(safe-area-inset-right));
+    bottom: env(safe-area-inset-bottom, 0px);
+    height: calc(100svh - var(--sheet-top) - env(safe-area-inset-bottom, 0px));
+    height: calc(100dvh - var(--sheet-top) - env(safe-area-inset-bottom, 0px));
+    max-height: none;
+    display: flex; flex-direction: column;
+    background: var(--void-2);
+    overscroll-behavior: contain;
+  }
+  .piece-sheet[hidden] { display: none; }
+  .piece-sheet .band-rule { display: none; }
+  .piece-sheet .band-sheet {
+    flex: 1 1 auto; min-height: 0; max-height: none; height: auto;
+    display: flex; flex-direction: column;
+    overflow-x: hidden; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain; touch-action: pan-y;
+    clip-path: none !important; transition: none !important; animation: none !important;
+  }
+  .piece-sheet .piece-card {
+    flex: 1 0 auto; opacity: 1; transform: none; transition: none !important; pointer-events: auto;
+    --pad: 16px; --gap: 12px;
+    padding: 6px 16px 16px;
+  }
+  /* the close button is always on screen: it floats over the sheet's top-right corner, outside the scrolling box */
+  .piece-sheet-x { top: 4px; right: 4px; z-index: 3; width: 44px; height: 44px; min-width: 44px; min-height: 44px; background: var(--void-2); touch-action: manipulation; }
+  .piece-sheet .title-card-meta { min-height: 44px; padding-right: 48px; }
+  /* the cover is hidden behind the panel now, so the item's name is shown here (it is visually hidden in the in-canvas card) */
+  .piece-sheet .piece-card .title-card-name {
+    position: static; width: auto; height: auto; padding: 0; margin: 0; overflow: visible; clip: auto; white-space: normal; border: 0;
+    flex: none; --name: 40px; margin-top: -4px;
+  }
+  .piece-sheet .title-card-desc { display: block; -webkit-line-clamp: unset; line-clamp: unset; overflow: visible; max-width: none; }
+  /* the media: one slide that takes the room that is left */
+  .piece-sheet .piece-reel { flex: 1 1 auto; min-height: 0; max-height: calc(45vh + 56px); margin-top: 0; gap: 6px; }
+  .piece-sheet .piece-reel-track { flex: 1 1 auto; min-height: 160px; max-height: 45vh; height: auto; }
+  .piece-sheet .piece-reel-nav { flex: none; }
+  .piece-sheet .piece-slide { height: auto; align-self: stretch; }
+  .piece-sheet .piece-slide > img, .piece-sheet .piece-slide > video { position: absolute; inset: 0; width: 100%; height: 100%; }
+  /* Year / Role and the buttons stay pinned to the bottom of the panel */
+  .piece-sheet .title-card-facts { margin-top: auto; flex: none; }
+  .piece-sheet .piece-ctas, .piece-sheet .piece-card > .title-card-open { flex: none; }
+  .piece-sheet .piece-card > .title-card-open { align-self: stretch; justify-content: center; }
+  .piece-sheet .piece-thumbs { margin-top: 0; }
+
+  /* the page behind: covered by an opaque backdrop under the sheet (so no half-covered content shows) and scroll-locked */
+  html.piece-sheet-open, html.piece-sheet-open body { overflow: hidden; overscroll-behavior: none; }
+  html.piece-sheet-open::after {
+    content: ''; position: fixed; inset: 0; z-index: 25; background: var(--void); pointer-events: auto; touch-action: none;
+    animation: sheet-backdrop-in 240ms linear both;
+  }
+  /* it slides up */
+  .piece-sheet.is-open { animation: sheet-up 340ms var(--ease-out) both; }
+  .piece-sheet.is-open .band-sheet, .piece-sheet.is-open .title-card { animation: none; }
+}
+@keyframes sheet-up { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes sheet-backdrop-in { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .piece-sheet.is-open, html.piece-sheet-open::after { animation: none !important; }
+}
+
+
+/* ═══ Task P (2026-10-28, JC: "optimize the grid and list ... hate the Open buttons ... native expansion cards per view") ═══
+   LIST  one clickable row per piece (no Open button): a quiet plus that turns to a cross, a hover cover that follows the
+         pointer (mouse only), and the row opens IN PLACE as a drawer with the reel, the line, Year / Role and the buttons.
+   GRID  a card opens as a centred panel that grows out of its own cover (a full-height sheet on a phone).
+   Canvas is untouched. Text styles: Departure Mono (hud), the display face, the sans body. ═══════════════════════════ */
+
+/* the card both views share: media on one side, the line + facts + buttons on the other */
+.fx-card { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(24px, 3vw, 48px); align-items: start; min-width: 0; --meta: 11px; }
+.fx-media { min-width: 0; }
+.fx-reel { display: grid; gap: 10px; min-width: 0; }
+.fx-track {
+  display: flex; column-gap: 8px; overflow-x: auto; overflow-y: hidden; aspect-ratio: 4 / 3; width: 100%;
+  scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  touch-action: pan-x pan-y; overscroll-behavior-x: contain; background: var(--void-3); outline: 1px solid var(--line);
+}
+.fx-track::-webkit-scrollbar { display: none; }
+.fx-slide {
+  appearance: none; -webkit-appearance: none; border: 0; padding: 0; margin: 0; font: inherit; color: inherit; border-radius: 0;
+  position: relative; flex: 0 0 100%; height: 100%; display: block; overflow: hidden; cursor: zoom-in;
+  background: var(--void-3); scroll-snap-align: start; scroll-snap-stop: always;
+}
+.fx-slide > img, .fx-slide > video { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+.fx-slide[data-fit="cover"] > img, .fx-slide[data-fit="cover"] > video { object-fit: cover; }
+.fx-slide:hover, .fx-slide:focus-visible { box-shadow: inset 0 0 0 1px var(--chrome-3); }
+.fx-slide:focus-visible { outline: 1px solid var(--chrome); outline-offset: 2px; }
+.fx-badge {
+  position: absolute; left: 8px; bottom: 8px; padding: .5em .7em; pointer-events: none;
+  font: 400 11px/1 var(--font-hud); letter-spacing: var(--track-hud); text-transform: uppercase;
+  color: var(--chrome); background: rgba(11, 12, 14, .72); box-shadow: inset 0 0 0 1px var(--line-strong);
+}
+.fx-nav { display: flex; align-items: center; gap: 6px; }
+.fx-count { margin-right: auto; font: 400 11px/1 var(--font-hud); letter-spacing: var(--track-hud); color: var(--chrome-3); font-variant-numeric: tabular-nums; }
+.fx-nav button {
+  appearance: none; background: transparent; border: 1px solid var(--line-strong); border-radius: 0; color: var(--chrome);
+  min-width: 40px; height: 32px; font: 400 14px/1 var(--font-hud); cursor: pointer; transition: border-color var(--dur-1) linear, background var(--dur-1) linear;
+}
+.fx-nav button:hover { border-color: var(--chrome-3); background: var(--void-3); }
+.fx-nav button:focus-visible { outline: 1px solid var(--chrome); outline-offset: 2px; }
+.fx-info { display: flex; flex-direction: column; gap: 16px; min-width: 0; align-self: stretch; }
+.fx-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 0; color: var(--chrome-3); }
+.fx-title { margin: 0; font: 560 clamp(28px, 2.2vw + 14px, 42px)/1.04 var(--font-display); font-stretch: 120%; letter-spacing: -.02em; color: var(--chrome); }
+.fx-desc { margin: 0; max-width: 46ch; font: 400 15px/1.55 var(--font-sans); color: var(--chrome-2); }
+.fx-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .9em 2em; margin: auto 0 0; padding-top: 18px; border-top: 1px solid var(--line); color: var(--chrome-3); font-size: 11px; }
+.fx-facts div { display: grid; gap: .45em; min-width: 0; }
+.fx-facts dt { font-family: var(--font-hud); letter-spacing: var(--track-hud); text-transform: uppercase; color: var(--chrome-3); }
+.fx-facts dd { margin: 0; font: 400 14px/1.3 var(--font-sans); color: var(--chrome); }
+.fx-ctas { display: flex; flex-wrap: nowrap; gap: 8px; margin: 0; }
+.fx-ctas > .btn, .fx-ctas > .title-card-open {
+  --h: 44px; flex: 1 1 auto; min-width: 0; min-height: 44px; align-self: auto; justify-content: center; gap: .5em; padding: 0 .9em; border-radius: 0;
+  font: 400 12px/1 var(--font-hud); letter-spacing: var(--track-hud); text-transform: uppercase; white-space: nowrap;
+}
+.fx-ctas > .btn--ghost { background: transparent; color: var(--chrome); border: 1px solid var(--line-strong); }
+.fx-ctas > .btn--ghost:hover, .fx-ctas > .btn--ghost:focus-visible { background: var(--void-3); border-color: var(--chrome-3); }
+.fx-ctas > .btn:focus-visible { outline: 2px solid var(--chrome); outline-offset: 2px; }
+
+/* ── LIST ──────────────────────────────────────────────────────────────────────────────────────────────────── */
+.folio-list { --lcols: 84px minmax(0, 1.8fr) minmax(96px, .7fr) 88px 40px; border-top: 1px solid var(--line-strong); }
+.folio-list-head { grid-template-columns: var(--lcols); gap: 16px; padding: 0 12px 0 0; min-height: 40px; align-items: center; border-bottom: 1px solid var(--line-strong); }
+.folio-list-head > span:nth-child(4) { text-align: right; }
+.folio-entry { border-bottom: 1px solid var(--line); }
+.folio-entry .folio-row {
+  appearance: none; -webkit-appearance: none; background: transparent; border: 0; border-radius: 0; margin: 0; width: 100%;
+  text-align: left; font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  grid-template-columns: var(--lcols); gap: 16px; min-height: 84px; padding: 18px 12px 18px 0; border-bottom: 0;
+  transition: background var(--dur-2) var(--ease-out), opacity var(--dur-2) linear;
+}
+.folio-entry .folio-row:hover, .folio-entry.is-open .folio-row { background: rgba(230, 233, 237, .035); }
+.folio-entry .folio-row:focus-visible { outline: 1px solid var(--chrome); outline-offset: -1px; }
+.folio-entry .folio-row-name { transition: transform var(--dur-3) var(--ease-out); gap: 6px; }
+.folio-entry .folio-row-name b { font-size: 21px; line-height: 1.15; }
+.folio-entry .folio-row-name .mute { font-size: 13px; color: var(--chrome-3); }
+.folio-entry .folio-row-frames { color: var(--chrome-2); }
+.folio-entry .folio-row-plus { position: relative; justify-self: end; width: 16px; height: 16px; color: var(--chrome-3); transition: transform var(--dur-3) var(--ease-out), color var(--dur-1) linear; }
+.folio-row-plus::before, .folio-row-plus::after { content: ''; position: absolute; left: 0; top: 50%; width: 100%; height: 1px; background: currentColor; }
+.folio-row-plus::after { transform: rotate(90deg); }
+.folio-entry .folio-row:hover .folio-row-plus { color: var(--chrome); }
+.folio-entry.is-open .folio-row-plus { transform: rotate(45deg); color: var(--chrome); }
+@media (hover: hover) { .folio-entry .folio-row:hover .folio-row-name { transform: translateX(6px); } }
+.folio-list:has(.folio-entry .folio-row:hover) .folio-entry:not(:hover):not(.is-open) .folio-row { opacity: .55; }
+.fx-drawer { padding: 6px 12px 36px 100px; }
+.fx-drawer[hidden] { display: none; }
+@media (max-width: 1023px) { .fx-drawer { padding-left: 0; padding-right: 0; } .fx-drawer .fx-card { grid-template-columns: minmax(0, 1fr); } }
+.fx-drawer .fx-facts { margin-top: 0; }
+
+/* the hover cover (mouse only) */
+.fx-peek {
+  position: fixed; left: 0; top: 0; z-index: 35; width: 300px; aspect-ratio: 3 / 4; pointer-events: none; opacity: 0; scale: .96;
+  background: var(--void-3); outline: 1px solid var(--line-strong); box-shadow: 0 24px 60px rgba(0, 0, 0, .5);
+  transition: opacity 180ms linear, scale 320ms var(--ease-out); will-change: transform;
+}
+.fx-peek.is-on { opacity: 1; scale: 1; }
+.fx-peek img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 220ms linear; }
+.fx-peek img.is-on { opacity: 1; }
+@media (hover: none), (pointer: coarse) { .fx-peek { display: none; } }
+
+/* phone: compact rows (title, type, year); a tap opens the drawer in place */
+@media (max-width: 700px) {
+  .folio-list { --lcols: minmax(0, 1fr) 28px; }
+  .folio-entry .folio-row { grid-template-columns: minmax(0, 1fr) 28px; gap: 4px 12px; min-height: 68px; padding: 14px 0; align-items: center; }
+  .folio-entry .folio-row-id, .folio-entry .folio-row-name .mute { display: none; }
+  .folio-entry .folio-row-name { grid-column: 1; grid-row: 1; }
+  .folio-entry .folio-row-name b { font-size: 19px; }
+  .folio-entry .folio-row-kind { grid-column: 1; grid-row: 2; display: inline; font-size: 11px; }
+  .folio-entry .folio-row-frames { grid-column: 1; grid-row: 2; justify-self: end; font-size: 11px; text-align: right; }
+  .folio-entry .folio-row-frames::before { content: none; }
+  .folio-entry .folio-row-plus { grid-column: 2; grid-row: 1 / span 2; }
+  .fx-drawer { padding: 4px 0 28px; }
+  .fx-drawer .fx-card { gap: 18px; }
+}
+/* tablet: tighter columns */
+@media (min-width: 701px) and (max-width: 1023px) {
+  .folio-list { --lcols: 64px minmax(0, 1.8fr) minmax(84px, .7fr) 84px 32px; }
+  .folio-entry .folio-row { gap: 12px; min-height: 76px; }
+}
+
+/* ── GRID ──────────────────────────────────────────────────────────────────────────────────────────────────── */
+@media (min-width: 760px) and (min-height: 501px) {
+  .folio-grid { column-gap: clamp(40px, 4.4vw, 72px); row-gap: clamp(56px, 5.6vw, 88px); }
+}
+@media (min-width: 1200px) and (hover: hover) and (pointer: fine) {
+  .folio-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: clamp(32px, 3.4vw, 56px); }
+}
+.folio-card { cursor: pointer; }
+.folio-meta-year { margin-left: auto; color: var(--chrome-3); }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .folio-card .folio-cover { transition: transform 360ms var(--ease-out), outline-color var(--dur-1) linear; }
+  .folio-card:hover .folio-cover, .folio-card:focus-visible .folio-cover { transform: translateY(-4px); }
+}
+.folio-card[aria-expanded="true"] .folio-cover { outline-color: var(--chrome-3); }
+
+.fx-layer { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; }
+.fx-layer[hidden] { display: none; }
+.fx-backdrop { position: absolute; inset: 0; background: rgba(6, 7, 10, .84); }
+.fx-panel {
+  position: relative; width: min(1120px, calc(100vw - 64px)); max-height: calc(100vh - 96px); max-height: calc(100dvh - 96px);
+  overflow: auto; overscroll-behavior: contain; padding: clamp(24px, 2.6vw, 40px); background: var(--void-2); outline: 1px solid var(--line-strong);
+  scrollbar-width: thin;
+}
+.fx-panel:focus { outline: 1px solid var(--line-strong); }
+.fx-panel:focus-visible { outline: 1px solid var(--chrome-3); }
+.fx-close {
+  position: absolute; top: 8px; right: 8px; z-index: 3; display: grid; place-items: center; width: 44px; height: 44px;
+  background: transparent; border: 0; color: var(--chrome-3); font: 400 24px/1 var(--font-hud); cursor: pointer; touch-action: manipulation;
+}
+.fx-close:hover { color: var(--chrome); }
+.fx-close:focus-visible { outline: 1px solid var(--chrome); outline-offset: -4px; color: var(--chrome); }
+.fx-panel .fx-card { padding-right: 0; }
+.fx-panel .fx-info { padding-top: 6px; }
+.fx-panel .fx-meta { padding-right: 44px; min-height: 28px; }
+@media (max-width: 899px) { .fx-panel .fx-card { grid-template-columns: minmax(0, 1fr); gap: 22px; } .fx-panel .fx-info { padding-top: 0; } }
+.fx-ghost { position: fixed; z-index: 41; object-fit: cover; pointer-events: none; background: var(--void-3); }
+html.fx-open, html.fx-open body { overflow: hidden; overscroll-behavior: none; }
+
+/* phone-class: the full-height sheet (Task O's frame) */
+@media (max-width: 759px), (pointer: coarse) and (max-height: 500px) {
+  .fx-layer.is-sheet { z-index: 26; display: block; }
+  .fx-layer.is-sheet .fx-backdrop { background: var(--void); animation: sheet-backdrop-in 240ms linear both; }
+  .fx-layer.is-sheet .fx-panel {
+    --sheet-top: calc(var(--edge) + var(--hud-row) + 8px);
+    position: absolute; top: var(--sheet-top); left: max(var(--edge), env(safe-area-inset-left)); right: max(var(--edge), env(safe-area-inset-right));
+    bottom: env(safe-area-inset-bottom, 0px); width: auto; max-height: none; padding: 52px 16px 20px;
+    -webkit-overflow-scrolling: touch; touch-action: pan-y;
+  }
+  .fx-layer.is-sheet.is-in .fx-panel { animation: sheet-up 340ms var(--ease-out) both; }
+  .fx-layer.is-sheet .fx-close { top: 4px; right: 4px; background: var(--void-2); }
+  .fx-layer.is-sheet .fx-card { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .fx-layer.is-sheet .fx-meta { position: absolute; top: 0; left: 16px; right: 56px; min-height: 52px; padding: 0; align-content: center; }
+  .fx-layer.is-sheet .fx-track { aspect-ratio: auto; height: min(45vh, 100vw * .75); height: min(45svh, calc(100vw * .75)); min-height: 160px; }
+  .fx-layer.is-sheet .fx-title { font-size: 32px; }
+  .fx-layer.is-sheet .fx-facts { margin-top: 0; }
+  html.fx-sheet .hud-bottom, html.fx-sheet .hud-filters { opacity: 0; pointer-events: none; }
+  .fx-nav button { min-width: 44px; height: 44px; font-size: 16px; }
+  .fx-count { font-size: 12px; }
+  .fx-ctas { gap: 5px; }
+  .fx-ctas > .btn, .fx-ctas > .title-card-open { padding: 0 .6em; letter-spacing: .04em; gap: .35em; font-size: 11px; }
+}
+@media (max-width: 759px) { .fx-nav button { min-width: 44px; height: 44px; } }
+
+/* the stage opened OVER the Grid or List (Explore 3D / Case study): the floor is only the stage's backdrop */
+.floor--over { z-index: 60; }
+.floor--over .world, .floor--over .floor-grid { visibility: hidden; }
+html.stage-over .fx-peek { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .folio-entry .folio-row-name, .folio-entry .folio-row-plus, .fx-peek, .fx-peek img { transition: none; }
+  .folio-entry .folio-row:hover .folio-row-name { transform: none; }
+  .fx-layer.is-sheet.is-in .fx-panel, .fx-layer.is-sheet .fx-backdrop { animation: none; }
+}
+.folio-grid { align-items: start; }
+
+/* ═══ Task Q (2026-10-28, JC: "content on the right should be vertically centered, gap above and below equal") ═══
+   The List drawer and the Grid panel: the text column is centred against the media block (reel + counter row), so the
+   space above the eyebrow equals the space below the buttons. The drawer gets equal top and bottom padding. */
+@media (min-width: 1024px) {
+  .fx-drawer .fx-card { align-items: center; }
+  .fx-drawer .fx-info { align-self: center; }
+}
+@media (min-width: 900px) {
+  .fx-panel .fx-card { align-items: center; }
+  .fx-panel .fx-info { align-self: center; padding-top: 0; }
+  .fx-panel .fx-meta { min-height: 0; }
+}
+@media (min-width: 900px) {
+  .fx-card .fx-facts { margin-top: 0; }
+}
+.fx-drawer { padding-top: clamp(24px, 2.4vw, 32px); padding-bottom: clamp(24px, 2.4vw, 32px); }
+@media (max-width: 700px) { .fx-drawer { padding-top: 20px; padding-bottom: 20px; } }

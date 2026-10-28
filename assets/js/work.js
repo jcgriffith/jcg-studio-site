@@ -1,9 +1,9 @@
 // Home (/) boot: studio floor engine + HUD wiring, global behaviors.
-import { createFloor, resolveMedia, mountCarousel, mountCover3d, isPhoneClass } from './canvas.js?v=20261027t';
+import { createFloor, resolveMedia, mountCarousel, mountCover3d, isPhoneClass } from './canvas.js?v=20261027w';
 import { initSplitFlap } from './splitflap.js';
 import { initHudSnap } from './hud-snap.js';
 import { reduced } from './reduce-motion.js';
-import { loadWorks } from './works.js?v=20261027t';
+import { loadWorks } from './works.js?v=20261027w';
 
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
@@ -26,6 +26,7 @@ function artifactCount(c) {
 }
 
 /** Build the scrollable Grid of concept covers (readable gutters, page scroll). */
+const touchScreen = () => window.matchMedia('(pointer: coarse)').matches;
 const ONE_COL_SIZES = '(max-width: 759px) 92vw, (pointer: coarse) and (max-height: 500px) 92vw, 720px';
 function buildGrid(host, data) {
   const n = data.concepts.length;
@@ -50,11 +51,13 @@ function buildGrid(host, data) {
     const ch = c.coverH || data.layout?.cover?.h || 600;
     a.innerHTML = `
       <div class="folio-cover" style="aspect-ratio:${cw} / ${ch}" aria-hidden="true"></div>
-      <p class="folio-meta hud">${c.handle ? `<span class="frame-caption-handle" role="link" tabindex="0" data-href="${esc(c.handle.url)}">${esc(c.handle.text)}</span>` : `<span>${esc(c.tag)}</span>`}${c.staged ? '<span class="chip chip--staged">Staged</span>' : ''}</p>
+      <p class="folio-meta hud">${c.handle ? `<span class="frame-caption-handle" role="link" tabindex="0" data-href="${esc(c.handle.url)}">${esc(c.handle.text)}</span>` : `<span>${esc(c.tag)}</span>`}${c.staged ? '<span class="chip chip--staged">Staged</span>' : ''}<span class="folio-meta-year">${esc(c.year || '')}</span></p>
       <h2 class="folio-name">${esc(c.concept)}</h2>
       <p class="folio-desc">${esc(c.description || c.member)}</p>`;
     const cover = a.querySelector('.folio-cover');
     const media = resolveMedia(c, true);
+    // Task P: touch screens (iPad too) keep a still on the Grid cover, never a live iframe; the branded 3D still when there is one
+    if (touchScreen() && c.phoneCover && media[0]) media[0] = { ...media[0], src: c.phoneCover, type: 'image' };
     if (media.length) {
       // Phone Grid is one full-width cover per row (JC 2026-10-28): srcset picks 360/540/720 for ~92vw (720 at DPR 2-3).
       mountCarousel(cover, media, { reduced: reduced(), sizes: ONE_COL_SIZES });
@@ -62,16 +65,18 @@ function buildGrid(host, data) {
       const eagerN = isPhoneClass() ? 1 : 2;
       if (grid.children.length < eagerN) cover.querySelectorAll('img').forEach((im, i) => { if (eagerN === 2 || i === 0) { im.loading = 'eager'; im.fetchPriority = 'high'; } });
     }
-    if (c.model3d || c.embed3d) {          // a live 3D cover (the JCG Belt, the Etherea Loft), straight to its own page
+    if ((c.model3d || c.embed3d) && !touchScreen()) {          // a live 3D cover (the JCG Belt, the Etherea Loft), straight to its own page
       mountCover3d(cover, c);
       if (c.openPage && c.page) a.href = new URL(c.page, document.baseURI).href;
     }
+    a.setAttribute('aria-haspopup', 'dialog');
+    a.setAttribute('aria-expanded', 'false');
     grid.append(a);
   }
   return host;
 }
 
-/** Build the compact List rows (id, name, kind, frames). */
+/** Build the List: one clickable row per piece (project, piece + line, type, year); it expands in place (folio-views.js). */
 function buildList(host, data) {
   const n = data.concepts.length;
   host.innerHTML = `
@@ -80,32 +85,30 @@ function buildList(host, data) {
         <span class="eyebrow ticks snap">List · Work</span>
         <h1 class="h2" id="list-title">Work. <span class="mute">${n} pieces.</span></h1>
       </header>
-      <div class="folio-list" role="table" aria-label="Work">
-        <div class="folio-list-head hud" role="row">
-          <span role="columnheader">Project</span>
-          <span role="columnheader">Piece</span>
-          <span role="columnheader">Type</span>
-          <span role="columnheader">Year</span>
-          <span role="columnheader"><span class="sr-only">Open</span></span>
+      <div class="folio-list" role="list" aria-label="Work">
+        <div class="folio-list-head hud" aria-hidden="true">
+          <span>Project</span><span>Piece</span><span>Type</span><span>Year</span><span></span>
         </div>
       </div>
     </div>`;
   const list = host.querySelector('.folio-list');
   for (const c of data.concepts) {
-    const a = document.createElement('a');
-    a.href = `#${c.id}`;
-    a.className = 'folio-item folio-row';
-    a.dataset.kind = c.kind;
-    a.dataset.types = (c.types || []).join(' ');
-    a.dataset.id = c.id;
-    a.setAttribute('role', 'row');
-    a.innerHTML = `
-      <span class="folio-row-id hud" role="cell">${esc(c.tag)}</span>
-      <span class="folio-row-name" role="cell"><b>${esc(c.concept)}</b><span class="mute">${esc(c.description || c.member)}</span></span>
-      <span class="folio-row-kind hud" role="cell">${esc(c.workType || data.kinds[c.kind])}</span>
-      <span class="folio-row-frames hud" role="cell">${esc(c.date || '')}${c.staged ? ' <span class="chip chip--staged">Staged</span>' : ''}</span>
-      <span class="folio-row-go" role="cell" aria-hidden="true">Open</span>`;
-    list.append(a);
+    const el = document.createElement('div');
+    el.className = 'folio-item folio-entry';
+    el.dataset.kind = c.kind;
+    el.dataset.types = (c.types || []).join(' ');
+    el.dataset.id = c.id;
+    el.setAttribute('role', 'listitem');
+    el.innerHTML = `
+      <button type="button" class="folio-row" id="row-${esc(c.id)}" aria-expanded="false" aria-controls="drawer-${esc(c.id)}">
+        <span class="folio-row-id hud">${esc(c.tag)}</span>
+        <span class="folio-row-name"><b>${esc(c.concept)}</b><span class="mute">${esc(c.description || c.member)}</span></span>
+        <span class="folio-row-kind hud">${esc(c.workType || data.kinds[c.kind])}</span>
+        <span class="folio-row-frames hud">${esc(c.date || '')}${c.staged ? ' <span class="chip chip--staged">Staged</span>' : ''}</span>
+        <span class="folio-row-plus" aria-hidden="true"></span>
+      </button>
+      <div class="fx-drawer" id="drawer-${esc(c.id)}" role="region" aria-label="${esc(c.concept)}" hidden></div>`;
+    list.append(el);
   }
   return host;
 }
@@ -137,7 +140,7 @@ function buildStagedToggle(btn, data) {
 }
 
 try {
-  const data = await loadWorks('assets/data/works.json?v=20261027t');
+  const data = await loadWorks('assets/data/works.json?v=20261027w');
   buildFilters($('[data-filters]'), data);
   buildStagedToggle($('[data-staged-toggle]'), data);
   const index = $('#index');
@@ -153,6 +156,8 @@ try {
     home: 'membership/',
     work: '',
     insets,
+    onView: (v, prev) => document.dispatchEvent(new CustomEvent('jcg:view', { detail: { view: v, prev } })),
+    onStageOver: (on, id) => document.dispatchEvent(new CustomEvent('jcg:stageover', { detail: { on, id } })),
     drawer: $('#drawer'),
     index,
     grid,
@@ -168,10 +173,9 @@ try {
     },
   });
 
-  // Grid / List: in-canvas solo expand (same Open flow as the title-card button).
-  // Phone: the piece sheet opens over Canvas (the camera does the fly-in). When it closes, go back to the scrolling
+  // Canvas on a phone: the piece sheet opens over Canvas (the camera does the fly-in). When it closes, go back to the scrolling
   // Grid/List the visitor came from instead of stranding them on the non-scrolling Canvas (Task L, 2026-10-28).
-  const phoneQ = matchMedia('(max-width: 759px)');
+  const phoneQ = { get matches() { return isPhoneClass(); } };   // phone portrait or on its side (Task O: both get the full-height sheet)
   const root = document.documentElement;
   let sheetWas = root.classList.contains('piece-sheet-open');
   new MutationObserver(() => {
@@ -184,15 +188,10 @@ try {
     }
     sheetWas = on;
   }).observe(root, { attributes: true, attributeFilter: ['class'] });
-  const diveFromFolio = (e) => {
-    const a = e.target.closest('a.folio-item');
-    if (!a?.dataset.id) return;
-    e.preventDefault();
-    floor.setView('canvas', false, !isPhoneClass());   // on a phone this hop to Canvas isn't saved as the view
-    floor.focusPiece(a.dataset.id);
-  };
-  grid.addEventListener('click', diveFromFolio);
-  list.addEventListener('click', diveFromFolio);
+  // Grid / List open each piece in place (Task P, 2026-10-28): the card/row expands where it is, with the same carousel,
+  // lightbox and buttons as the Canvas card. Loaded after first paint; a click before it lands is picked up from the hash.
+  import('./folio-views.js?v=20261027w').then(({ initFolioViews }) => initFolioViews({ data, floor, grid, list }))
+    .catch((err) => console.warn('[jcg] grid/list expansion unavailable:', err));
 
   // Products with a live model (concepts.json `product.model`): one WebGL layer flies each over its cover, its Grid card
   // and its item page (product-3d.js, three.js on demand).
@@ -261,6 +260,9 @@ document.addEventListener('keydown', (e) => {
     const W = track.clientWidth;
     if (!W) return;
     let h = W * 0.75;
+    if (track.closest('.piece-sheet') && isPhoneClass()) {   // full-height phone sheet: CSS flexes the slide (Task O)
+      track.style.removeProperty('height'); track.style.removeProperty('--reel-h'); return;
+    }
     if (track.closest('.piece-sheet')) h = Math.min(h, Math.max(180, innerHeight * 0.36));
     else {
       const reel = track.closest('.piece-reel'), nav = reel.querySelector('.piece-reel-nav');
