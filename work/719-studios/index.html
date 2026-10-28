@@ -10,8 +10,6 @@
 <link rel="stylesheet" href="../../assets/css/tokens.css">
 <link rel="stylesheet" href="../../assets/css/base.css">
 <link rel="stylesheet" href="../../assets/css/dawn.css?v=20261020c">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,800&display=swap">
 <script>if ('scrollRestoration' in history) history.scrollRestoration = 'manual';   /* always open at the hero, unless a link names a part */
 /* the page jumps to a named part itself, once the part is built; the browser's own jump would land on the empty section */
 window.__jump = location.hash.slice(1); if (window.__jump) history.replaceState(null, '', location.pathname + location.search);
@@ -365,6 +363,8 @@ document.documentElement.classList.add('js'); if (/[?&]embed\b/.test(location.se
   #next .wrap { position: relative; z-index: 1; }
   .cs-next { padding-bottom: 0; }
   /* Hero B: the poster */
+  @font-face { font-family: 'Bricolage Grotesque'; src: url('../../assets/fonts/Bricolage-Grotesque-VF.woff2') format('woff2'); font-weight: 300 800; font-display: swap; }
+  @font-face { font-family: 'DM Sans'; src: url('../../assets/fonts/DMSans-VF.woff2') format('woff2'); font-weight: 400 800; font-display: swap; }
   @font-face { font-family: 'Mak'; src: url('../../assets/fonts/mak-bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
   .hero.hero--poster { display: block; min-height: 0; height: auto; padding: 0; background: var(--void); }
   .poster { position: relative; height: min(86svh, 920px); min-height: 520px; background: #CCA18F; color: #35212D; overflow: hidden; }
@@ -383,11 +383,14 @@ document.documentElement.classList.add('js'); if (/[?&]embed\b/.test(location.se
   .pc.c1 { top: calc(var(--e) - 11px); left: calc(var(--e) - 11px); } .pc.c2 { top: calc(var(--e) - 11px); right: calc(var(--e) - 11px); }
   .pc.c3 { bottom: calc(var(--e) - 11px); left: calc(var(--e) - 11px); } .pc.c4 { bottom: calc(var(--e) - 11px); right: calc(var(--e) - 11px); }
   .hero.hero--poster .poster-name, .hero.hero--poster .poster-name span { color: #35212D; }
+  /* touch: a plain layer over the 3D takes every touch, so a vertical drag that starts on the model always scrolls the page (iOS/iPadOS WebKit lets a touch-action:none canvas inside an iframe swallow the swipe even when the iframe is pointer-events:none) */
+  .hero-shield { position: absolute; inset: 30% 0 0 0; z-index: 1; touch-action: pan-y pinch-zoom; background: transparent; -webkit-tap-highlight-color: transparent; }
+  .hero-3d, .hero-3d iframe, .hero-3d canvas { touch-action: pan-y pinch-zoom !important; }
   .hero--poster .hero-3d { inset: 30% 0 0 0; }   /* the 3D's box runs to the poster's edges, so only the ivory frame ever cuts the model */   /* the model sits under the name, inside the frame */
   .pl.tl { left: calc(clamp(14px, 2.2vw, 28px) + 64px); }   /* clear of the back button */
   .hero-band { padding: 40px 0 8px; }
   .hero-band .cs-brief { margin: 10px 0 22px; }
-  @media (max-width: 899px) { .poster { height: auto; aspect-ratio: 4 / 5; min-height: 0; } .poster-name { top: 64px; } .poster-name img { width: clamp(240px, 46vw, 400px); } .hero--poster .hero-3d { inset: 30% 0 4% 0; } }
+  @media (max-width: 899px) { .poster { height: auto; aspect-ratio: 4 / 5; min-height: 0; } .poster-name { top: 64px; } .poster-name img { width: clamp(240px, 46vw, 400px); } .hero--poster .hero-3d { inset: 30% 0 4% 0; } .hero-shield { inset: 30% 0 4% 0; } }
   @media (max-width: 599px) { .pl.tr { display: none; } }   /* a phone has room for one top label */
   @media (min-width: 900px) {
     .lofts3 { grid-template-columns: repeat(3, 1fr); }
@@ -465,8 +468,20 @@ document.documentElement.classList.add('js'); if (/[?&]embed\b/.test(location.se
   #brand .skin .b-logos { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   #brand .skin .b-logo { min-height: 0; padding: 14px; } #brand .skin .b-logo img { max-height: 110px; width: 100%; object-fit: contain; }
   #brand .skin .b-type img { max-height: 40px; }
+  /* touch and iPad polish (2026-10-27): no iOS text inflation in landscape, no 300 ms / double-tap-zoom delay on controls, 44 px targets on touch, safe areas on the full-screen layers, no scroll chaining out of them */
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  a, button, summary, [role="tab"], .lc-arrow { touch-action: manipulation; -webkit-tap-highlight-color: rgba(255,255,255,.12); }
+  .explore, .lightbox { overscroll-behavior: contain; }
+  .explore header { padding-left: calc(env(safe-area-inset-left) + 10px); padding-right: calc(env(safe-area-inset-right) + 10px); }
+  .lightbox header { padding-top: calc(env(safe-area-inset-top) + 12px); }
+  .lightbox footer { padding-bottom: calc(env(safe-area-inset-bottom) + 12px); }
+  .lightbox header, .lightbox footer { padding-left: calc(env(safe-area-inset-left) + 12px); padding-right: calc(env(safe-area-inset-right) + 12px); }
+  .is-embed .lightbox header { padding-right: 64px; }
+  @media (pointer: coarse) {
+    .lc-arrow { width: 44px; height: 44px; }
+    .lc-3d { display: inline-flex; align-items: center; box-sizing: border-box; min-height: 44px; }
+  }
 </style>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&display=swap" rel="stylesheet">
 </head>
 <body>
 <a class="back hud" href="../../" aria-label="Back to the work">←</a>
@@ -475,7 +490,7 @@ document.documentElement.classList.add('js'); if (/[?&]embed\b/.test(location.se
   <section class="hero hero--poster" id="top" aria-labelledby="h-719">
     <div class="poster">
       <h1 id="h-719" class="poster-name"><img src="../../assets/img/work/719/brand/v6/hero-logo.svg" alt="719 Studios" width="855" height="455" decoding="async"></h1>
-      <div class="hero-3d" inert><picture class="hero-still"><source media="(max-width: 899px)" srcset="../../assets/img/work/719/hero-3d-phone.webp"><img src="../../assets/img/work/719/hero-3d-desktop.webp" alt="" fetchpriority="high" decoding="async"></picture><iframe data-src="3d/?cover" title="" tabindex="-1" aria-hidden="true"></iframe></div>   
+      <div class="hero-3d" inert><picture class="hero-still"><source media="(max-width: 899px)" srcset="../../assets/img/work/719/hero-3d-phone.webp"><img src="../../assets/img/work/719/hero-3d-desktop.webp" alt="" fetchpriority="high" decoding="async"></picture><iframe data-src="3d/?cover" title="" tabindex="-1" aria-hidden="true"></iframe></div><div class="hero-shield" aria-hidden="true"></div>   
       <span class="pl tl">s-01 · los angeles</span><span class="pl tr">production studios</span>
       <span class="pl bl">built 2021–2023</span><span class="pl br">sold 2026</span>
       <i class="pc c1"></i><i class="pc c2"></i><i class="pc c3"></i><i class="pc c4"></i>
@@ -549,7 +564,16 @@ document.getElementById('lb-close').onclick = () => lbEl.close();
 document.getElementById('lb-prev').onclick = () => lbShow(lb.i - 1);
 document.getElementById('lb-next').onclick = () => lbShow(lb.i + 1);
 lbEl.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') lbShow(lb.i + 1); if (e.key === 'ArrowLeft') lbShow(lb.i - 1); });
-const tile = (l, i, src, alt, w, h, cls = '') => `<button type="button" class="${cls}" data-l="${l}" data-i="${i}" style="--ar:${w} / ${h}" aria-label="${alt ? `Open photo: ${esc(alt)}` : 'Open photo'}"><img src="${src}" width="${w}" height="${h}" alt="${esc(alt)}" loading="lazy" decoding="async"></button>`;
+// extra widths (480/800/1200) for the big stills: assets/img/work/719/srcset.json lists them; a still not on the list keeps its one file
+let SS = {};
+const SIZES = '(min-width: 1180px) 600px, (min-width: 700px) 50vw, 100vw';
+const srcsetOf = (src) => {
+  const abs = new URL(src, location.href).pathname, k = abs.slice(abs.indexOf('/assets/img/work/719/') + 21), e = SS[k];
+  if (!e) return '';
+  const stem = src.replace(/\.webp$/, '');
+  return ` srcset="${e.v.map((x) => `${stem}-${x}.webp ${x}w`).join(', ')}, ${src} ${e.w}w" sizes="${SIZES}"`;
+};
+const tile = (l, i, src, alt, w, h, cls = '') => `<button type="button" class="${cls}" data-l="${l}" data-i="${i}" style="--ar:${w} / ${h}" aria-label="${alt ? `Open photo: ${esc(alt)}` : 'Open photo'}"><img src="${src}"${srcsetOf(src)} width="${w}" height="${h}" alt="${esc(alt)}" loading="lazy" decoding="async"></button>`;
 const vid = (src, poster, label, cls = 'm-vid') => `<div class="vid ${cls}"><video src="${src}" poster="${poster}" muted loop playsinline controls preload="none" aria-label="${esc(label)}"></video></div>`;
 
 // ---- the hero's live 3D: after the page has loaded (and on phones after it has settled), so words and stills come first
@@ -564,15 +588,27 @@ const vid = (src, poster, label, cls = 'm-vid') => `<div class="vid ${cls}"><vid
     document.querySelector('.hero [data-explore]').dataset.explore = loft;
   }
   addEventListener('message', (e) => { if (e.origin === location.origin && e.data?.type === 'viewer:ready') box.classList.add('live'); });
-  const start = () => { if (!frame.src) frame.src = frame.dataset.src; };
-  const later = () => (window.requestIdleCallback ? requestIdleCallback(start, { timeout: 2500 }) : setTimeout(start, 1200));
-  const phone = matchMedia('(max-width: 760px)').matches;
-  if (document.readyState === 'complete') phone ? later() : start(); else addEventListener('load', () => (phone ? later() : start()), { once: true });
+  // The live 3D (three.js and a 3 to 5 MB model) is the page's heaviest part, so it waits for the hero to be on screen.
+  //  - mouse and trackpad: starts once the page has loaded and the hero is in view
+  //  - touch (phones, iPad): starts on the first touch or scroll, or 5 s after load, so a swipe is never fighting the download
+  //  - Save-Data or a 2G/3G connection: stays a still (the viewer's poster); nothing is downloaded
+  const touch = matchMedia('(pointer: coarse)').matches || matchMedia('(max-width: 760px)').matches;
+  const conn = navigator.connection || {}, thin = conn.saveData || /(^|-)(slow-2g|2g|3g)$/.test(conn.effectiveType || '');
+  let started = false, visible = false, ready = document.readyState === 'complete', nudged = !touch;
+  const start = () => { if (started || thin) return; started = true; frame.src = frame.dataset.src; };
+  const go = () => { if (visible && ready && nudged) (window.requestIdleCallback ? requestIdleCallback(start, { timeout: 2500 }) : setTimeout(start, 600)); };
+  new IntersectionObserver((es) => { visible = es.some((x) => x.isIntersecting); go(); }, { rootMargin: '200px 0px' }).observe(box);
+  if (!ready) addEventListener('load', () => { ready = true; go(); }, { once: true });
+  if (touch) {
+    const nudge = () => { nudged = true; go(); };
+    ['touchstart', 'scroll', 'keydown'].forEach((t) => addEventListener(t, nudge, { once: true, passive: true }));
+    setTimeout(nudge, 5000);
+  }
 }
 
 // ---- the case study, template version (JC 2026-10-22) ----------------------------------------------------------
 // ---- the case study (JC 2026-10-20: tight and skimmable; the full story is the journal, journal/719-studios/) -----
-const [sets, brand] = await Promise.all([fetch(`${IMG}sets/manifest.json`).then((r) => r.json()), fetch(`${BRAND}manifest.json`, { cache: 'no-cache' }).then((r) => r.json())]);
+const [sets, brand] = await Promise.all([fetch(`${IMG}sets/manifest.json`).then((r) => r.json()), fetch(`${BRAND}manifest.json`, { cache: 'no-cache' }).then((r) => r.json()), fetch(`${IMG}srcset.json`).then((r) => (r.ok ? r.json() : {})).then((j) => { SS = j; }).catch(() => {})]);
 const head = (id, label, title, line) => `<div class="s-head" data-reveal><p class="hud">${label}</p><h2 id="h-${id}">${title}</h2>${line ? `<p>${line}</p>` : ''}</div>`;
 const src = (f) => BRAND + f, small = (f) => /\.webp$/.test(f) ? BRAND + f.replace(/\.webp$/, '-800.webp') : BRAND + f;
 // Curated (JC 2026-10-19: "remove things if they don't reach a certain level of quality"): no signage, one hoodie back,
@@ -635,7 +671,7 @@ const part = (n, title, line, body) => `<div class="bx-part" data-reveal><div cl
     ['Terra', 'terra', [1, 2, 3, 4].map((n) => B('terra', n, `Terra in Blender, view ${n}`))],
     ['Solaris', 'solaris', [1, 2, 3, 4].map((n) => B('solaris', n, `Solaris in Blender, view ${n}`))]];
   const ARR = (d) => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-  const pins = `<div class="dz-bleed" data-pinstrip><ul class="dz-pins" tabindex="0" aria-label="Pinterest inspiration">${PINS.map(([p, alt, who, href]) => `<li class="dz-pin"><a href="${href}" target="_blank" rel="noopener" aria-label="${esc(alt)}, by ${esc(who)}"><img src="https://i.pinimg.com/736x/${p}" alt="${esc(alt)}" loading="lazy" decoding="async"><span>${esc(who)}</span></a></li>`).join('')}</ul><button type="button" class="lc-arrow lc-prev" aria-label="Scroll left">${ARR('M15 5l-7 7 7 7')}</button><button type="button" class="lc-arrow lc-next" aria-label="Scroll right">${ARR('M9 5l7 7-7 7')}</button></div>`;
+  const pins = `<div class="dz-bleed" data-pinstrip><ul class="dz-pins" tabindex="0" aria-label="Pinterest inspiration">${PINS.map(([p, alt, who, href]) => `<li class="dz-pin"><a href="${href}" target="_blank" rel="noopener" aria-label="${esc(alt)}, by ${esc(who)}"><img src="https://i.pinimg.com/736x/${p}" srcset="https://i.pinimg.com/474x/${p} 474w, https://i.pinimg.com/736x/${p} 736w" sizes="(min-width: 1480px) 280px, max(170px, 19vw)" alt="${esc(alt)}" loading="lazy" decoding="async"><span>${esc(who)}</span></a></li>`).join('')}</ul><button type="button" class="lc-arrow lc-prev" aria-label="Scroll left">${ARR('M15 5l-7 7 7 7')}</button><button type="button" class="lc-arrow lc-next" aria-label="Scroll right">${ARR('M9 5l7 7-7 7')}</button></div>`;
   const soon = (i) => `<div class="lc-slide"><div class="dz-soon" aria-label="Solaris render coming">${i === 0 ? `<img src="${IMG}hero-3d-solaris-desktop.webp" alt="Solaris in 3D" loading="lazy" decoding="async">` : '<span class="hud">Render coming</span>'}</div></div>`;
   const rcard = ([name, id, imgs]) => {
     const l = reg(imgs.map((p) => [p[4], p[1]])), n = imgs.length;

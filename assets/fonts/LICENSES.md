@@ -13,3 +13,6 @@ Downloaded 2026-09-29 and subset with fontTools (`pyftsubset`) to Basic Latin + 
 
 ## Mak (mak-bold.woff2)
 Mak Bold by Valentyn Tkachenko, version 2.003. The font's own licence field reads "Free for personal and commercial use". Subset to basic Latin for the web (2026-10-22); used for the 719 Studios loft names and poster.
+
+## Bricolage Grotesque and DM Sans (2026-10-27, self-hosted for the 719 Studios case study)
+Both are SIL OFL 1.1 (Google Fonts: ofl/bricolagegrotesque, ofl/dmsans). The latin woff2 files that fonts.googleapis.com serves were instanced with `fontTools varLib.instancer` (Bricolage `wght` 300–800; DM Sans `wght` 400–800) and subset with `pyftsubset` to Basic Latin, Latin-1 and common punctuation and arrows. Family names are unchanged. They replace the two render-blocking Google Fonts stylesheets.

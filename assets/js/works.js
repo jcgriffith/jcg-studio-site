@@ -48,11 +48,12 @@ export async function loadWorks(url) {
       staged: !(isLive(x) && isLive(p)),
       frames: [],
       embed3d: x.embed3d ? abs(x.embed3d) : '',
+      phoneCover: x.phoneCover ? abs(x.phoneCover) : '',   // a still of the live cover, for phones (mobile pass)
       coverKind: x.coverKind || '',
       coverFact: x.coverFact || '',
       coverEnd: x.coverEnd || '',
       loft: x.loft || '',
-      highlights: (x.highlights || []).map((h) => ({ ...h, src: abs(h.src), poster: abs(h.poster) })),
+      highlights: (x.highlights || []).map((h) => ({ ...h, src: abs(h.src), poster: abs(h.poster), full: abs(h.full) })),   // full: the original beside the -800 webp (lightbox)
       cardLine: x.cardLine || '',
       year: x.year || '',
       palette: x.palette || null,

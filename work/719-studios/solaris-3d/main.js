@@ -22,7 +22,8 @@ const B = (x, y, z) => new THREE.Vector3(x, z, -y);   // Blender (x, y, z) -> th
 
 const canvas = document.getElementById('c');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: cover, powerPreference: cover ? 'default' : 'high-performance' });
-renderer.setPixelRatio(Math.min(devicePixelRatio, phone ? 1.5 : 1.75));
+const coarse = matchMedia('(pointer: coarse)').matches;   // phones and iPads: cap the pixel ratio (a hero cover at 1.5 looks the same and costs ~half the fill of a 2x iPad)
+renderer.setPixelRatio(Math.min(devicePixelRatio, phone || (cover && coarse) ? 1.5 : 1.75));
 renderer.toneMapping = THREE.AgXToneMapping; renderer.toneMappingExposure = 1.15;
 renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap; renderer.shadowMap.autoUpdate = false;
 const scene = new THREE.Scene(); scene.background = cover ? null : warmBackdrop();

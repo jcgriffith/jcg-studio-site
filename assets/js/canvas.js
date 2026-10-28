@@ -10,6 +10,7 @@ import { renderFrame } from './frames.js';
 import { shimmer, loadImage } from './shimmer.js';
 import { scan } from './scanline.js';
 import { initSplitFlap } from './splitflap.js';
+import { openLightbox, fullOf, reelStep, reelGo, reelIndex, wireReel } from './lightbox.js?v=20261027q';
 
 const MIN_S = 0.08;
 // what a cover is, for screen readers: a built project says what it was (719: "Photo studios"), not "Studio concept"
@@ -39,7 +40,13 @@ const rubber = (x, d) => (1 - 1 / ((x * 0.55) / d + 1)) * d;
    concepts.json: media: [{ type: 'image'|'video', src, poster? }].
    Multi-media covers are manual-only: users advance with arrows/dots.
    A single image/video is rendered as one static/looping cover, not a slideshow. */
-export function resolveMedia(c) {
+export function resolveMedia(c, cover = false) {
+  const m = baseMedia(c);
+  // On phones the live 3D cover is a still of itself (c.phoneCover), not the photo under it.
+  if (cover && c.phoneCover && m.length && (isPhoneClass() || saveData())) return [{ type: 'image', src: c.phoneCover }, ...m.slice(1)];
+  return m;
+}
+function baseMedia(c) {
   if (Array.isArray(c.media) && c.media.length) return c.media.filter((m) => m && m.src);
   if (c.src) {
     const video = /\.(mp4|webm|mov)(\?|$)/i.test(c.src);
@@ -67,23 +74,40 @@ export function hydrateArt(scope) {
   });
 }
 
-function slideMarkup(m) {
+// Phone-class screens (mobile pass 2026-10-27): a phone, or a phone turned on its side. They get poster stills instead of
+// autoplaying video and live WebGL covers, and covers sized for their screen.
+export const PHONE_Q = '(max-width: 759px), (pointer: coarse) and (max-height: 500px)';
+export const isPhoneClass = () => window.matchMedia(PHONE_Q).matches;
+const saveData = () => !!navigator.connection?.saveData;
+// assets/concepts/<name>.jpg has <name>-360.webp and <name>-540.webp beside it (the 720 original is the top of the set).
+const COVER_RE = /^(.*assets\/concepts\/[^?#]+)\.(jpe?g|png)(\?[^#]*)?$/i;
+const COVER_SIZES = '(max-width: 759px) 40vw, 720px';
+function coverSet(src) {
+  const m = COVER_RE.exec(src || '');
+  return m ? { webp: `${m[1]}-360.webp 360w, ${m[1]}-540.webp 540w, ${src} 720w` } : null;
+}
+
+function slideMarkup(m, sizes = COVER_SIZES) {
   if (m.type === 'video') {
     const poster = m.poster ? ` poster="${esc(m.poster)}"` : '';
     return `<video class="cover-slide-media" src="${esc(m.src)}"${poster} muted loop playsinline preload="metadata"></video>`;
   }
   if (isArt(m.src)) return artMarkup(m.src, 'cover-slide-media');
-  return `<img class="cover-slide-media" src="${esc(m.src)}" alt="" loading="lazy" decoding="async">`;
+  const set = coverSet(m.src);
+  const srcset = set ? ` srcset="${esc(set.webp)}" sizes="${esc(sizes)}"` : '';
+  return `<img class="cover-slide-media" src="${esc(m.src)}"${srcset} width="720" height="960" alt="" loading="lazy" decoding="async">`;
 }
 
-export function mountCarousel(host, media, { reduced: rm = false } = {}) {
+export function mountCarousel(host, media, { reduced: rm0 = false, sizes } = {}) {
   if (!host || !media.length) return null;
+  const rm = rm0 || isPhoneClass() || saveData();   // posters only on a phone: nothing autoplays
+  const slideHtml = (m) => slideMarkup(m, sizes);
 
   // A lone asset is deliberately not treated as a carousel. Videos may loop,
   // but there is no slideshow timer or crossfade state to advance.
   if (media.length === 1) {
     const root = make('div', 'cover-media-single');
-    root.innerHTML = slideMarkup(media[0]);
+    root.innerHTML = slideHtml(media[0]);
     host.replaceChildren(root);
     hydrateArt(root);
     const video = root.querySelector('video');
@@ -108,7 +132,7 @@ export function mountCarousel(host, media, { reduced: rm = false } = {}) {
   media.forEach((m, i) => {
     const slide = make('div', `cover-slide${i === 0 ? ' is-active' : ''}`);
     slide.dataset.i = String(i);
-    slide.innerHTML = slideMarkup(m);
+    slide.innerHTML = slideHtml(m);
     track.append(slide);
   });
   root.append(track);
@@ -254,12 +278,33 @@ function turnable(host, frame) {
   host.addEventListener('click', (e) => { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
 }
 
+// The phone-class gate in mountCover3d is read when a cover mounts. If the screen later crosses into phone class (a
+// rotation, a resized window, "Request Desktop Site" toggled), tear the live covers down so no WebGL iframe is left
+// holding touches over a scrolling Grid (Task L).
+function retireLive3d() {
+  if (!isPhoneClass() && !saveData()) return;
+  document.querySelectorAll('.cover-3d').forEach((h) => h.remove());
+  document.querySelectorAll('.belt3d-hidden').forEach((p) => p.classList.remove('belt3d-hidden'));
+}
+window.addEventListener('resize', retireLive3d, { passive: true });
+window.addEventListener('orientationchange', retireLive3d, { passive: true });
+
 export function mountCover3d(into, c, fallback = null) {
+  // Phone-class screens and Save-Data keep the poster still on the cover (the live scene waits in the item's own page):
+  // each live cover is a WebGL iframe with a ~2 MB model, three of them on one phone is what made the page heavy.
+  if (isPhoneClass() || saveData()) return;
+  // Other touch screens (iPad) mount a live cover only once it scrolls into view.
+  if (window.matchMedia('(pointer: coarse)').matches && 'IntersectionObserver' in window && !into.dataset.live3d) {
+    into.dataset.live3d = '1';
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { io.disconnect(); mountCover3d(into, c, fallback); } }, { rootMargin: '120px' });
+    io.observe(into);
+    return;
+  }
   const host = document.createElement('div');
   host.className = 'cover-3d';
   into.append(host);
   if (c.embed3d) {                       // a live scene that is its own page (the Etherea Loft): its viewer, in cover mode, behind the same HUD
-    import('./product-3d.js?v=20261022s').then(({ hud }) => {
+    import('./product-3d.js?v=20261026b').then(({ hud }) => {
       host.classList.add('cover-3d--embed');
       if (c.palette) { host.classList.add('cover-3d--warm'); for (const k of ['ground', 'mid', 'accent']) host.style.setProperty(`--${k}`, c.palette[k]); }   // the loft's palette (works.json)
       host.innerHTML = `${hud(c)}<iframe src="${esc(new URL(c.embed3d, document.baseURI).href)}" title="" tabindex="-1" aria-hidden="true" loading="lazy"></iframe>`;
@@ -268,7 +313,7 @@ export function mountCover3d(into, c, fallback = null) {
     }).catch(() => host.remove());
     return;
   }
-  Promise.all([import('./product-3d.js?v=20261022s'), import('./belt-3d.js')]).then(([{ hud }, { mount }]) => {
+  Promise.all([import('./product-3d.js?v=20261026b'), import('./belt-3d.js')]).then(([{ hud }, { mount }]) => {
     host.innerHTML = hud(c);
     mount(host, { model: new URL(c.model3d, document.baseURI).href, mode: 'card', fallback });
   }).catch(() => host.remove());
@@ -442,11 +487,11 @@ export function createFloor(root, data, opts = {}) {
     // asleep at rest, awake on hover). The poster stays underneath until the model has loaded.
     if (c.model3d || c.embed3d) mountCover3d(cov.body, c, cov.body.querySelector('.frame-poster'));
     // A photo cover in the same HUD as the live ones (concepts.json `coverHud`: Terra and Solaris beside Etherea, JC 2026-10-19).
-    else if (c.coverHud) import('./product-3d.js?v=20261022s').then(({ hud }) => {
+    else if (c.coverHud) import('./product-3d.js?v=20261026b').then(({ hud }) => {
       const h = make('div', 'cover-3d cover-3d--photo belt3d-ready'); h.innerHTML = hud(c); cov.body.append(h);
     }).catch(() => {});
     // Cover media: manual carousel or one static/looping asset inside the cover frame.
-    const coverMedia = resolveMedia(c);
+    const coverMedia = resolveMedia(c, true);
     if (coverMedia.length) {
       // Dedicated slot on frame-body so living tiles stay visible in lod-poster
       // without wiping .frame-poster / .frame-full.
@@ -472,6 +517,7 @@ export function createFloor(root, data, opts = {}) {
       cl.kids.push(r);
     });
 
+    wireReel(bandEl);
     // The whole title card opens the item (its Open button included).
     bandEl.addEventListener('click', (e) => {
       e.preventDefault();
@@ -504,11 +550,14 @@ export function createFloor(root, data, opts = {}) {
           <p class="title-card-meta hud"><span class="piece-card-name">${esc(p.title)}</span>${c.staged ? '<span class="chip chip--staged">Staged</span>' : ''}</p>
           <h3 class="title-card-name" style="--chars:${Math.max(1, ...String(c.concept).split(/\s+/).map((w) => w.length))}">${esc(c.concept)}</h3>
           <p class="title-card-desc">${esc(c.cardLine || p.summary)}</p>
-          ${c.highlights?.length ? `<div class="piece-reel" data-floor-ui role="group" aria-label="${esc(c.concept)}: highlights">
-            <div class="piece-reel-track">${c.highlights.map((h) => /\.(mp4|webm)(\?|$)/i.test(h.src)
-              ? `<video src="${esc(h.src)}" poster="${esc(h.poster || '')}" width="${h.w}" height="${h.h}" muted loop playsinline preload="none" aria-label="${esc(c.concept)} video"></video>`
-              : `<img src="${esc(h.src)}" width="${h.w}" height="${h.h}" alt="" loading="lazy" decoding="async">`).join('')}</div>
-            <div class="piece-reel-nav"><button type="button" data-reel="-1" aria-label="Previous">←</button><button type="button" data-reel="1" aria-label="Next">→</button></div>
+          ${c.highlights?.length ? `<div class="piece-reel" data-floor-ui role="group" aria-roledescription="carousel" aria-label="${esc(c.concept)}: highlights">
+            <div class="piece-reel-track">${c.highlights.map((h, i, all) => {
+              const vid = /\.(mp4|webm)(\?|$)/i.test(h.src), ar = (Number(h.w) || 4) / (Number(h.h) || 3);
+              return `<button type="button" class="piece-slide" data-lb="${i}" data-fit="${ar >= 1.2 ? 'cover' : 'contain'}" aria-label="Enlarge ${vid ? 'video' : 'image'} ${i + 1} of ${all.length}">${vid
+                ? `<video src="${esc(h.src)}" poster="${esc(h.poster || '')}" width="${h.w}" height="${h.h}" muted loop playsinline preload="none" tabindex="-1" aria-hidden="true"></video><span class="piece-slide-badge" aria-hidden="true">▶ Video</span>`
+                : `<img src="${esc(h.src)}" width="${h.w}" height="${h.h}" alt="" loading="lazy" decoding="async">`}</button>`;
+            }).join('')}</div>
+            <div class="piece-reel-nav"><button type="button" data-reel="-1" aria-label="Previous">←</button><span class="piece-reel-count" data-reel-count aria-live="polite">1 / ${c.highlights.length}</span><button type="button" data-reel="1" aria-label="Next">→</button></div>
           </div>` : sibs.length > 1 ? `<div class="piece-thumbs" role="group" aria-label="More from ${esc(p.title)}">${sibs.map((x) => `
             <button type="button" class="piece-thumb" data-piece="${esc(x.id)}" aria-label="${esc(x.concept)}"${x.id === c.id ? ' aria-current="true"' : ''}><img src="${esc(x.thumb)}" alt="" loading="lazy" decoding="async"></button>`).join('')}
           </div>` : ''}
@@ -517,16 +566,33 @@ export function createFloor(root, data, opts = {}) {
             <div><dt>Role</dt><dd>${esc(p.role || '—')}</dd></div>
           </dl>
           ${c.loft ? `<div class="piece-ctas">
-            <button type="button" class="btn title-card-open" data-open-stage data-jump="explore-${esc(c.loft)}" data-floor-ui>Explore in 3D <span aria-hidden="true">↗</span></button>
-            <button type="button" class="btn btn--ghost" data-open-stage data-jump="snapshot" data-floor-ui>Read the case study <span aria-hidden="true">→</span></button>
-            ${p.journal ? `<a class="btn btn--ghost" href="${esc(new URL(p.journal, document.baseURI).href)}" data-world-link data-floor-ui>Read the story <span aria-hidden="true">→</span></a>` : ''}
+            <button type="button" class="btn title-card-open" data-open-stage data-jump="explore-${esc(c.loft)}" data-floor-ui>Explore 3D <span aria-hidden="true">↗</span></button>
+            <button type="button" class="btn btn--ghost" data-open-stage data-jump="snapshot" data-floor-ui>Case study <span aria-hidden="true">→</span></button>
+            ${p.journal ? `<a class="btn btn--ghost" href="${esc(new URL(p.journal, document.baseURI).href)}" data-world-link data-floor-ui>Story <span aria-hidden="true">→</span></a>` : ''}
           </div>` : `<button type="button" class="btn title-card-open" data-open-stage data-floor-ui>View full project <span aria-hidden="true">→</span></button>`}
         </article>
       </div>`;
   }
+  // A piece's media, the same list the card's reel shows: the lightbox opens on the slide that was tapped.
+  function lightboxItems(c) {
+    return (c.highlights || []).map((h) => {
+      const vid = /\.(mp4|webm)(\?|$)/i.test(h.src);
+      return { type: vid ? 'video' : 'image', thumb: h.poster || h.src, src: h.src, full: vid ? h.src : (h.full || fullOf(h.src)), poster: h.poster || '', w: h.w, h: h.h };
+    });
+  }
   function pieceCardClick(e, id) {
     const r = e.target.closest('[data-reel]');
-    if (r) { const t = r.closest('.piece-reel').querySelector('.piece-reel-track'); t.scrollBy({ left: Number(r.dataset.reel) * t.clientWidth * 0.8, behavior: reduced() ? 'auto' : 'smooth' }); return; }
+    if (r) { reelStep(r); return; }
+    const lb = e.target.closest('[data-lb]');
+    if (lb) {
+      const c = data.concepts.find((x) => x.id === id), track = lb.closest('.piece-reel-track');
+      if (!c) return;
+      openLightbox({
+        items: lightboxItems(c), index: Number(lb.dataset.lb) || 0, title: c.concept, opener: lb, phone: isPhoneClass() || saveData(),
+        onClose: (i) => { if (track && document.contains(track) && reelIndex(track) !== i) reelGo(track, i, false); },   // the card lands on the slide you were viewing
+      });
+      return;
+    }
     const t = e.target.closest('[data-piece]');
     if (t) { if (t.dataset.piece !== id) go(`#${t.dataset.piece}`); return; }
     const b = e.target.closest('[data-open-stage]');
@@ -586,6 +652,7 @@ export function createFloor(root, data, opts = {}) {
     pSheet.setAttribute('aria-label', 'Piece details');
     pSheet.hidden = true;
     document.body.append(pSheet);
+    wireReel(pSheet);
     pSheet.addEventListener('click', (e) => {
       if (e.target.closest('[data-sheet-close]')) { collapse(true); return; }
       if (open) pieceCardClick(e, open);
@@ -720,7 +787,8 @@ export function createFloor(root, data, opts = {}) {
     grid.style.backgroundPosition =
       `${modPos(p.x, step)}px ${modPos(p.y, step)}px, ${modPos(p.x, major)}px ${modPos(p.y, major)}px`;
 
-    const nextFull = lodFull === null ? cam.s >= LOD_DOWN : lodFull ? cam.s >= LOD_DOWN : cam.s >= LOD_UP;
+    const nextFull = (lodFull === null ? cam.s >= LOD_DOWN : lodFull ? cam.s >= LOD_DOWN : cam.s >= LOD_UP)
+      || (!!open && cam.s >= 0.5);   // an open card is always read: iPad portrait (820 wide) fits the card at 0.5997, just under LOD_DOWN, and showed an empty card (lightbox pass)
     if (nextFull !== lodFull) { lodFull = nextFull; world.classList.toggle('lod-poster', !lodFull); }
     const nextFar = cam.s < FAR;
     if (nextFar !== far) { far = nextFar; world.classList.toggle('lod-far', far); }
@@ -1077,7 +1145,7 @@ export function createFloor(root, data, opts = {}) {
     // page). With a sibling already open, the page stays and switches studio; the hash moves so Back walks the switches.
     const was = stageOpen && stageId && stageId !== id ? clusters.get(stageId) : null;
     if (was && cl.c.group && was.c.group === cl.c.group) {
-      was.el.classList.remove('is-open', 'is-solo', 'is-solo-open'); was.el.classList.add('is-exiting');
+      was.el.classList.remove('is-open', 'is-picked', 'is-solo', 'is-solo-open'); was.el.classList.add('is-exiting');
       was.cover.el.classList.remove('is-under-solo'); was.cover.el.setAttribute('aria-expanded', 'false');
       cl.el.classList.remove('is-exiting'); cl.el.classList.add('is-open', 'is-solo', 'is-solo-open');
       cl.cover.el.classList.add('is-under-solo'); cl.cover.el.setAttribute('aria-expanded', 'true');
@@ -1115,7 +1183,7 @@ export function createFloor(root, data, opts = {}) {
     const stageHost = stageBody.querySelector('[data-stage-carousel]');
     if (stageHost) {
       cl.stageCarousel?.destroy?.();
-      cl.stageCarousel = mountCarousel(stageHost, resolveMedia(cl.c), { reduced: reduced() });
+      cl.stageCarousel = mountCarousel(stageHost, resolveMedia(cl.c), { reduced: reduced(), sizes: '100vw' });
     }
     panel.setAttribute('aria-labelledby', 'folio-stage-title');
     panel.hidden = false;
@@ -1213,7 +1281,8 @@ export function createFloor(root, data, opts = {}) {
       if (open) collapse(false, { restore: false });
       if (!savedCam) savedCam = { x: cam.x, y: cam.y, s: cam.s };
       open = id;
-      cl.el.classList.add('is-open');
+      // Phone: the bottom sheet is the card, so the cover only takes a quiet "picked" outline (no in-canvas title card).
+      cl.el.classList.add(AUTO && isSheet() ? 'is-picked' : 'is-open');
       world.classList.add('has-open');
       cl.cover.el.setAttribute('aria-expanded', 'true');
       cl.bandEl?.removeAttribute('aria-hidden');
@@ -1229,7 +1298,8 @@ export function createFloor(root, data, opts = {}) {
     if (selected && selected.c.id === open) closeDrawer(false);
     open = null;
     showSheet(null);
-    cl.el.classList.remove('is-open');
+    cl.el.classList.remove('is-open', 'is-picked');
+    clusters.forEach((o2) => o2.el.classList.remove('is-picked'));
     world.classList.remove('has-open');
     cl.cover.el.setAttribute('aria-expanded', 'false');
     cl.bandEl?.setAttribute('aria-hidden', 'true');
@@ -1676,7 +1746,7 @@ export function createFloor(root, data, opts = {}) {
   function route(hash, { fly = true, kb = false } = {}) {
     const h = decodeURIComponent((hash || '').replace(/^#/, ''));
     if (h === 'index') { setView('index', fly); return; }
-    if (view !== 'canvas') setView('canvas', false);
+    if (view !== 'canvas') setView('canvas', false, !isPhoneClass());
     const [cid, fid] = h.split('/');
     if (AUTO) { routePiece(h, cid, fid, fly); return; }
     const r = byKey.get(h);
@@ -1877,7 +1947,8 @@ export function createFloor(root, data, opts = {}) {
   /* ── Grid | List | Canvas (+ Index keep for #index / no-JS) ──── */
   const VIEWS = new Set(['canvas', 'grid', 'list', 'index']);
   const VIEW_KEY = 'jcg-work-view';
-  function setView(v, animate = true) {
+  const VIEW_REV = 'jcg-work-view-rev';   // 's' = the saved view was written by a build that knows implicit vs chosen Canvas
+  function setView(v, animate = true, persist = true) {
     if (!VIEWS.has(v) || v === view) return;
     if (v === 'index' && !o.index) return;
     if (v === 'grid' && !o.grid) return;
@@ -1895,7 +1966,9 @@ export function createFloor(root, data, opts = {}) {
       if (v === 'canvas') resize();
       try {
         // Persist the three portfolio modes; Index stays a deep-link/a11y path.
-        if (v !== 'index') sessionStorage.setItem(VIEW_KEY, v);
+        // An implicit hop to Canvas on a phone (opening a piece from Grid/List, a #piece link) is not a choice of view: it
+        // isn't saved, so a reload or the sheet closing lands back on the scrolling Grid/List (Task L, 2026-10-28).
+        if (v !== 'index' && persist) { sessionStorage.setItem(VIEW_KEY, v); sessionStorage.setItem(VIEW_REV, 's'); }
       } catch (_) { /* private mode */ }
     };
     if (animate && document.startViewTransition && !reduced()) {
@@ -1977,10 +2050,13 @@ export function createFloor(root, data, opts = {}) {
     // Restore Grid/List when the URL isn't pinning Index or a concept.
     if (!location.hash) {
       try {
-        const saved = sessionStorage.getItem(VIEW_KEY);
+        let saved = sessionStorage.getItem(VIEW_KEY);
+        // a 'canvas' saved by an older build was often an implicit hop (opening a piece), not a choice: on a phone it
+        // would land a reload on the non-scrolling Canvas, so only a Canvas saved by this build counts there
+        if (saved === 'canvas' && isPhoneClass() && sessionStorage.getItem(VIEW_REV) !== 's') saved = null;
         if (saved && saved !== 'canvas' && VIEWS.has(saved)) setView(saved, false);
         // on a phone the canvas is too small to read captions, so it opens on the Grid (JC 2026-10-22); Canvas stays a tap away
-        else if (!saved && isSheet() && o.grid) setView('grid', false);
+        else if (!saved && (isSheet() || isPhoneClass()) && o.grid) setView('grid', false);   // incl. a phone turned on its side (844 px wide, 390 tall): Canvas doesn't scroll
         else document.documentElement.dataset.view = 'canvas';
       } catch (_) {
         document.documentElement.dataset.view = 'canvas';

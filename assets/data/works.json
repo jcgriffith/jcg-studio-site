@@ -53,12 +53,13 @@
         "h": 960
       },
       "embed3d": "work/719-studios/3d/?cover",
+      "phoneCover": "assets/concepts/etherea-cover3d.jpg",
       "coverKind": "Production studio",
       "coverFact": "Built 2021",
       "palette": {
-        "ground": "#FBE6D8",
+        "ground": "#CCA18F",
         "mid": "#E9BFA3",
-        "accent": "#E7774A"
+        "accent": "#B8694A"
       },
       "coverEnd": "Sold 2026",
       "loft": "etherea",
@@ -81,32 +82,38 @@
         {
           "src": "assets/img/work/719/eth-stage-built-800.webp",
           "w": 800,
-          "h": 534
+          "h": 534,
+          "full": "assets/img/work/719/eth-stage-built.webp"
         },
         {
           "src": "assets/img/work/719/eth-pool-built-800.webp",
           "w": 800,
-          "h": 534
+          "h": 534,
+          "full": "assets/img/work/719/eth-pool-built.webp"
         },
         {
           "src": "assets/img/work/719/sets/stage/m01-800.webp",
           "w": 800,
-          "h": 534
+          "h": 534,
+          "full": "assets/img/work/719/sets/stage/m01.webp"
         },
         {
           "src": "assets/img/work/719/sets/pool/m03-800.webp",
           "w": 533,
-          "h": 800
+          "h": 800,
+          "full": "assets/img/work/719/sets/pool/m03.webp"
         },
         {
           "src": "assets/img/work/719/sets/green-wall/m03-800.webp",
           "w": 640,
-          "h": 800
+          "h": 800,
+          "full": "assets/img/work/719/sets/green-wall/m03.webp"
         },
         {
           "src": "assets/img/work/719/sets/photo-corner/m04-800.webp",
           "w": 640,
-          "h": 800
+          "h": 800,
+          "full": "assets/img/work/719/sets/photo-corner/m04.webp"
         }
       ]
     },
@@ -125,13 +132,14 @@
         "h": 960
       },
       "embed3d": "work/719-studios/terra-3d/?cover",
+      "phoneCover": "assets/concepts/terra-cover3d.jpg",
       "coverKind": "Production studio",
       "coverFact": "Built 2023",
       "link": "&loft=terra",
       "palette": {
-        "ground": "#EFE6D6",
+        "ground": "#D0B994",
         "mid": "#D8C3A3",
-        "accent": "#B9805A"
+        "accent": "#B08F6A"
       },
       "coverEnd": "Sold 2026",
       "loft": "terra",
@@ -148,37 +156,44 @@
         {
           "src": "assets/img/work/719/terra-04-800.webp",
           "w": 800,
-          "h": 534
+          "h": 534,
+          "full": "assets/img/work/719/terra-04.webp"
         },
         {
           "src": "assets/img/work/719/terra-01-800.webp",
           "w": 800,
-          "h": 534
+          "h": 534,
+          "full": "assets/img/work/719/terra-01.webp"
         },
         {
           "src": "assets/img/work/719/terra-02-800.webp",
           "w": 800,
-          "h": 534
+          "h": 534,
+          "full": "assets/img/work/719/terra-02.webp"
         },
         {
           "src": "assets/img/work/719/terra-03-800.webp",
           "w": 800,
-          "h": 534
+          "h": 534,
+          "full": "assets/img/work/719/terra-03.webp"
         },
         {
           "src": "assets/img/work/719/terra-05-800.webp",
           "w": 800,
-          "h": 534
+          "h": 534,
+          "full": "assets/img/work/719/terra-05.webp"
         },
         {
           "src": "assets/img/work/719/terra-arches-built-800.webp",
           "w": 800,
-          "h": 534
+          "h": 534,
+          "full": "assets/img/work/719/terra-arches-built.webp"
         },
         {
           "src": "assets/img/work/719/terra-steps-built-800.webp",
           "w": 800,
-          "h": 534
+          "h": 534,
+          "full": "assets/img/work/719/terra-steps-built.webp"
         }
       ]
     },
@@ -197,13 +212,14 @@
         "h": 960
       },
       "embed3d": "work/719-studios/solaris-3d/?cover",
+      "phoneCover": "assets/concepts/solaris-cover3d.jpg",
       "coverKind": "Production studio",
       "coverFact": "Built 2023",
       "link": "&loft=solaris",
       "palette": {
-        "ground": "#F7F5F0",
+        "ground": "#F9F8F3",
         "mid": "#E6DDD0",
-        "accent": "#DDA7A1"
+        "accent": "#CDBE9F"
       },
       "coverEnd": "Sold 2026",
       "loft": "solaris",
@@ -214,32 +230,38 @@
         {
           "src": "assets/img/work/719/solaris-01-800.webp",
           "w": 800,
-          "h": 534
+          "h": 534,
+          "full": "assets/img/work/719/solaris-01.webp"
         },
         {
           "src": "assets/img/work/719/solaris-02-800.webp",
           "w": 800,
-          "h": 534
+          "h": 534,
+          "full": "assets/img/work/719/solaris-02.webp"
         },
         {
           "src": "assets/img/work/719/solaris-03-800.webp",
           "w": 800,
-          "h": 534
+          "h": 534,
+          "full": "assets/img/work/719/solaris-03.webp"
         },
         {
           "src": "assets/img/work/719/solaris-04-800.webp",
           "w": 800,
-          "h": 534
+          "h": 534,
+          "full": "assets/img/work/719/solaris-04.webp"
         },
         {
           "src": "assets/img/work/719/solaris-05-800.webp",
           "w": 534,
-          "h": 800
+          "h": 800,
+          "full": "assets/img/work/719/solaris-05.webp"
         },
         {
           "src": "assets/img/work/719/solaris-06-800.webp",
           "w": 800,
-          "h": 534
+          "h": 534,
+          "full": "assets/img/work/719/solaris-06.webp"
         }
       ]
     }

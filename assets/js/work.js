@@ -1,9 +1,9 @@
 // Home (/) boot: studio floor engine + HUD wiring, global behaviors.
-import { createFloor, resolveMedia, mountCarousel, mountCover3d } from './canvas.js?v=20261023u';
+import { createFloor, resolveMedia, mountCarousel, mountCover3d, isPhoneClass } from './canvas.js?v=20261027t';
 import { initSplitFlap } from './splitflap.js';
 import { initHudSnap } from './hud-snap.js';
 import { reduced } from './reduce-motion.js';
-import { loadWorks } from './works.js?v=20261023u';
+import { loadWorks } from './works.js?v=20261027t';
 
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
@@ -26,6 +26,7 @@ function artifactCount(c) {
 }
 
 /** Build the scrollable Grid of concept covers (readable gutters, page scroll). */
+const ONE_COL_SIZES = '(max-width: 759px) 92vw, (pointer: coarse) and (max-height: 500px) 92vw, 720px';
 function buildGrid(host, data) {
   const n = data.concepts.length;
   host.innerHTML = `
@@ -53,8 +54,14 @@ function buildGrid(host, data) {
       <h2 class="folio-name">${esc(c.concept)}</h2>
       <p class="folio-desc">${esc(c.description || c.member)}</p>`;
     const cover = a.querySelector('.folio-cover');
-    const media = resolveMedia(c);
-    if (media.length) mountCarousel(cover, media, { reduced: reduced() });
+    const media = resolveMedia(c, true);
+    if (media.length) {
+      // Phone Grid is one full-width cover per row (JC 2026-10-28): srcset picks 360/540/720 for ~92vw (720 at DPR 2-3).
+      mountCarousel(cover, media, { reduced: reduced(), sizes: ONE_COL_SIZES });
+      // phone-class: only the first cover is above the fold (eager); the rest stay lazy. Wider screens show two across.
+      const eagerN = isPhoneClass() ? 1 : 2;
+      if (grid.children.length < eagerN) cover.querySelectorAll('img').forEach((im, i) => { if (eagerN === 2 || i === 0) { im.loading = 'eager'; im.fetchPriority = 'high'; } });
+    }
     if (c.model3d || c.embed3d) {          // a live 3D cover (the JCG Belt, the Etherea Loft), straight to its own page
       mountCover3d(cover, c);
       if (c.openPage && c.page) a.href = new URL(c.page, document.baseURI).href;
@@ -111,6 +118,7 @@ function buildFilters(host, data) {
   host.innerHTML = [{ id: 'all', label: 'All', n: data.concepts.length }, ...types]
     .map((t) => `<button class="hud-btn" type="button" data-filter="${esc(t.id)}" aria-pressed="false">${esc(t.label)}<span class="hud-count">${t.n}</span></button>`).join('');
   host.hidden = types.length < 2;
+  document.documentElement.classList.toggle('has-filters', !host.hidden);   // the phone layout makes room for the chip row
 }
 
 /** Staged preview (local only): ?staged=0 shows exactly what ships; the toggle shows only when staged pieces exist. */
@@ -129,7 +137,7 @@ function buildStagedToggle(btn, data) {
 }
 
 try {
-  const data = await loadWorks('assets/data/works.json?v=20261023u');
+  const data = await loadWorks('assets/data/works.json?v=20261027t');
   buildFilters($('[data-filters]'), data);
   buildStagedToggle($('[data-staged-toggle]'), data);
   const index = $('#index');
@@ -161,11 +169,26 @@ try {
   });
 
   // Grid / List: in-canvas solo expand (same Open flow as the title-card button).
+  // Phone: the piece sheet opens over Canvas (the camera does the fly-in). When it closes, go back to the scrolling
+  // Grid/List the visitor came from instead of stranding them on the non-scrolling Canvas (Task L, 2026-10-28).
+  const phoneQ = matchMedia('(max-width: 759px)');
+  const root = document.documentElement;
+  let sheetWas = root.classList.contains('piece-sheet-open');
+  new MutationObserver(() => {
+    const on = root.classList.contains('piece-sheet-open');
+    // Explore 3D / Case study / Story hide the sheet because the project stage opens over it (root.solo-open): that is not a close,
+    // so stay on Canvas with the stage up (Task M, 2026-10-28; the observer used to bounce to Grid and tear the stage down).
+    if (sheetWas && !on && phoneQ.matches && root.dataset.view === 'canvas' && !root.classList.contains('solo-open')) {
+      let saved = null; try { saved = sessionStorage.getItem('jcg-work-view'); } catch (_) { /* private mode */ }
+      if (saved !== 'canvas') floor.setView(saved === 'list' ? 'list' : 'grid', true, false);
+    }
+    sheetWas = on;
+  }).observe(root, { attributes: true, attributeFilter: ['class'] });
   const diveFromFolio = (e) => {
     const a = e.target.closest('a.folio-item');
     if (!a?.dataset.id) return;
     e.preventDefault();
-    floor.setView('canvas', false);
+    floor.setView('canvas', false, !isPhoneClass());   // on a phone this hop to Canvas isn't saved as the view
     floor.focusPiece(a.dataset.id);
   };
   grid.addEventListener('click', diveFromFolio);
@@ -174,7 +197,7 @@ try {
   // Products with a live model (concepts.json `product.model`): one WebGL layer flies each over its cover, its Grid card
   // and its item page (product-3d.js, three.js on demand).
   if (data.concepts.some((c) => c.product?.model)) {
-    import('./product-3d.js?v=20261023u').then(({ initProducts }) => initProducts(data, floor))
+    import('./product-3d.js?v=20261026b').then(({ initProducts }) => initProducts(data, floor))
       .catch((err) => console.warn('[jcg] 3D products unavailable:', err));
   }
 
@@ -229,38 +252,20 @@ document.addEventListener('keydown', (e) => {
   watch();
 }
 
-// A card's media reel, fitted (JC 2026-10-22: "those initial images should align with the right edge of the
-// description ... the final image cut in the margin"): the row height is chosen so a whole number of items fills the
-// content width exactly (as many as the room's height allows), and the next item starts just past the content edge,
-// peeking into the margin where the card's border cuts it.
+// A card's media reel, fitted (lightbox pass 2026-10-27, replacing the 2026-10-22 "several small items" row): one big
+// slide at a time fills the card's content width, 4:3 and capped by the room the card has (desktop / iPad) or by the
+// screen's height (phone sheet). Wide pictures fill it (cropped a little), tall ones and video sit whole inside it.
+// Tapping a slide opens the lightbox (canvas.js); the arrows, swipe and "n / total" move the row.
 {
   const fit = (track) => {
-    const items = [...track.children].filter((el) => el.matches('img, video'));
-    if (!items.length) return;
-    const card = track.closest('.piece-card'), cs = getComputedStyle(card);
-    const W = track.clientWidth - parseFloat(cs.paddingRight), g = parseFloat(getComputedStyle(track).columnGap) || 0;
-    const reel = track.closest('.piece-reel'), nav = reel.querySelector('.piece-reel-nav');
-    const H = reel.clientHeight - (nav ? nav.offsetHeight + (parseFloat(getComputedStyle(reel).rowGap) || 0) : 0);   // the room the reel has
-    if (!W || !H) return;
-    const ar = items.map((el) => (Number(el.getAttribute('width')) || 4) / (Number(el.getAttribute('height')) || 3));
-    items.forEach((el) => { el.style.width = ''; });
-    // First choice: the full height, with the items that fit the width widened a little to fill it exactly (they crop at
-    // their edges, object-fit: cover), at most 35% wider than they are.
-    let n = 0, used = 0;
-    while (n < items.length && used + ar[n] * H + (n ? g : 0) <= W) { used += ar[n] * H + (n ? g : 0); n++; }
-    // ...or one more item, narrowed a little (cropped at its edges) to squeeze in, at least 60% of its width;
-    // whichever changes the pictures least.
-    const fitN = (k) => { let w = 0; for (let i = 0; i < k; i++) w += ar[i] * H; return (W - (k - 1) * g) / w; };
-    const up = n ? fitN(n) : Infinity, down = n < items.length ? fitN(n + 1) : 0;
-    const okUp = up <= 1.35, okDown = down >= 0.6;
-    const k = okUp && okDown ? (Math.abs(Math.log(up)) <= Math.abs(Math.log(down)) ? n : n + 1) : okUp ? n : okDown ? n + 1 : 0;
-    const scale = k === n ? up : down;
-    let h = H;
-    if (k) items.slice(0, k).forEach((el, i) => { el.style.width = `${(ar[i] * H * scale).toFixed(2)}px`; });
+    const W = track.clientWidth;
+    if (!W) return;
+    let h = W * 0.75;
+    if (track.closest('.piece-sheet')) h = Math.min(h, Math.max(180, innerHeight * 0.36));
     else {
-      // Otherwise: a lower row where a whole number of items fills the width at their own shape.
-      let sum = 0;
-      for (let k = 1; k <= items.length; k++) { sum += ar[k - 1]; const hk = (W - (k - 1) * g) / sum; if (hk <= H) { h = hk; break; } }
+      const reel = track.closest('.piece-reel'), nav = reel.querySelector('.piece-reel-nav');
+      const H = reel.clientHeight - (nav ? nav.offsetHeight + (parseFloat(getComputedStyle(reel).rowGap) || 0) : 0);   // the room the card leaves it
+      if (H > 0) h = Math.min(h, H);
     }
     track.style.setProperty('--reel-h', `${h.toFixed(2)}px`); track.style.height = `${h.toFixed(2)}px`;   // the arrows sit right under the row
   };

@@ -10,6 +10,7 @@
 // view), then its eyes open, the rotors spin, the ring lights and it flies a banking figure of eight round the card.
 // In its page it bobs and turns toward the pointer. The model is the Blender master (3d/export_wisp_glb.py).
 import * as THREE from 'three';
+import { LOFT_WORDMARKS } from './loft-wordmarks.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
@@ -70,8 +71,14 @@ const HUDS = new Map();
 // Grid pieces (works.json): the first word big and the same size on every card, the rest (LOFT) small and spaced on the
 // line below (JC 2026-10-22, from his warm-card mock: "all big and the loft words on the next line much smaller and
 // uniform in size"). 92 units fits a seven-letter name (ETHEREA, SOLARIS) inside the frame.
-function pieceName(name, W) {
+function pieceName(name, W, loft) {
   const [first, ...rest] = name.toUpperCase().split(/\s+/);
+  const wm = loft && LOFT_WORDMARKS[loft];
+  if (wm) {   // 719 brand: the loft's own wordmark, one scale for all three (sized so Etherea, the longest, fills the frame), left-aligned like the posters
+    const sc = (W - 120) / LOFT_WORDMARKS.etherea.w, x = 60, base = 258;
+    return `<g class="ph-wordmark" transform="translate(${x} ${(base - wm.h * sc).toFixed(1)}) scale(${sc.toFixed(4)})">${wm.body}</g>`
+      + `<text class="ph-sub" x="${x}" y="${base + 38}" text-anchor="start">${(rest.join(' ') || 'LOFT')}</text>`;
+  }
   return `<text class="ph-name" x="${W / 2}" y="222" text-anchor="middle" style="font-size:92px">${first}</text>`
     + (rest.length ? `<text class="ph-sub" x="${W / 2}" y="272" text-anchor="middle">${rest.join(' ')}</text>` : '');
 }
@@ -83,7 +90,7 @@ function hudBody(c, W) {
   }).join('');
   const corner = (x, y) => `<path d="M${x - 14} ${y}H${x + 14}M${x} ${y - 14}V${y + 14}"/>`;
   const [no] = c.label.split(' / ');
-  return `${c.types ? pieceName(c.concept, W) : `<g transform="translate(${(W - 720) / 2} 0)">${nameLines(c.concept)}</g>`}
+  return `${c.types ? pieceName(c.concept, W, c.loft) : `<g transform="translate(${(W - 720) / 2} 0)">${nameLines(c.concept)}</g>`}
       <g class="ph-line">
         <rect x="36" y="36" width="${W - 72}" height="888"/>
         <circle cx="${W / 2}" cy="557" r="262"/>
